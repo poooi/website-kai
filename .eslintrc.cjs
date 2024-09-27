@@ -10,6 +10,7 @@ const config = {
     'plugin:@typescript-eslint/recommended-type-checked',
     'plugin:@typescript-eslint/stylistic-type-checked',
     'plugin:prettier/recommended',
+    'plugin:eslint-plugin-next-on-pages/recommended',
   ],
   rules: {
     '@typescript-eslint/array-type': 'off',
