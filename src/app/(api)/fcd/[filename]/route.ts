@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { reverseFetch } from "~/utils/reverse-fetch";
 
+export const runtime = 'edge'
+
 export const GET = async (
   request: Request,
   { params }: { params: { filename: string } },
