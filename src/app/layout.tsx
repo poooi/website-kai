@@ -1,4 +1,3 @@
-import { LanguageProvider } from '@inlang/paraglide-next'
 import { languageTag } from '~/paraglide/runtime.js'
 import '~/styles/globals.css'
 
@@ -18,24 +17,22 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <LanguageProvider>
-      <html
-        lang={languageTag()}
-        className={`${GeistSans.variable}`}
-        suppressHydrationWarning
-      >
-        <body>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <Background />
-            {children}
-          </ThemeProvider>
-        </body>
-      </html>
-    </LanguageProvider>
+    <html
+      lang={languageTag()}
+      className={`${GeistSans.variable}`}
+      suppressHydrationWarning
+    >
+      <body>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Background />
+          {children}
+        </ThemeProvider>
+      </body>
+    </html>
   )
 }
