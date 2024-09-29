@@ -1,5 +1,4 @@
 import { notFound } from 'next/navigation'
-import { getRequestContext } from '@cloudflare/next-on-pages'
 import { reverseFetch } from '~/utils/reverse-fetch'
 import { fetchPoiVersions } from '~/utils/fetch-poi-versions'
 
@@ -10,7 +9,6 @@ export const GET = async (
   { params }: { params?: { filename: string } },
 ) => {
   const { filename } = params ?? {}
-  const { cf } = getRequestContext()
 
   if (!filename) {
     notFound()
@@ -40,8 +38,10 @@ export const GET = async (
     return
   }
 
+  const ipCountry = request.headers.get('CF-IPCountry') ?? ''
+
   const destination =
-    cf?.country === 'CN'
+    ipCountry === 'CN'
       ? `https://registry.npmmirror.com/-/binary/poi/v${tag}/${filename}`
       : `https://github.com/poooi/poi/releases/download/v${tag}/${filename}`
 
