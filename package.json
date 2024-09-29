@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@cloudflare/next-on-pages": "^1.13.3",
+    "@inlang/paraglide-next": "0.5.2",
     "@radix-ui/react-dropdown-menu": "^2.1.1",
     "@radix-ui/react-icons": "^1.3.0",
     "@radix-ui/react-navigation-menu": "^1.2.0",
@@ -51,7 +52,8 @@
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.5",
     "tailwindcss": "^3.4.3",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.3",
+    "@inlang/paraglide-js": "1.11.2"
   },
   "ct3aMetadata": {
     "initVersion": "7.37.0"

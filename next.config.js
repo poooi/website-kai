@@ -1,3 +1,4 @@
+import { paraglide } from '@inlang/paraglide-next/plugin'
 import { setupDevPlatform } from '@cloudflare/next-on-pages/next-dev'
 /**
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
@@ -22,4 +23,10 @@ if (process.env.NODE_ENV === 'development') {
   await setupDevPlatform()
 }
 
-export default config
+export default paraglide({
+  paraglide: {
+    project: './project.inlang',
+    outdir: './src/paraglide',
+  },
+  ...config,
+})
