@@ -27,17 +27,9 @@ test.describe('fcd', () => {
   })
 
   test('404', async ({ page, next }) => {
-    next.onFetch((request) => {
-      if (
-        request.url ===
-        'https://raw.githubusercontent.com/poooi/poi/master/assets/data/fcd/meta.json'
-      ) {
-        return new Response('', { status: 404 })
-      }
-      return 'abort'
+    next.onFetch(() => {
+      return new Response('', { status: 404 })
     })
-    await page.goto('/')
-
     try {
       await page.goto('/fcd/meta.json')
     } catch (e) {
