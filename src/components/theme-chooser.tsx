@@ -40,7 +40,9 @@ export const ThemeChooser = () => {
           <DropdownMenuRadioItem value="dark">
             {t('Chibaheit')}
           </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="system">跟随系统</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="system">
+            {t('System')}
+          </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
