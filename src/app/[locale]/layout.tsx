@@ -5,6 +5,7 @@ import { type Metadata } from 'next'
 
 import { Background } from '~/components/background'
 import { ThemeProvider } from '~/components/theme-provider'
+import { i18nConfig } from '~/i18n-config'
 
 export const metadata: Metadata = {
   title: 'Create T3 App',
@@ -12,12 +13,22 @@ export const metadata: Metadata = {
   icons: [{ rel: 'icon', url: '/favicon.ico' }],
 }
 
+export const generateStaticParams = async () => {
+  return i18nConfig.locales.map((locale) => ({ locale }))
+}
+
 export default function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+  params: { locale },
+}: Readonly<{
+  children: React.ReactNode
+  params: {
+    locale: string
+  }
+}>) {
   return (
     <html
-      lang="en"
+      lang={locale}
       className={`${GeistSans.variable}`}
       suppressHydrationWarning
     >
