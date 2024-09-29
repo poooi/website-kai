@@ -3,7 +3,6 @@
 import { MoonIcon, SunIcon } from 'lucide-react'
 import { useTheme } from 'next-themes'
 
-import * as m from '~/paraglide/messages.js'
 import { Button } from '~/components/ui/button'
 import {
   DropdownMenu,
@@ -34,12 +33,8 @@ export const ThemeChooser = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>
-          <DropdownMenuRadioItem value="light">
-            {m.lilywhite()}
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="dark">
-            {m.chibaheit()}
-          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="light">明</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="dark">暗</DropdownMenuRadioItem>
           <DropdownMenuRadioItem value="system">跟随系统</DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
