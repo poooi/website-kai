@@ -1,5 +1,9 @@
+import { ThemeChooser } from '~/components/theme-chooser'
+
 export default function HomePage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center"></main>
+    <main className="flex min-h-screen flex-col items-center justify-center">
+      <ThemeChooser />
+    </main>
   )
 }

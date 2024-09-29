@@ -2,6 +2,7 @@
 
 import debounce from 'lodash/debounce'
 import times from 'lodash/times'
+import { useTheme } from 'next-themes'
 import { rgba } from 'polished'
 import random from 'random'
 import { useEffect, useRef } from 'react'
@@ -57,10 +58,7 @@ const getRandomXY = (w: number, h: number) => {
 
 export const Background = () => {
   const canvas = useRef<HTMLCanvasElement>(null)
-
-  // const theme = useContext(ThemeContext)
-
-  const drawCanvasRef = useRef<() => void>()
+  const { theme } = useTheme()
 
   useEffect(() => {
     const drawCanvas = () => {
@@ -68,7 +66,6 @@ export const Background = () => {
         document.documentElement,
       ).getPropertyValue('--foreground')})`
 
-      console.log(foreground)
       if (!canvas.current) {
         return
       }
@@ -97,14 +94,15 @@ export const Background = () => {
       })
     }
 
-    if (drawCanvasRef.current) {
-      window.removeEventListener('resize', drawCanvasRef.current)
-    }
-    drawCanvasRef.current = debounce(drawCanvas, 100)
+    const debouncedDrawCanvas = debounce(drawCanvas, 100)
 
-    drawCanvas()
-    window.addEventListener('resize', drawCanvasRef.current)
-  }, [canvas])
+    // in current approach, the color is read from computed style, need to wait for theme change happen in DOM
+    requestAnimationFrame(drawCanvas)
+    window.addEventListener('resize', debouncedDrawCanvas)
+    return () => {
+      window.removeEventListener('resize', debouncedDrawCanvas)
+    }
+  }, [theme])
 
   return <canvas className="-z-1 t-0 l-0 fixed bg-background" ref={canvas} />
 }
