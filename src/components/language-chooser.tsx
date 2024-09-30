@@ -1,11 +1,10 @@
 'use client'
 
+import { GlobeIcon } from '@radix-ui/react-icons'
 import { useRouter, usePathname } from 'next/navigation'
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { i18nConfig } from '~/i18n-config'
-import { GlobeIcon } from '@radix-ui/react-icons'
 import { Button } from '~/components/ui/button'
 import {
   DropdownMenu,
@@ -14,6 +13,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
+import { i18nConfig } from '~/i18n-config'
 
 export const LanguageChooser = () => {
   const { t, i18n } = useTranslation()

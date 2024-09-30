@@ -1,5 +1,5 @@
-import { defineConfig } from 'next/experimental/testmode/playwright.js'
 import { devices } from '@playwright/test'
+import { defineConfig } from 'next/experimental/testmode/playwright.js'
 
 /**
  * See https://playwright.dev/docs/test-configuration.

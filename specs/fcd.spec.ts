@@ -1,5 +1,5 @@
-import { test } from 'next/experimental/testmode/playwright.js'
 import { expect } from '@playwright/test'
+import { test } from 'next/experimental/testmode/playwright.js'
 
 const mockMetaJson = [
   { name: 'map', version: '1000/01/01/01' },

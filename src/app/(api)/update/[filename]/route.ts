@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
-import { reverseFetch } from '~/utils/reverse-fetch'
+
+import { reverseFetch } from '~/lib/reverse-fetch'
 
 export const runtime = 'edge'
 

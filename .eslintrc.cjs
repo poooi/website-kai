@@ -37,6 +37,13 @@ const config = {
         },
       },
     ],
+    'import/order': [
+      'error',
+      {
+        'newlines-between': 'always',
+        alphabetize: { order: 'asc', caseInsensitive: true },
+      },
+    ],
   },
 }
 module.exports = config

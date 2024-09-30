@@ -1,5 +1,5 @@
-import { test } from 'next/experimental/testmode/playwright.js'
 import { expect } from '@playwright/test'
+import { test } from 'next/experimental/testmode/playwright.js'
 
 test.describe('dist', () => {
   test('/dist/poi-10.9.2-arm64-win.7z', async ({ page, next }) => {

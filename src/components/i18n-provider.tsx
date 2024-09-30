@@ -1,9 +1,10 @@
 'use client'
 
-import { I18nextProvider } from 'react-i18next'
-import { initTranslations } from '~/i18n'
 import { type Resource, createInstance } from 'i18next'
 import { type FC, type PropsWithChildren } from 'react'
+import { I18nextProvider } from 'react-i18next'
+
+import { initTranslations } from '~/i18n'
 
 interface I18nProviderProps extends PropsWithChildren {
   locale: string

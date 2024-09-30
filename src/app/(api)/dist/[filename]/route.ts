@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
-import { reverseFetch } from '~/utils/reverse-fetch'
-import { fetchPoiVersions } from '~/utils/fetch-poi-versions'
+
+import { fetchPoiVersions } from '~/lib/fetch-poi-versions'
+import { reverseFetch } from '~/lib/reverse-fetch'
 
 export const runtime = 'edge'
 
