@@ -40,7 +40,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Background />
-          {children}
+          <main className="relative z-0 flex min-h-screen flex-col items-center justify-center">
+            {children}
+          </main>
         </ThemeProvider>
       </body>
     </html>

@@ -12,10 +12,8 @@ export default async function HomePage({
   const { t, resources } = await initTranslations(locale, ['common'])
   return (
     <I18nProvider locale={locale} namespaces={['common']} resources={resources}>
-      <main className="relative z-0 flex min-h-screen flex-col items-center justify-center">
-        <Header />
-        {t('Explore')}
-      </main>
+      <Header />
+      {t('Explore')}
     </I18nProvider>
   )
 }

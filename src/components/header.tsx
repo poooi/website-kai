@@ -15,19 +15,23 @@ export const Header = () => {
   const { t } = useTranslation()
   const pathname = useI18nPathname()
 
+  const onIndexPage = pathname === '/'
+
   return (
     <div className="flex h-16 items-center">
-      <Link href="/" passHref>
-        <Button variant="ghost" className={cn(pathname === '/' && 'opacity-0')}>
+      <Button variant="ghost" size="icon" asChild>
+        <Link className={cn(onIndexPage && 'cursor-auto opacity-0')} href="/">
           <img src={poiLogo.src} alt="poi" className="h-8 w-8" />
-        </Button>
-      </Link>
-      <Link href="/explore" passHref>
-        <Button variant="ghost">{t('Explore')}</Button>
-      </Link>
-      <Link href="/downloads" passHref>
-        <Button variant="ghost">{t('Downloads')}</Button>
-      </Link>
+        </Link>
+      </Button>
+      <Button variant="ghost" asChild>
+        <Link href="/explore">{t('Explore')}</Link>
+      </Button>
+      <Button variant="ghost" asChild>
+        <Link href="/downloads" passHref>
+          {t('Downloads')}
+        </Link>
+      </Button>
       <ThemeChooser />
       <LanguageChooser />
     </div>
