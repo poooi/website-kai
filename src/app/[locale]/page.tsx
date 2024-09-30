@@ -9,10 +9,6 @@ export default async function HomePage({
 }: {
   params: { locale: string }
 }) {
-  const { resources } = await initTranslations(locale, ['common'])
-  return (
-    <I18nProvider locale={locale} namespaces={['common']} resources={resources}>
-      <Header />
-    </I18nProvider>
-  )
+  const { t } = await initTranslations(locale, ['common'])
+  return <div>{t('name')}</div>
 }

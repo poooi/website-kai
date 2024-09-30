@@ -4,7 +4,10 @@ import { GeistSans } from 'geist/font/sans'
 import { type Metadata } from 'next'
 
 import { Background } from '~/components/background'
+import { Header } from '~/components/header'
+import { I18nProvider } from '~/components/i18n-provider'
 import { ThemeProvider } from '~/components/theme-provider'
+import { initTranslations } from '~/i18n'
 import { i18nConfig } from '~/i18n-config'
 
 export const metadata: Metadata = {
@@ -17,7 +20,7 @@ export const generateStaticParams = async () => {
   return i18nConfig.locales.map((locale) => ({ locale }))
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
   params: { locale },
 }: Readonly<{
@@ -26,6 +29,7 @@ export default function RootLayout({
     locale: string
   }
 }>) {
+  const { resources } = await initTranslations(locale, ['common'])
   return (
     <html
       lang={locale}
@@ -40,9 +44,16 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Background />
-          <main className="relative z-0 flex min-h-screen flex-col items-center justify-center">
-            {children}
-          </main>
+          <I18nProvider
+            locale={locale}
+            namespaces={['common']}
+            resources={resources}
+          >
+            <main className="relative z-0 flex min-h-screen flex-col items-center justify-center">
+              <Header />
+              {children}
+            </main>
+          </I18nProvider>
         </ThemeProvider>
       </body>
     </html>
