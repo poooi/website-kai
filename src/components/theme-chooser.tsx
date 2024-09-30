@@ -22,7 +22,7 @@ export const ThemeChooser = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant="ghost"
+          variant="outline"
           size="icon"
           title={t('Theme')}
           aria-label={t('Theme')}

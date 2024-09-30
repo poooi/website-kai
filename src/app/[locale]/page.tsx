@@ -13,9 +13,11 @@ export default async function HomePage({
   const { resources } = await initTranslations(locale, ['common'])
   return (
     <I18nProvider locale={locale} namespaces={['common']} resources={resources}>
-      <main className="flex min-h-screen flex-col items-center justify-center">
-        <ThemeChooser />
-        <LanguageChooser />
+      <main className="relative z-0 flex min-h-screen flex-col items-center justify-center">
+        <div className="flex gap-4">
+          <ThemeChooser />
+          <LanguageChooser />
+        </div>
       </main>
     </I18nProvider>
   )
