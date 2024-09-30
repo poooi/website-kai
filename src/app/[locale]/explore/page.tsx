@@ -9,11 +9,12 @@ export default async function HomePage({
 }: {
   params: { locale: string }
 }) {
-  const { resources } = await initTranslations(locale, ['common'])
+  const { t, resources } = await initTranslations(locale, ['common'])
   return (
     <I18nProvider locale={locale} namespaces={['common']} resources={resources}>
       <main className="relative z-0 flex min-h-screen flex-col items-center justify-center">
         <Header />
+        {t('Explore')}
       </main>
     </I18nProvider>
   )
