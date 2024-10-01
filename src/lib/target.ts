@@ -16,7 +16,57 @@ export enum Target {
   winArm = 'win-arm',
 }
 
-const BASE_URI = 'https://npmmirror.com/mirrors/poi'
+export enum OS {
+  windows = 'windows',
+  macos = 'macos',
+  linux = 'linux',
+}
+
+export enum CPU {
+  x64 = 'x64',
+  ia32 = 'ia32',
+  arm = 'arm',
+}
+
+export enum LinuxPackageFormat {
+  deb = 'deb',
+  rpm = 'rpm',
+}
+
+export enum DistributionType {
+  setup = 'setup',
+  portable = 'portable',
+}
+
+export const platformToTarget = {
+  [OS.windows]: {
+    [CPU.x64]: {
+      [DistributionType.setup]: Target.win64Setup,
+      [DistributionType.portable]: Target.win64,
+    },
+    [CPU.ia32]: {
+      [DistributionType.setup]: Target.win32Setup,
+      [DistributionType.portable]: Target.win32,
+    },
+    [CPU.arm]: Target.winArm,
+  },
+  [OS.macos]: {
+    [CPU.x64]: Target.macos,
+    [CPU.arm]: Target.macosArm,
+  },
+  [OS.linux]: {
+    [CPU.x64]: {
+      [LinuxPackageFormat.deb]: Target.linuxDeb,
+      [LinuxPackageFormat.rpm]: Target.linuxRpm,
+      [DistributionType.portable]: Target.linux,
+    },
+    [CPU.arm]: {
+      [LinuxPackageFormat.deb]: Target.linuxDebArm,
+      [DistributionType.portable]: Target.linuxArm,
+    },
+  },
+}
+
 const DEFAULT_URI = 'https://github.com/poooi/poi/releases'
 
 // the semver-regex package does not support `-beta.0` prerelase version, have to host one here
@@ -34,29 +84,29 @@ export const getDownloadLink = (
   }
   switch (target) {
     case Target.linux:
-      return `${BASE_URI}/${version}/poi-${pure}.7z`
+      return `/dist/${version}/poi-${pure}.7z`
     case Target.linuxArm:
-      return `${BASE_URI}/${version}/poi-${pure}-arm64.7z`
+      return `/dist/${version}/poi-${pure}-arm64.7z`
     case Target.linuxDeb:
-      return `${BASE_URI}/${version}/poi_${pure}_amd64.deb`
+      return `/dist/${version}/poi_${pure}_amd64.deb`
     case Target.linuxDebArm:
-      return `${BASE_URI}/${version}/poi_${pure}_arm64.deb`
+      return `/dist/${version}/poi_${pure}_arm64.deb`
     case Target.linuxRpm:
-      return `${BASE_URI}/${version}/poi-${pure}.x86_64.rpm`
+      return `/dist/${version}/poi-${pure}.x86_64.rpm`
     case Target.macos:
-      return `${BASE_URI}/${version}/poi-${pure}.dmg`
+      return `/dist/${version}/poi-${pure}.dmg`
     case Target.macosArm:
-      return `${BASE_URI}/${version}/poi-${pure}-arm64.dmg`
+      return `/dist/${version}/poi-${pure}-arm64.dmg`
     case Target.win32:
-      return `${BASE_URI}/${version}/poi-${pure}-ia32-win.7z`
+      return `/dist/${version}/poi-${pure}-ia32-win.7z`
     case Target.win32Setup:
-      return `${BASE_URI}/${version}/poi-setup-${pure}.exe`
+      return `/dist/${version}/poi-setup-${pure}.exe`
     case Target.win64:
-      return `${BASE_URI}/${version}/poi-${pure}-win.7z`
+      return `/dist/${version}/poi-${pure}-win.7z`
     case Target.win64Setup:
-      return `${BASE_URI}/${version}/poi-setup-${pure}.exe`
+      return `/dist/${version}/poi-setup-${pure}.exe`
     case Target.winArm:
-      return `${BASE_URI}/${version}/poi-${pure}-arm64-win.7z`
+      return `/dist/${version}/poi-${pure}-arm64-win.7z`
     default:
       return DEFAULT_URI
   }

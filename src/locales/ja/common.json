@@ -25,7 +25,6 @@
   "telegram-group-link": "https://t.me/joinchat/ENYTx0Cr6B9OxSCRKUzYUw",
   "discord-channel-link": "https://discordapp.com/channels/118339803660943369/367575898313981952",
   "Discord sub-channel": "Discord チャンネル",
-  "Choose another platform": "他のプラットフォームを選択",
   "Explore": "機能紹介",
   "Plugins": "プラグイン一覧",
   "lsc": "大型建造中",
@@ -47,5 +46,19 @@
   "Downloads": "ダウンロード",
   "no-content": "作業中です。後で確認してください。",
   "System": "システム",
-  "Return to homepage": "ホームペイジに戻る"
+  "Return to homepage": "ホームペイジに戻る",
+  "Download options": "ダウンロードオプション",
+  "Operating system": "オペレーティング·システム",
+  "Platform": "プラットフォーム",
+  "Options": "オプション",
+  "linux": "Linux",
+  "macos": "macOS",
+  "windows": "Windows",
+  "arm": "ARM",
+  "ia32": "32ビット",
+  "x64": "64ビット",
+  "deb": "DEB",
+  "portable": "ポータブル",
+  "rpm": "RPM",
+  "setup": "インストーラ"
 }

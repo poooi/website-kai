@@ -16,6 +16,7 @@ const config = {
   experimental: {
     testProxy: true,
   },
+  trailingSlash: true,
 }
 
 if (process.env.NODE_ENV === 'development') {

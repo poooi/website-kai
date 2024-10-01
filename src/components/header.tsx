@@ -28,7 +28,7 @@ export const Header = () => {
         <Link href="/explore">{t('Explore')}</Link>
       </Button>
       <Button variant="ghost" asChild>
-        <Link href="/downloads" passHref>
+        <Link href="/download" passHref>
           {t('Downloads')}
         </Link>
       </Button>

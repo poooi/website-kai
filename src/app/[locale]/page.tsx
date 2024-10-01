@@ -37,7 +37,7 @@ export default async function HomePage({
         </Button>
       )}
       <Button variant="link" asChild>
-        <Link href="/downloads">{t('Choose another platform')}</Link>
+        <Link href="/download">{t('Download options')}</Link>
       </Button>
     </div>
   )
