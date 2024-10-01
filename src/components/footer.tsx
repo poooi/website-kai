@@ -6,7 +6,7 @@ import {
   SiSinaweibo,
   SiTelegram,
 } from '@icons-pack/react-simple-icons'
-import { type TFunction, type i18n } from 'i18next'
+import { type TFunction, type i18n, type CustomTypeOptions } from 'i18next'
 
 import { Button } from './ui/button'
 
@@ -18,8 +18,7 @@ interface FooterProps {
 interface FooterItem {
   url: string
   icon: IconType
-  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-  text: keyof typeof import('~/locales/ja/common.json')
+  text: keyof CustomTypeOptions['resources']['common']
   skipLocales?: string[] // should be hidden for these locales
   applyLocales?: string[] // should shown for these locales
 }
