@@ -4,6 +4,7 @@ import { GeistSans } from 'geist/font/sans'
 import { type Metadata } from 'next'
 
 import { Background } from '~/components/background'
+import { Footer } from '~/components/footer'
 import { Header } from '~/components/header'
 import { I18nProvider } from '~/components/i18n-provider'
 import { ThemeProvider } from '~/components/theme-provider'
@@ -29,7 +30,7 @@ export default async function RootLayout({
     locale: string
   }
 }>) {
-  const { resources } = await initTranslations(locale, ['common'])
+  const { resources, t, i18n } = await initTranslations(locale, ['common'])
   return (
     <html
       lang={locale}
@@ -52,6 +53,7 @@ export default async function RootLayout({
             <main className="relative z-0 flex min-h-screen flex-col items-center justify-center">
               <Header />
               {children}
+              <Footer t={t} i18n={i18n} />
             </main>
           </I18nProvider>
         </ThemeProvider>
