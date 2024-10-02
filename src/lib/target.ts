@@ -38,32 +38,36 @@ export enum DistributionType {
   portable = 'portable',
 }
 
+export enum PlatformSpec {
+  X64Setup = 'x64Setup', // setup for windows x64 and macOS Intel
+  X64Portable = 'x64Portable', // portable for windows x64 and Linux x64
+  IA32Setup = 'ia32Setup', // setup for windows x86
+  IA32Portable = 'ia32Portable', // portable for windows x86
+  ARM = 'arm', // setup for windows ARM and macOS Apple silicon
+  X64DEB = 'x64DEB', // deb package for linux x64
+  x64RPM = 'x64RPM', // rpm package for linux x64
+  ARMDEB = 'armDEB', // deb package for linux ARM
+  ARMPortable = 'armPortable', // currently for linux only, windows ARM is always setup
+}
+
 export const platformToTarget = {
   [OS.windows]: {
-    [CPU.x64]: {
-      [DistributionType.setup]: Target.win64Setup,
-      [DistributionType.portable]: Target.win64,
-    },
-    [CPU.ia32]: {
-      [DistributionType.setup]: Target.win32Setup,
-      [DistributionType.portable]: Target.win32,
-    },
-    [CPU.arm]: Target.winArm,
+    [PlatformSpec.X64Setup]: Target.win64Setup,
+    [PlatformSpec.X64Portable]: Target.win64,
+    [PlatformSpec.IA32Setup]: Target.win32Setup,
+    [PlatformSpec.IA32Portable]: Target.win32,
+    [PlatformSpec.ARM]: Target.winArm,
   },
   [OS.macos]: {
-    [CPU.x64]: Target.macos,
-    [CPU.arm]: Target.macosArm,
+    [PlatformSpec.X64Setup]: Target.macos,
+    [PlatformSpec.ARM]: Target.macosArm,
   },
   [OS.linux]: {
-    [CPU.x64]: {
-      [LinuxPackageFormat.deb]: Target.linuxDeb,
-      [LinuxPackageFormat.rpm]: Target.linuxRpm,
-      [DistributionType.portable]: Target.linux,
-    },
-    [CPU.arm]: {
-      [LinuxPackageFormat.deb]: Target.linuxDebArm,
-      [DistributionType.portable]: Target.linuxArm,
-    },
+    [PlatformSpec.X64DEB]: Target.linuxDeb,
+    [PlatformSpec.x64RPM]: Target.linuxRpm,
+    [PlatformSpec.X64Portable]: Target.linux,
+    [PlatformSpec.ARMDEB]: Target.linuxDebArm,
+    [PlatformSpec.ARMPortable]: Target.linuxArm,
   },
 }
 
