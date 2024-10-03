@@ -57,7 +57,7 @@ const footerItems = [
 export const Footer = ({ i18n, t }: FooterProps) => {
   const { language } = i18n
   return (
-    <div>
+    <div className="flex items-center gap-8 py-4">
       <span>{`© ${new Date().getFullYear()} poi Contributors`}</span>
       <div>
         {footerItems
@@ -72,9 +72,14 @@ export const Footer = ({ i18n, t }: FooterProps) => {
           })
           .map(({ url, icon: Icon, text }) => (
             <Button variant="link" asChild key={url}>
-              <a href={url} target="_blank" rel="noopener">
-                <Icon />
-                {t(text)}
+              <a
+                className="inline-flex gap-1"
+                href={url}
+                target="_blank"
+                rel="noopener"
+              >
+                <Icon className="h-4 w-4" />
+                <span>{t(text)}</span>
               </a>
             </Button>
           ))}

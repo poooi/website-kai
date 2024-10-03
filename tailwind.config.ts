@@ -7,7 +7,11 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-geist-sans)', ...fontFamily.sans],
+        sans: ['Noto Sans', ...fontFamily.sans],
+        ja: ['Noto Sans JP', ...fontFamily.sans],
+        'zh-hant': ['Noto Sans TC', ...fontFamily.sans],
+        'zh-hans': ['Noto Sans SC', ...fontFamily.sans],
+        ko: ['Noto Sans KR', ...fontFamily.sans],
       },
       borderRadius: {
         lg: 'var(--radius)',

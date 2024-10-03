@@ -22,25 +22,28 @@ export default async function HomePage({
   const stableURL = getDownloadLink(poiVersions.version, target)
   const betaURL = getDownloadLink(poiVersions.betaVersion, target)
   return (
-    <div>
-      <h1>{t('name')}</h1>
-      <p>{t('description')}</p>
-      <Button className="h-fit flex-col" asChild>
-        <a href={stableURL}>
-          <span>{t('download', { version: poiVersions.version })}</span>
-          <span>{t('stable-hint')}</span>
-        </a>
-      </Button>
-      {compare(poiVersions.version, poiVersions.betaVersion, '<') && (
-        <Button variant="secondary" className="h-fit flex-col" asChild>
-          <a href={betaURL}>
-            <span>{t('download', { version: poiVersions.betaVersion })}</span>
-            <span>{t('beta-hint')}</span>
+    <div className="w-full">
+      <h1 className="text-9xl leading-loose">{t('name')}</h1>
+      <p className="text-2xl">{t('description')}</p>
+
+      <div className="my-8 flex gap-8">
+        <Button className="h-fit flex-col" asChild>
+          <a href={stableURL}>
+            <span>{t('download', { version: poiVersions.version })}</span>
+            <span>{t('stable-hint')}</span>
           </a>
         </Button>
-      )}
-      <div>
-        {t('Sighted by skilled lookouts:')}
+        {compare(poiVersions.version, poiVersions.betaVersion, '<') && (
+          <Button variant="secondary" className="h-fit flex-col" asChild>
+            <a href={betaURL}>
+              <span>{t('download', { version: poiVersions.betaVersion })}</span>
+              <span>{t('beta-hint')}</span>
+            </a>
+          </Button>
+        )}
+      </div>
+      <div className="flex items-center gap-2">
+        <span>{t('Sighted by skilled lookouts:')}</span>
         <Badge variant="secondary">{t(os)}</Badge>
         <Badge variant="secondary">{t(spec)}</Badge>
         <Button variant="link" asChild>

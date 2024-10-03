@@ -18,22 +18,26 @@ export const Header = () => {
   const onIndexPage = pathname === '/'
 
   return (
-    <div className="flex h-16 items-center">
-      <Button variant="ghost" size="icon" asChild>
-        <Link className={cn(onIndexPage && 'cursor-auto opacity-0')} href="/">
-          <img src={poiLogo.src} alt="poi" className="h-8 w-8" />
-        </Link>
-      </Button>
-      <Button variant="ghost" asChild>
-        <Link href="/explore">{t('Explore')}</Link>
-      </Button>
-      <Button variant="ghost" asChild>
-        <Link href="/download" passHref>
-          {t('Downloads')}
-        </Link>
-      </Button>
-      <ThemeChooser />
-      <LanguageChooser />
+    <div className="flex h-16 w-full items-center">
+      <nav className="flex grow items-center">
+        <Button variant="ghost" size="icon" asChild>
+          <Link className={cn(onIndexPage && 'cursor-auto opacity-0')} href="/">
+            <img src={poiLogo.src} alt="poi" className="h-8 w-8" />
+          </Link>
+        </Button>
+        <Button variant="ghost" asChild>
+          <Link href="/explore">{t('Explore')}</Link>
+        </Button>
+        <Button variant="ghost" asChild>
+          <Link href="/download" passHref>
+            {t('Downloads')}
+          </Link>
+        </Button>
+      </nav>
+      <div className="flex shrink-0 gap-4">
+        <ThemeChooser />
+        <LanguageChooser />
+      </div>
     </div>
   )
 }

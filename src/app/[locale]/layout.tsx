@@ -1,7 +1,8 @@
+/* eslint-disable @next/next/no-page-custom-font */
 import '~/styles/globals.css'
 
-import { GeistSans } from 'geist/font/sans'
 import { type Metadata } from 'next'
+import ReactDOM from 'react-dom'
 
 import { Background } from '~/components/background'
 import { Footer } from '~/components/footer'
@@ -10,6 +11,7 @@ import { I18nProvider } from '~/components/i18n-provider'
 import { ThemeProvider } from '~/components/theme-provider'
 import { initTranslations } from '~/i18n'
 import { i18nConfig } from '~/i18n-config'
+import { cn } from '~/lib/utils'
 
 export const metadata: Metadata = {
   title: 'Create T3 App',
@@ -21,6 +23,9 @@ export const generateStaticParams = async () => {
   return i18nConfig.locales.map((locale) => ({ locale }))
 }
 
+ReactDOM.preconnect('https://fonts.googleapis.com')
+ReactDOM.preconnect('https://fonts.gstatic.com', { crossOrigin: 'anonymous' })
+
 export default async function RootLayout({
   children,
   params: { locale },
@@ -31,12 +36,48 @@ export default async function RootLayout({
   }
 }>) {
   const { resources, t, i18n } = await initTranslations(locale, ['common'])
+
   return (
     <html
       lang={locale}
-      className={`${GeistSans.variable}`}
+      className={cn({
+        'font-ja': locale === 'ja',
+        'font-zh-hant': locale === 'zh-Hant',
+        'font-sh-hans': locale === 'zh-Hans',
+        'font-ko': locale === 'ko',
+      })}
       suppressHydrationWarning
     >
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100..900&display=swap"
+          rel="stylesheet"
+        />
+        {locale === 'ja' && (
+          <link
+            href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap"
+            rel="stylesheet"
+          />
+        )}
+        {locale === 'zh-Hant' && (
+          <link
+            href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap"
+            rel="stylesheet"
+          ></link>
+        )}
+        {locale === 'zh-Hans' && (
+          <link
+            href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100..900&display=swap"
+            rel="stylesheet"
+          ></link>
+        )}
+        {locale === 'ko' && (
+          <link
+            href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap"
+            rel="stylesheet"
+          ></link>
+        )}
+      </head>
       <body>
         <ThemeProvider
           attribute="class"
@@ -50,9 +91,9 @@ export default async function RootLayout({
             namespaces={['common']}
             resources={resources}
           >
-            <main className="relative z-0 flex min-h-screen flex-col items-center justify-center">
+            <main className="relative z-0 mx-auto flex min-h-screen max-w-[960px] flex-col items-center justify-center">
               <Header />
-              {children}
+              <div className="w-full grow">{children}</div>
               <Footer t={t} i18n={i18n} />
             </main>
           </I18nProvider>
