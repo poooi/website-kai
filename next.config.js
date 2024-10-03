@@ -16,7 +16,7 @@ const config = {
     ignoreBuildErrors: true,
   },
   experimental: {
-    testProxy: true,
+    testProxy: process.env.NODE_ENV === 'test',
   },
   trailingSlash: true,
   webpack: (config) => {

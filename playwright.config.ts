@@ -1,6 +1,9 @@
 import { devices } from '@playwright/test'
 import { defineConfig } from 'next/experimental/testmode/playwright.js'
 
+// @ts-expect-error - NODE_ENV is set for the test environment
+process.env.NODE_ENV = 'test'
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
