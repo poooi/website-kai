@@ -3,15 +3,14 @@ import { notFound } from 'next/navigation'
 import { PlatformSelect } from './platform-select'
 
 import { Button } from '~/components/ui/button'
-import { Separator } from '~/components/ui/separator'
 import { initTranslations } from '~/i18n'
 import { fetchPoiVersions } from '~/lib/fetch-poi-versions'
 import {
   getDownloadLink,
   platformToTarget,
-  type Target,
   type OS,
   type PlatformSpec,
+  type Target,
 } from '~/lib/target'
 import { cn } from '~/lib/utils'
 
@@ -42,14 +41,15 @@ export default async function DownloadPage({
   const betaURL = target ? getDownloadLink(poiVersions.betaVersion, target) : ''
 
   return (
-    <div className="flex w-full grow flex-col items-center">
-      <h2>{t('Download')}</h2>
-      <section className="mb-32 mt-16">
+    <div className="prose dark:prose-invert flex w-full max-w-none grow flex-col">
+      <h2 className="">{t('Download')}</h2>
+      <section className="">
         <PlatformSelect os={os} spec={spec} />
-
         <div
           aria-hidden={!os || !spec}
-          className={cn('my-8 flex gap-8', { 'opacity-0': !os || !spec })}
+          className={cn('not-prose my-8 flex gap-8', {
+            'opacity-0': !os || !spec,
+          })}
         >
           <Button className="h-fit flex-col" asChild disabled={!stableURL}>
             <a href={stableURL}>
@@ -71,7 +71,7 @@ export default async function DownloadPage({
         </div>
       </section>
       <h2>{t('Others')}</h2>
-      <section className="mt-4 flex w-fit flex-col items-center">
+      <section className="flex w-fit flex-col items-center">
         <div>
           <Button variant="link" asChild>
             <a
