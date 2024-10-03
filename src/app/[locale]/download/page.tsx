@@ -1,3 +1,4 @@
+import { type Metadata } from 'next'
 import { headers } from 'next/headers'
 
 import { DownloadLinks } from './download-links'
@@ -10,6 +11,22 @@ import { fetchPoiVersions } from '~/lib/fetch-poi-versions'
 import { detectTargetFromRequest } from '~/lib/target'
 
 export const runtime = 'edge'
+
+export const generateMetadata = async ({
+  params: { locale },
+  previousMetadata,
+}: Readonly<{
+  params: {
+    locale: string
+  }
+  previousMetadata: Metadata
+}>): Promise<Metadata> => {
+  const { t } = await initTranslations(locale, ['common'])
+  return {
+    ...previousMetadata,
+    title: `poi | ${t('KanColle Browser')} | ${t('Download')}`,
+  }
+}
 
 export default async function DownloadPage({
   params: { locale },

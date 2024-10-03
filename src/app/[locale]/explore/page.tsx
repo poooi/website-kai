@@ -1,9 +1,27 @@
+import { type Metadata } from 'next'
 import { remark } from 'remark'
 import html from 'remark-html'
 
 import { Transition } from '~/components/transition'
+import { initTranslations } from '~/i18n'
 
 export const runtime = 'edge'
+
+export const generateMetadata = async ({
+  params: { locale },
+  previousMetadata,
+}: Readonly<{
+  params: {
+    locale: string
+  }
+  previousMetadata: Metadata
+}>): Promise<Metadata> => {
+  const { t } = await initTranslations(locale, ['common'])
+  return {
+    ...previousMetadata,
+    title: `poi | ${t('KanColle Browser')} | ${t('Explore')}`,
+  }
+}
 
 export default async function HomePage({
   params: { locale },
@@ -18,7 +36,7 @@ export default async function HomePage({
 
   return (
     <Transition
-      className="prose dark:prose-invert w-full max-w-none grow"
+      className="prose w-full max-w-none grow dark:prose-invert"
       dangerouslySetInnerHTML={{ __html: contentHtml }}
     ></Transition>
   )
