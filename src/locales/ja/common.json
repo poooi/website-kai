@@ -38,5 +38,17 @@
   "Download options": "ダウンロードオプション",
   "Operating system": "オペレーティング·システム",
   "Platform": "プラットフォーム",
-  "Options": "オプション"
+  "Options": "オプション",
+  "windows": "Windows",
+  "arm": "ARM",
+  "armDEB": "ARM DEB",
+  "armPortable": "ARMポータブル",
+  "ia32Portable": "32ビットポータブル",
+  "ia32Setup": "32ビット",
+  "linux": "Linux",
+  "macos": "macOS",
+  "x64DEB": "64ビットDEB",
+  "x64RPM": "64ビットRPM",
+  "x64Setup": "64ビット",
+  "x64Portable": "64ビットポータブル"
 }

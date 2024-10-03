@@ -38,5 +38,17 @@
   "Download options": "다운로드 옵션",
   "Operating system": "운영 체제",
   "Platform": "플랫폼",
-  "Options": "옵션"
+  "Options": "옵션",
+  "windows": "Windows",
+  "arm": "ARM",
+  "armDEB": "ARM DEB",
+  "armPortable": "ARM 포터블",
+  "ia32Portable": "32비트 휴대용",
+  "ia32Setup": "32비트",
+  "linux": "Linux",
+  "macos": "macOS",
+  "x64DEB": "64비트 DEB",
+  "x64RPM": "64비트 RPM",
+  "x64Setup": "64비트",
+  "x64Portable": "64비트 휴대용"
 }

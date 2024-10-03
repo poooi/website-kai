@@ -38,5 +38,17 @@
   "Download options": "Options de téléchargement",
   "Operating system": "Système opérateur",
   "Platform": "Plate-forme",
-  "Options": "Possibilités"
+  "Options": "Possibilités",
+  "windows": "Windows",
+  "arm": "ARM",
+  "armDEB": "DEB ARM",
+  "armPortable": "Portable ARM",
+  "ia32Portable": "Portable 32 bits",
+  "ia32Setup": "32 bits",
+  "linux": "Linux",
+  "macos": "macOS",
+  "x64DEB": "DEB 64 bits",
+  "x64RPM": "RPM 64 bits",
+  "x64Setup": "64 bits",
+  "x64Portable": "Portable 64 bits"
 }

@@ -38,5 +38,17 @@
   "Download options": "下載其它平臺版本",
   "Operating system": "作業系統",
   "Platform": "平台",
-  "Options": "選項"
+  "Options": "選項",
+  "windows": "Windows",
+  "arm": "ARM",
+  "armDEB": "ARM DEB",
+  "armPortable": "ARM便攜版",
+  "ia32Portable": "32位元便攜版",
+  "ia32Setup": "32位元",
+  "linux": "Linux",
+  "macos": "macOS",
+  "x64DEB": "64位元DEB",
+  "x64RPM": "64位元RPM",
+  "x64Setup": "64位元",
+  "x64Portable": "64位元便攜版"
 }

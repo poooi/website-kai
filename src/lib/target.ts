@@ -22,22 +22,6 @@ export enum OS {
   linux = 'linux',
 }
 
-export enum CPU {
-  x64 = 'x64',
-  ia32 = 'ia32',
-  arm = 'arm',
-}
-
-export enum LinuxPackageFormat {
-  deb = 'deb',
-  rpm = 'rpm',
-}
-
-export enum DistributionType {
-  setup = 'setup',
-  portable = 'portable',
-}
-
 export enum PlatformSpec {
   X64Setup = 'x64Setup', // setup for windows x64 and macOS Intel
   X64Portable = 'x64Portable', // portable for windows x64 and Linux x64
@@ -88,36 +72,38 @@ export const getDownloadLink = (
   }
   switch (target) {
     case Target.linux:
-      return `/dist/${version}/poi-${pure}.7z`
+      return `/dist/poi-${pure}.7z`
     case Target.linuxArm:
-      return `/dist/${version}/poi-${pure}-arm64.7z`
+      return `/dist/poi-${pure}-arm64.7z`
     case Target.linuxDeb:
-      return `/dist/${version}/poi_${pure}_amd64.deb`
+      return `/dist/poi_${pure}_amd64.deb`
     case Target.linuxDebArm:
-      return `/dist/${version}/poi_${pure}_arm64.deb`
+      return `/dist/poi_${pure}_arm64.deb`
     case Target.linuxRpm:
-      return `/dist/${version}/poi-${pure}.x86_64.rpm`
+      return `/dist/poi-${pure}.x86_64.rpm`
     case Target.macos:
-      return `/dist/${version}/poi-${pure}.dmg`
+      return `/dist/poi-${pure}.dmg`
     case Target.macosArm:
-      return `/dist/${version}/poi-${pure}-arm64.dmg`
+      return `/dist/poi-${pure}-arm64.dmg`
     case Target.win32:
-      return `/dist/${version}/poi-${pure}-ia32-win.7z`
+      return `/dist/poi-${pure}-ia32-win.7z`
     case Target.win32Setup:
-      return `/dist/${version}/poi-setup-${pure}.exe`
+      return `/dist/poi-setup-${pure}.exe`
     case Target.win64:
-      return `/dist/${version}/poi-${pure}-win.7z`
+      return `/dist/poi-${pure}-win.7z`
     case Target.win64Setup:
-      return `/dist/${version}/poi-setup-${pure}.exe`
+      return `/dist/poi-setup-${pure}.exe`
     case Target.winArm:
-      return `/dist/${version}/poi-${pure}-arm64-win.7z`
+      return `/dist/poi-${pure}-arm64-win.7z`
     default:
       return DEFAULT_URI
   }
 }
 
-export const detectTarget = (ua: string) => {
-  const { os, cpu } = new UAParser(ua).getResult()
+export const detectTargetFromRequest = async (headers: Headers) => {
+  const { os, cpu } = await UAParser(
+    Object.fromEntries(headers),
+  ).withClientHints()
   if (os.name === 'Linux') {
     if (cpu.architecture === 'arm64' || cpu.architecture === 'arm') {
       return Target.linuxArm
