@@ -2,6 +2,7 @@ import { compare } from 'compare-versions'
 import { headers } from 'next/headers'
 import Link from 'next/link'
 
+import { Transition } from '~/components/transition'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
 import { initTranslations } from '~/i18n'
@@ -22,7 +23,7 @@ export default async function HomePage({
   const stableURL = getDownloadLink(poiVersions.version, target)
   const betaURL = getDownloadLink(poiVersions.betaVersion, target)
   return (
-    <div className="flex w-full grow items-center pl-[45px]">
+    <Transition className="flex w-full grow items-center pl-[45px]">
       <div className="w-full">
         <h1 className="text-9xl leading-loose">{t('name')}</h1>
         <p className="text-2xl">{t('description')}</p>
@@ -54,6 +55,6 @@ export default async function HomePage({
           </Button>
         </div>
       </div>
-    </div>
+    </Transition>
   )
 }

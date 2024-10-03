@@ -33,7 +33,7 @@ export const PlatformSelect = ({ os, spec }: PlatformSelectProps) => {
     }))
   }, [t, os])
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid w-fit grid-cols-2 gap-4">
       <div>{t('Operating system')}</div>
       <div>
         <ComboBox

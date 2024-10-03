@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 
 import { PlatformSelect } from './platform-select'
 
+import { Transition } from '~/components/transition'
 import { Button } from '~/components/ui/button'
 import { initTranslations } from '~/i18n'
 import { fetchPoiVersions } from '~/lib/fetch-poi-versions'
@@ -26,7 +27,6 @@ export default async function DownloadPage({
 }) {
   const { t } = await initTranslations(locale, ['common'])
   const [os, spec] = options
-  console.log(os, spec)
 
   const poiVersions = await fetchPoiVersions()
 
@@ -41,7 +41,7 @@ export default async function DownloadPage({
   const betaURL = target ? getDownloadLink(poiVersions.betaVersion, target) : ''
 
   return (
-    <div className="prose dark:prose-invert flex w-full max-w-none grow flex-col">
+    <Transition className="prose dark:prose-invert flex w-full max-w-none grow flex-col">
       <h2 className="">{t('Download')}</h2>
       <section className="">
         <PlatformSelect os={os} spec={spec} />
@@ -112,6 +112,6 @@ export default async function DownloadPage({
           </Button>
         </div>
       </section>
-    </div>
+    </Transition>
   )
 }
