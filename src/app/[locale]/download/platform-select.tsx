@@ -1,9 +1,12 @@
 'use client'
 
+import { useAtom } from 'jotai'
+import { useHydrateAtoms } from 'jotai/utils'
 import { ChevronsUpDown } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import { osAtom, specAtom } from './store'
 
 import { Button } from '~/components/ui/button'
 import {
@@ -15,12 +18,22 @@ import {
 import { OS, type PlatformSpec, platformToTarget } from '~/lib/target'
 
 interface PlatformSelectProps {
-  os?: OS
-  spec?: PlatformSpec
+  initialOS?: OS
+  initialSpec?: PlatformSpec
 }
 
-export const PlatformSelect = ({ os, spec }: PlatformSelectProps) => {
-  const router = useRouter()
+export const PlatformSelect = ({
+  initialOS,
+  initialSpec,
+}: PlatformSelectProps) => {
+  useHydrateAtoms([
+    [osAtom, initialOS],
+    [specAtom, initialSpec],
+  ])
+
+  const [os, setOS] = useAtom(osAtom)
+  const [spec, setSpec] = useAtom(specAtom)
+
   const { t } = useTranslation()
   const osOptions = useMemo(() => {
     return Object.values(OS).map((os) => ({ label: t(os), value: os }))
@@ -40,7 +53,8 @@ export const PlatformSelect = ({ os, spec }: PlatformSelectProps) => {
           value={os as string}
           options={osOptions}
           onChange={(value) => {
-            router.push(`/download/${value}`)
+            setOS(value as OS)
+            setSpec(undefined)
           }}
         />
       </div>
@@ -50,7 +64,7 @@ export const PlatformSelect = ({ os, spec }: PlatformSelectProps) => {
           value={spec as string}
           options={specOptions}
           onChange={(value) => {
-            router.push(`/download/${os}/${value}`)
+            setSpec(value as PlatformSpec)
           }}
           disabled={!os}
         />

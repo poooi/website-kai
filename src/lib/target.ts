@@ -109,12 +109,14 @@ interface DetectionResult {
   target: Target
 }
 
+export const parseUA = async (headers: Headers) => {
+  return UAParser(Object.fromEntries(headers)).withClientHints()
+}
+
 export const detectTargetFromRequest = async (
   headers: Headers,
 ): Promise<DetectionResult> => {
-  const { os, cpu } = await UAParser(
-    Object.fromEntries(headers),
-  ).withClientHints()
+  const { os, cpu } = await parseUA(headers)
   if (os.name === 'Linux') {
     if (cpu.architecture === 'arm64' || cpu.architecture === 'arm') {
       return { os: OS.linux, spec: PlatformSpec.ARM, target: Target.linuxArm }
