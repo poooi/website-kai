@@ -30,7 +30,7 @@
   "Close dialog": "창 닫기",
   "error-message": "앗, 웹페이지가 🐢가 돼 버렸네요. 수복하겠습니다!",
   "Reload": "새로고침",
-  "Downloads": "다운로드",
+  "Download": "다운로드",
   "no-content": "현재 공사 중입니다. 다음에 다시 방문해 주세요!",
   "Plugins": "플러그인",
   "System": "체계",
@@ -51,5 +51,6 @@
   "x64RPM": "64비트 RPM",
   "x64Setup": "64비트",
   "x64Portable": "64비트 휴대용",
-  "Sighted by skilled lookouts:": "숙련된 견장원이 발견했습니다："
+  "Sighted by skilled lookouts:": "숙련된 견장원이 발견했습니다：",
+  "Misc": "기타"
 }

@@ -8,5 +8,5 @@ export default async function HomePage({
   params: { locale: string }
 }) {
   const { t } = await initTranslations(locale, ['common'])
-  return <div>{t('Explore')}</div>
+  return <div className="w-full grow">{t('Explore')}</div>
 }

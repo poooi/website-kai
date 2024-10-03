@@ -28,7 +28,7 @@ export const PlatformSelect = ({ os, spec }: PlatformSelectProps) => {
 
   const specOptions = useMemo(() => {
     return Object.keys(platformToTarget[os!] ?? {}).map((spec) => ({
-      label: t(spec),
+      label: t(spec as PlatformSpec),
       value: spec,
     }))
   }, [t, os])
@@ -37,7 +37,7 @@ export const PlatformSelect = ({ os, spec }: PlatformSelectProps) => {
       <div>{t('Operating system')}</div>
       <div>
         <ComboBox
-          value={os}
+          value={os as string}
           options={osOptions}
           onChange={(value) => {
             router.push(`/download/${value}`)
@@ -47,7 +47,7 @@ export const PlatformSelect = ({ os, spec }: PlatformSelectProps) => {
       <div>{t('Platform')}</div>
       <div>
         <ComboBox
-          value={spec}
+          value={spec as string}
           options={specOptions}
           onChange={(value) => {
             router.push(`/download/${os}/${value}`)

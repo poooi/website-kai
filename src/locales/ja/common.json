@@ -31,7 +31,7 @@
   "Close dialog": "ダイアログを閉じる",
   "error-message": "ああ、ウェブページは 🐢 になっています。 修正します。",
   "Reload": "再起動",
-  "Downloads": "ダウンロード",
+  "Download": "ダウンロード",
   "no-content": "作業中です。後で確認してください。",
   "System": "システム",
   "Return to homepage": "ホームペイジに戻る",
@@ -51,5 +51,6 @@
   "x64RPM": "64ビットRPM",
   "x64Setup": "64ビット",
   "x64Portable": "64ビットポータブル",
-  "Sighted by skilled lookouts:": "熟練見張員が観察した："
+  "Sighted by skilled lookouts:": "熟練見張員が観察した：",
+  "Misc": "その他"
 }

@@ -31,7 +31,7 @@
   "Close dialog": "关闭弹出框",
   "error-message": "啊啦啦，网页变成了 🐢。我们会进行修复。",
   "Reload": "重新载入",
-  "Downloads": "下载",
+  "Download": "下载",
   "no-content": "我们正在努力，请稍后再来。",
   "System": "系统",
   "Return to homepage": "返回首页",
@@ -51,5 +51,6 @@
   "x64RPM": "64位RPM",
   "x64Setup": "64位",
   "x64Portable": "64位便携版",
-  "Sighted by skilled lookouts:": "熟练见张员观察到了："
+  "Sighted by skilled lookouts:": "熟练见张员观察到了：",
+  "Misc": "杂项"
 }

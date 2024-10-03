@@ -93,7 +93,7 @@ export default async function RootLayout({
           >
             <main className="relative z-0 mx-auto flex min-h-screen max-w-[960px] flex-col items-center justify-center">
               <Header />
-              <div className="w-full grow">{children}</div>
+              {children}
               <Footer t={t} i18n={i18n} />
             </main>
           </I18nProvider>

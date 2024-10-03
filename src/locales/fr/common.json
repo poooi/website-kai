@@ -28,7 +28,7 @@
   "Close dialog": "Fermer le dialogue",
   "error-message": "Ah, la page Web est devenue 🐢. Nous allons le réparer.",
   "Reload": "Rechargez",
-  "Downloads": "Téléchargement",
+  "Download": "Téléchargement",
   "no-content": "Nous y travaillons, veuillez vérifier plus tard.",
   "Explore": "Explorer",
   "Plugins": "Plugins",
@@ -51,5 +51,6 @@
   "x64RPM": "RPM 64 bits",
   "x64Setup": "64 bits",
   "x64Portable": "Portable 64 bits",
-  "Sighted by skilled lookouts:": "Repéré par des guetteurs qualifiés :"
+  "Sighted by skilled lookouts:": "Repéré par des guetteurs qualifiés :",
+  "Misc": "Divers"
 }

@@ -30,7 +30,7 @@ export const Header = () => {
         </Button>
         <Button variant="ghost" asChild>
           <Link href="/download" passHref>
-            {t('Downloads')}
+            {t('Download')}
           </Link>
         </Button>
       </nav>

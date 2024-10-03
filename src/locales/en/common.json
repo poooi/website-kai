@@ -29,7 +29,7 @@
   "Close dialog": "Close dialog",
   "error-message": "Ah, the webpage has become 🐢. We will fix it.",
   "Reload": "Reload",
-  "Downloads": "Download",
+  "Download": "Download",
   "no-content": "We're working on it, please check later.",
   "Explore": "Explore",
   "Plugins": "Plugins",
@@ -51,5 +51,6 @@
   "armDEB": "ARM DEB",
   "armPortable": "ARM portable",
   "x64Portable": "64-bit portable",
-  "Sighted by skilled lookouts:": "Sighted by skilled lookouts:"
+  "Sighted by skilled lookouts:": "Sighted by skilled lookouts:",
+  "Misc": "Misc"
 }

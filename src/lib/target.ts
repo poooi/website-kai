@@ -34,7 +34,10 @@ export enum PlatformSpec {
   ARMPortable = 'armPortable', // currently for linux only, windows ARM is always setup
 }
 
-export const platformToTarget = {
+export const platformToTarget: Record<
+  OS,
+  Partial<Record<PlatformSpec, Target>>
+> = {
   [OS.windows]: {
     [PlatformSpec.X64Setup]: Target.win64Setup,
     [PlatformSpec.X64Portable]: Target.win64,
