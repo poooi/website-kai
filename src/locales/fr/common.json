@@ -50,5 +50,6 @@
   "x64DEB": "DEB 64 bits",
   "x64RPM": "RPM 64 bits",
   "x64Setup": "64 bits",
-  "x64Portable": "Portable 64 bits"
+  "x64Portable": "Portable 64 bits",
+  "Sighted by skilled lookouts:": "Repéré par des guetteurs qualifiés :"
 }

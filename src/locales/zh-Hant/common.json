@@ -50,5 +50,6 @@
   "x64DEB": "64位元DEB",
   "x64RPM": "64位元RPM",
   "x64Setup": "64位元",
-  "x64Portable": "64位元便攜版"
+  "x64Portable": "64位元便攜版",
+  "Sighted by skilled lookouts:": "熟练见张员观察到了："
 }

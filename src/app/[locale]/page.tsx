@@ -2,6 +2,7 @@ import { compare } from 'compare-versions'
 import { headers } from 'next/headers'
 import Link from 'next/link'
 
+import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
 import { initTranslations } from '~/i18n'
 import { fetchPoiVersions } from '~/lib/fetch-poi-versions'
@@ -17,7 +18,7 @@ export default async function HomePage({
   const { t } = await initTranslations(locale, ['common'])
   const poiVersions = await fetchPoiVersions()
 
-  const target = await detectTargetFromRequest(headers())
+  const { os, spec, target } = await detectTargetFromRequest(headers())
   const stableURL = getDownloadLink(poiVersions.version, target)
   const betaURL = getDownloadLink(poiVersions.betaVersion, target)
   return (
@@ -38,9 +39,14 @@ export default async function HomePage({
           </a>
         </Button>
       )}
-      <Button variant="link" asChild>
-        <Link href="/download">{t('Download options')}</Link>
-      </Button>
+      <div>
+        {t('Sighted by skilled lookouts:')}
+        <Badge variant="secondary">{t(os)}</Badge>
+        <Badge variant="secondary">{t(spec)}</Badge>
+        <Button variant="link" asChild>
+          <Link href="/download">{t('Download options')}</Link>
+        </Button>
+      </div>
     </div>
   )
 }

@@ -50,5 +50,6 @@
   "x64RPM": "64-bit RPM",
   "armDEB": "ARM DEB",
   "armPortable": "ARM portable",
-  "x64Portable": "64-bit portable"
+  "x64Portable": "64-bit portable",
+  "Sighted by skilled lookouts:": "Sighted by skilled lookouts:"
 }

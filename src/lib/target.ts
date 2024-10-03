@@ -29,7 +29,7 @@ export enum PlatformSpec {
   IA32Portable = 'ia32Portable', // portable for windows x86
   ARM = 'arm', // setup for windows ARM and macOS Apple silicon
   X64DEB = 'x64DEB', // deb package for linux x64
-  x64RPM = 'x64RPM', // rpm package for linux x64
+  X64RPM = 'x64RPM', // rpm package for linux x64
   ARMDEB = 'armDEB', // deb package for linux ARM
   ARMPortable = 'armPortable', // currently for linux only, windows ARM is always setup
 }
@@ -48,7 +48,7 @@ export const platformToTarget = {
   },
   [OS.linux]: {
     [PlatformSpec.X64DEB]: Target.linuxDeb,
-    [PlatformSpec.x64RPM]: Target.linuxRpm,
+    [PlatformSpec.X64RPM]: Target.linuxRpm,
     [PlatformSpec.X64Portable]: Target.linux,
     [PlatformSpec.ARMDEB]: Target.linuxDebArm,
     [PlatformSpec.ARMPortable]: Target.linuxArm,
@@ -100,36 +100,80 @@ export const getDownloadLink = (
   }
 }
 
-export const detectTargetFromRequest = async (headers: Headers) => {
+interface DetectionResult {
+  os: OS
+  spec: PlatformSpec
+  target: Target
+}
+
+export const detectTargetFromRequest = async (
+  headers: Headers,
+): Promise<DetectionResult> => {
   const { os, cpu } = await UAParser(
     Object.fromEntries(headers),
   ).withClientHints()
   if (os.name === 'Linux') {
     if (cpu.architecture === 'arm64' || cpu.architecture === 'arm') {
-      return Target.linuxArm
+      return { os: OS.linux, spec: PlatformSpec.ARM, target: Target.linuxArm }
     }
-    return Target.linux
+    return {
+      os: OS.linux,
+      spec: PlatformSpec.X64Portable,
+      target: Target.linux,
+    }
   }
   if (os.name === 'Debian' || os.name === 'Ubuntu') {
     if (cpu.architecture === 'arm64' || cpu.architecture === 'arm') {
-      return Target.linuxDebArm
+      return {
+        os: OS.linux,
+        spec: PlatformSpec.ARMDEB,
+        target: Target.linuxDebArm,
+      }
     }
-    return Target.linuxDeb
+    return {
+      os: OS.linux,
+      spec: PlatformSpec.X64DEB,
+      target: Target.linuxDeb,
+    }
   }
   if (os.name === 'CentOS' || os.name === 'Fedora') {
-    return Target.linuxRpm
+    return {
+      os: OS.linux,
+      spec: PlatformSpec.X64RPM,
+      target: Target.linuxRpm,
+    }
   }
   if (os.name === 'Mac OS') {
     if (cpu.architecture === 'arm64' || cpu.architecture === 'arm') {
-      return Target.macosArm
+      return {
+        os: OS.macos,
+        spec: PlatformSpec.ARM,
+        target: Target.macosArm,
+      }
     }
-    return Target.macos
+    return {
+      os: OS.macos,
+      spec: PlatformSpec.X64Setup,
+      target: Target.macos,
+    }
   }
   if (os.name === 'Windows') {
     if (cpu.architecture === 'ia64' || cpu.architecture === 'amd64') {
-      return Target.win64Setup
+      return {
+        os: OS.windows,
+        spec: PlatformSpec.X64Setup,
+        target: Target.win64Setup,
+      }
     }
-    return Target.win32Setup
+    return {
+      os: OS.windows,
+      spec: PlatformSpec.IA32Setup,
+      target: Target.win32Setup,
+    }
   }
-  return Target.linux
+  return {
+    os: OS.linux,
+    spec: PlatformSpec.X64Portable,
+    target: Target.linux,
+  }
 }

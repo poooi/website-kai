@@ -50,5 +50,6 @@
   "x64DEB": "64ビットDEB",
   "x64RPM": "64ビットRPM",
   "x64Setup": "64ビット",
-  "x64Portable": "64ビットポータブル"
+  "x64Portable": "64ビットポータブル",
+  "Sighted by skilled lookouts:": "熟练见张员が観察した："
 }

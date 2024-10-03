@@ -50,5 +50,6 @@
   "x64DEB": "64비트 DEB",
   "x64RPM": "64비트 RPM",
   "x64Setup": "64비트",
-  "x64Portable": "64비트 휴대용"
+  "x64Portable": "64비트 휴대용",
+  "Sighted by skilled lookouts:": "숙련된 견장원이 발견했습니다："
 }

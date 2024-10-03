@@ -1,19 +1,7 @@
-import get from 'lodash/get'
-import Link from 'next/link'
-
 import { PlatformSelect } from './platform-select'
 
-import { Button } from '~/components/ui/button'
 import { initTranslations } from '~/i18n'
-import {
-  type OS,
-  type CPU,
-  platformToTarget,
-  type DistributionType,
-  type LinuxPackageFormat,
-  type PlatformSpec,
-} from '~/lib/target'
-import { cn } from '~/lib/utils'
+import { type OS, type PlatformSpec } from '~/lib/target'
 
 export const runtime = 'edge'
 
