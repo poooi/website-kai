@@ -85,7 +85,7 @@ importers:
         version: 4.3.1
       random:
         specifier: ^5.1.0
-        version: 5.1.0
+        version: 5.1.1
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -3411,8 +3411,8 @@ packages:
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
 
-  random@5.1.0:
-    resolution: {integrity: sha512-0NGG4HMW9sTstLbignEDasSQJlCGkNQZICIWStZ+h4SzSJfZXpecGKV7qL0AOKcIT8XX9pJ49uZnvI0n/Y+vWA==}
+  random@5.1.1:
+    resolution: {integrity: sha512-iidvORUvXY1ItoYxO0eduHCKl22QV0G6460vRHe862dUagJKPhRyjUGwK8ioOCG4NRuFvExHFpqMngsnr2miwA==}
     engines: {node: '>=18'}
 
   raw-body@2.4.1:
@@ -7508,7 +7508,7 @@ snapshots:
 
   queue-microtask@1.2.3: {}
 
-  random@5.1.0: {}
+  random@5.1.1: {}
 
   raw-body@2.4.1:
     dependencies:
