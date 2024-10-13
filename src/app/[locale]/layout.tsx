@@ -38,7 +38,7 @@ export const generateMetadata = async ({
       '艦隊これくしょん',
       '舰队Collection',
     ],
-    metadataBase: new URL('https://poi-web-kai.pages.dev'),
+    metadataBase: new URL('https://poi.moe'),
   }
 }
 
