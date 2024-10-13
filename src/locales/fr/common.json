@@ -22,8 +22,6 @@
   "Others": "Autres",
   "HostedAt": "Hébergé sur {{site}}",
   "Old versions": "Anciennes versions",
-  "Windows nightlies": "Nightlies Windows",
-  "Linux and macOS nightlies": "Nightlies Linux et macOS",
   "Source code": "Code source",
   "Close dialog": "Fermer le dialogue",
   "error-message": "Ah, la page Web est devenue 🐢. Nous allons le réparer.",
@@ -53,5 +51,6 @@
   "x64Portable": "Portable 64 bits",
   "Sighted by skilled lookouts:": "Repéré par des guetteurs qualifiés :",
   "Misc": "Divers",
-  "KanColle Browser": "Navigateur KanColle"
+  "KanColle Browser": "Navigateur KanColle",
+  "Nightly builds": "Versions nocturnes"
 }

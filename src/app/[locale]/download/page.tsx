@@ -62,20 +62,11 @@ export default async function DownloadPage({
           </Button>
           <Button variant="link" asChild>
             <a
-              href="https://ci.appveyor.com/project/KochiyaOcean/poi"
+              href="https://nightlies.poi.moe/"
               target="_blank"
               rel="noopener noreferrer"
             >
-              {t('Windows nightlies')}
-            </a>
-          </Button>
-          <Button variant="link" asChild>
-            <a
-              href="https://nightly.poi.moe/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {t('Linux and macOS nightlies')}
+              {t('Nightly builds')}
             </a>
           </Button>
           <Button variant="link" asChild>

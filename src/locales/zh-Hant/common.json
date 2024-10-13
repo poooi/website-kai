@@ -25,8 +25,6 @@
   "Others": "其它",
   "HostedAt": "託管於 {{site}}",
   "Old versions": "歷史版本",
-  "Windows nightlies": "Windows 每夜構建",
-  "Linux and macOS nightlies": "Linux 與 macOS 每夜構建",
   "Source code": "源代碼",
   "Close dialog": "關閉彈出框",
   "error-message": "啊啦啦，網頁變成了 🐢。我們會進行修復。",
@@ -53,5 +51,6 @@
   "x64Portable": "64位元便攜版",
   "Sighted by skilled lookouts:": "熟練見張員觀察到了：",
   "Misc": "雜項",
-  "KanColle Browser": "艦娘專用瀏覽器"
+  "KanColle Browser": "艦娘專用瀏覽器",
+  "Nightly builds": "每夜構建"
 }

@@ -25,8 +25,6 @@
   "Others": "他",
   "HostedAt": "{{site}} でホストされています",
   "Old versions": "古いバージョン",
-  "Windows nightlies": "Windows デイリービルド",
-  "Linux and macOS nightlies": "Linux と macOS デイリービルド",
   "Source code": "ソースコード",
   "Close dialog": "ダイアログを閉じる",
   "error-message": "ああ、ウェブページは 🐢 になっています。 修正します。",
@@ -53,5 +51,6 @@
   "x64Portable": "64ビットポータブル",
   "Sighted by skilled lookouts:": "熟練見張員が観察した：",
   "Misc": "その他",
-  "KanColle Browser": "艦これ専ブラ"
+  "KanColle Browser": "艦これ専ブラ",
+  "Nightly builds": "ナイトリービルド"
 }
