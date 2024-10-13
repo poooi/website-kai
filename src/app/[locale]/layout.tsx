@@ -2,6 +2,7 @@
 import '~/styles/globals.css'
 
 import { type Metadata } from 'next'
+import { headers } from 'next/headers'
 import ReactDOM from 'react-dom'
 
 import { Background } from '~/components/background'
@@ -11,6 +12,7 @@ import { I18nProvider } from '~/components/i18n-provider'
 import { ThemeProvider } from '~/components/theme-provider'
 import { initTranslations } from '~/i18n'
 import { i18nConfig } from '~/i18n-config'
+import { parseUA } from '~/lib/target'
 import { cn } from '~/lib/utils'
 
 export const generateStaticParams = async () => {
@@ -55,6 +57,10 @@ export default async function RootLayout({
   }
 }>) {
   const { resources, t, i18n } = await initTranslations(locale, ['common'])
+
+  const ua = await parseUA(headers())
+
+  const isMobile = ['mobile', 'tablet'].includes(ua.device.type!)
 
   return (
     <html
@@ -104,7 +110,7 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Background />
+          {!isMobile && <Background />}
           <I18nProvider
             locale={locale}
             namespaces={['common']}
