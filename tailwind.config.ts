@@ -7,11 +7,11 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Noto Sans', ...fontFamily.sans],
-        ja: ['Noto Sans JP', ...fontFamily.sans],
-        'zh-hant': ['Noto Sans TC', ...fontFamily.sans],
-        'zh-hans': ['Noto Sans SC', ...fontFamily.sans],
-        ko: ['Noto Sans KR', ...fontFamily.sans],
+        sans: ['Noto Sans Variable', ...fontFamily.sans],
+        ja: ['Noto Sans JP Variable', ...fontFamily.sans],
+        'zh-hant': ['Noto Sans TC Variable', ...fontFamily.sans],
+        'zh-hans': ['Noto Sans SC Variable', ...fontFamily.sans],
+        ko: ['Noto Sans KR Variable', ...fontFamily.sans],
       },
       borderRadius: {
         lg: 'var(--radius)',

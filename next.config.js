@@ -5,9 +5,57 @@
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
  * for Docker builds.
  */
+import path from 'node:path/posix'
+
 import { withSentryConfig } from '@sentry/nextjs'
+import fs from 'fs-extra'
+import { globby } from 'globby'
+import PQueue from 'p-queue'
+
+const queue = new PQueue({ concurrency: 3 })
 
 await import('./src/env.js')
+
+class CopyFontsWebpackPlugin {
+  static started = false
+  apply(/** @type {import('webpack').Compiler} */ compiler) {
+    compiler.hooks.beforeCompile.tapPromise(
+      'CopyFontsWebpackPlugin',
+      async () => {
+        if (CopyFontsWebpackPlugin.started) {
+          return
+        }
+        CopyFontsWebpackPlugin.started = true
+        const cssFiles = await globby(
+          path.resolve('node_modules/@fontsource-variable/**/*.css'),
+        )
+        const fontFiles = await globby(
+          path.resolve('node_modules/@fontsource-variable/**/files/*'),
+        )
+        const dest = path.resolve('public/fonts/')
+        await fs.ensureDir('./public/fonts')
+        await queue.addAll(
+          cssFiles.map((cssFile) => () => {
+            const fontName = /@fontsource-variable\/(.+)\//.exec(cssFile)[1]
+            return fs.copy(
+              cssFile,
+              path.resolve(dest, fontName, path.basename(cssFile)),
+            )
+          }),
+        )
+        await queue.addAll(
+          fontFiles.map((fontFile) => () => {
+            const fontName = /@fontsource-variable\/(.+)\//.exec(fontFile)[1]
+            return fs.copy(
+              fontFile,
+              path.resolve(dest, fontName, 'files', path.basename(fontFile)),
+            )
+          }),
+        )
+      },
+    )
+  }
+}
 
 /** @type {import("next").NextConfig} */
 const config = {
@@ -21,7 +69,8 @@ const config = {
     testProxy: process.env.NODE_ENV === 'test',
   },
   trailingSlash: true,
-  webpack: (config) => {
+  webpack: (/** @type {import('webpack').Configuration} */ config) => {
+    config.plugins.push(new CopyFontsWebpackPlugin())
     config.module.rules.push({
       test: /\.md/,
       type: 'asset/source',

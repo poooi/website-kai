@@ -1,9 +1,9 @@
+/* eslint-disable @next/next/no-css-tags */
 /* eslint-disable @next/next/no-page-custom-font */
 import '~/styles/globals.css'
 
 import { type Metadata } from 'next'
 import { headers } from 'next/headers'
-import ReactDOM from 'react-dom'
 
 import { Background } from '~/components/background'
 import { Footer } from '~/components/footer'
@@ -44,9 +44,6 @@ export const generateMetadata = async ({
   }
 }
 
-ReactDOM.preconnect('https://fonts.googleapis.com')
-ReactDOM.preconnect('https://fonts.gstatic.com', { crossOrigin: 'anonymous' })
-
 export default async function RootLayout({
   children,
   params: { locale },
@@ -74,33 +71,18 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100..900&display=swap"
-          rel="stylesheet"
-        />
+        <link href="/fonts/noto-sans/wght.css" rel="stylesheet" />
         {locale === 'ja' && (
-          <link
-            href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap"
-            rel="stylesheet"
-          />
+          <link href="/fonts/noto-sans-jp/wght.css" rel="stylesheet" />
         )}
         {locale === 'zh-Hant' && (
-          <link
-            href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap"
-            rel="stylesheet"
-          ></link>
+          <link href="/fonts/noto-sans-tc/wght.css" rel="stylesheet"></link>
         )}
         {locale === 'zh-Hans' && (
-          <link
-            href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100..900&display=swap"
-            rel="stylesheet"
-          ></link>
+          <link href="/fonts/noto-sans-sc/wght.css" rel="stylesheet"></link>
         )}
         {locale === 'ko' && (
-          <link
-            href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap"
-            rel="stylesheet"
-          ></link>
+          <link href="/fonts/noto-sans-kr/wght.css" rel="stylesheet"></link>
         )}
       </head>
       <body>
