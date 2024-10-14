@@ -36,7 +36,7 @@ class CopyFontsWebpackPlugin {
         await fs.ensureDir('./public/fonts')
         await queue.addAll(
           cssFiles.map((cssFile) => () => {
-            const fontName = /@fontsource-variable\/(.+)\//.exec(cssFile)[1]
+            const fontName = /@fontsource-variable\/(.+?)\//.exec(cssFile)[1]
             return fs.copy(
               cssFile,
               path.resolve(dest, fontName, path.basename(cssFile)),
@@ -45,7 +45,7 @@ class CopyFontsWebpackPlugin {
         )
         await queue.addAll(
           fontFiles.map((fontFile) => () => {
-            const fontName = /@fontsource-variable\/(.+)\//.exec(fontFile)[1]
+            const fontName = /@fontsource-variable\/(.+?)\//.exec(fontFile)[1]
             return fs.copy(
               fontFile,
               path.resolve(dest, fontName, 'files', path.basename(fontFile)),
