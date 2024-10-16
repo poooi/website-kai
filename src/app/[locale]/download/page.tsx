@@ -62,7 +62,7 @@ export default async function DownloadPage({
           </Button>
           <Button variant="link" asChild>
             <a
-              href="https://nightlies.poi.moe/"
+              href="https://nightly.poi.moe/"
               target="_blank"
               rel="noopener noreferrer"
             >
