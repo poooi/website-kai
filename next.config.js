@@ -8,9 +8,13 @@
 import path from 'node:path/posix'
 
 import { withSentryConfig } from '@sentry/nextjs'
+import { execa } from 'execa'
 import fs from 'fs-extra'
 import { globby } from 'globby'
 import PQueue from 'p-queue'
+
+const commitHash = await execa('git', ['rev-parse', 'HEAD'])
+const now = new Date().toISOString()
 
 const queue = new PQueue({ concurrency: 3 })
 
@@ -78,6 +82,33 @@ const config = {
 
     return config
   },
+  env: {
+    COMMIT_HASH: commitHash.stdout,
+    BUILD_DATE: now,
+  },
+  headers: async () => [
+    {
+      source: '/:path*',
+      headers: [
+        {
+          key: 'X-Poi-Codename',
+          value: 'Shiratsuyu',
+        },
+        {
+          key: 'X-Poi-Revision',
+          value: commitHash.stdout ?? 'development',
+        },
+        {
+          key: 'X-Poi-Build-Date',
+          value: now,
+        },
+        {
+          key: 'X-Poi-Greetings',
+          value: 'poi?',
+        },
+      ],
+    },
+  ],
 }
 
 // Injected content via Sentry wizard below

@@ -31,6 +31,7 @@
     "clsx": "^2.1.1",
     "cmdk": "1.0.0",
     "compare-versions": "^6.1.1",
+    "execa": "^9.4.1",
     "framer-motion": "^11.11.0",
     "i18next": "^23.15.1",
     "i18next-resources-to-backend": "^1.2.1",
