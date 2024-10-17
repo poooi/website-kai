@@ -23,7 +23,7 @@ test.describe('dist', () => {
     next.onFetch((request) => {
       if (
         request.url ===
-        'https://raw.githubusercontent.com/poooi/website/master/packages/data/update/latest.json'
+        'https://raw.githubusercontent.com/poooi/poi-release/master/latest.json'
       ) {
         return new Response(
           JSON.stringify({
@@ -53,7 +53,7 @@ test.describe('dist', () => {
     next.onFetch((request) => {
       if (
         request.url ===
-        'https://raw.githubusercontent.com/poooi/website/master/packages/data/update/latest.json'
+        'https://raw.githubusercontent.com/poooi/poi-release/master/latest.json'
       ) {
         return new Response(
           JSON.stringify({
@@ -82,7 +82,7 @@ test.describe('dist', () => {
     next.onFetch((request) => {
       if (
         request.url ===
-        'https://raw.githubusercontent.com/poooi/website/master/packages/data/update/latest.json'
+        'https://raw.githubusercontent.com/poooi/poi-release/master/latest.json'
       ) {
         return new Response(
           JSON.stringify({

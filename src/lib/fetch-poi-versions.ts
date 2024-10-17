@@ -5,7 +5,7 @@ export interface PoiVersions {
 
 export const fetchPoiVersions = async (): Promise<PoiVersions> => {
   const resp = await fetch(
-    'https://raw.githubusercontent.com/poooi/website/master/packages/data/update/latest.json',
+    'https://raw.githubusercontent.com/poooi/poi-release/master/latest.json',
   )
   return resp.json() as Promise<PoiVersions>
 }

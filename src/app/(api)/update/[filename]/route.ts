@@ -16,6 +16,6 @@ export const GET = async (
     notFound()
   }
   return reverseFetch(
-    `https://raw.githubusercontent.com/poooi/website/master/packages/data/update/${filename}`,
+    `https://raw.githubusercontent.com/poooi/poi-release/master/${filename}`,
   )
 }
