@@ -10,5 +10,7 @@ export const reverseFetch = async (url: string) => {
   if (!resp.ok) {
     notFound()
   }
-  return new Response(resp.body, { headers: { 'X-Poi-Real-Url': url } })
+  return new Response(resp.body, {
+    headers: { ...resp.headers, 'X-Poi-Real-Url': url },
+  })
 }
