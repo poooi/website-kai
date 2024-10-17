@@ -10,7 +10,9 @@ export const reverseFetch = async (url: string) => {
   if (!resp.ok) {
     notFound()
   }
-  return new Response(resp.body, {
-    headers: { ...resp.headers, 'X-Poi-Real-Url': url },
-  })
+  resp.headers.set('X-Poi-Real-Url', url)
+  if (url.endsWith('.json')) {
+    resp.headers.set('Content-Type', 'application/json')
+  }
+  return resp
 }
