@@ -52,5 +52,6 @@
   "Sighted by skilled lookouts:": "熟練見張員觀察到了：",
   "Misc": "雜項",
   "KanColle Browser": "艦娘專用瀏覽器",
-  "Nightly builds": "每夜構建"
+  "Nightly builds": "每夜構建",
+  "mobile-hint": "poi 專為桌面設備設計，請嘗試其他行動應用程式。"
 }

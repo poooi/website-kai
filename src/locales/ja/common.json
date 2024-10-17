@@ -52,5 +52,6 @@
   "Sighted by skilled lookouts:": "熟練見張員が観察した：",
   "Misc": "その他",
   "KanColle Browser": "艦これ専ブラ",
-  "Nightly builds": "ナイトリービルド"
+  "Nightly builds": "ナイトリービルド",
+  "mobile-hint": "poi はデスクトップデバイス向けに設計されています。代わりに他のモバイルアプリをお試しください。"
 }

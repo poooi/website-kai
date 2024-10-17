@@ -8,7 +8,7 @@ import { Transition } from '~/components/transition'
 import { Button } from '~/components/ui/button'
 import { initTranslations } from '~/i18n'
 import { fetchPoiVersions } from '~/lib/fetch-poi-versions'
-import { detectTargetFromRequest } from '~/lib/target'
+import { detectTargetFromRequest, isMobileDevice } from '~/lib/target'
 
 export const runtime = 'edge'
 
@@ -40,13 +40,19 @@ export default async function DownloadPage({
   const { os: initialOS, spec: initialSpec } =
     await detectTargetFromRequest(headers())
 
+  const isMobile = await isMobileDevice(headers())
+
   return (
     <Transition className="prose flex w-full max-w-none grow flex-col dark:prose-invert">
       <h2 className="">{t('Download')}</h2>
-      <section className="">
-        <PlatformSelect initialOS={initialOS} initialSpec={initialSpec} />
-        <DownloadLinks poiVersions={poiVersions} />
-      </section>
+      {isMobile ? (
+        <p>{t('mobile-hint')}</p>
+      ) : (
+        <section className="">
+          <PlatformSelect initialOS={initialOS} initialSpec={initialSpec} />
+          <DownloadLinks poiVersions={poiVersions} />
+        </section>
+      )}
       <h2>{t('Others')}</h2>
       <section className="flex w-fit flex-col items-center">
         <div>

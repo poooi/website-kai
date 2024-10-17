@@ -113,6 +113,18 @@ export const parseUA = async (headers: Headers) => {
   return UAParser(Object.fromEntries(headers)).withClientHints()
 }
 
+export const isMobileDevice = async (headers: Headers) => {
+  const ua = await parseUA(headers)
+  return [
+    'mobile',
+    'tablet',
+    'console',
+    'smarttv',
+    'wearbale',
+    'embedded',
+  ].includes(ua.device.type!)
+}
+
 export const detectTargetFromRequest = async (
   headers: Headers,
 ): Promise<DetectionResult> => {

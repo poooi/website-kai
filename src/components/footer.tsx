@@ -57,9 +57,9 @@ const footerItems = [
 export const Footer = ({ i18n, t }: FooterProps) => {
   const { language } = i18n
   return (
-    <div className="flex items-center gap-8 py-4">
-      <span>{`© ${new Date().getFullYear()} poi Contributors`}</span>
-      <div>
+    <div className="inline-flex w-fit flex-wrap items-center gap-x-8 gap-y-2 text-nowrap py-4 md:flex md:flex-nowrap">
+      <span className="px-4">{`© ${new Date().getFullYear()} poi Contributors`}</span>
+      <div className="grid grid-cols-2 place-items-start xl:flex">
         {footerItems
           .filter(({ applyLocales, skipLocales }) => {
             if (applyLocales) {

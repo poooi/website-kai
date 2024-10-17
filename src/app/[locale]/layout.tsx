@@ -12,7 +12,7 @@ import { I18nProvider } from '~/components/i18n-provider'
 import { ThemeProvider } from '~/components/theme-provider'
 import { initTranslations } from '~/i18n'
 import { i18nConfig } from '~/i18n-config'
-import { parseUA } from '~/lib/target'
+import { isMobileDevice } from '~/lib/target'
 import { cn } from '~/lib/utils'
 
 export const generateStaticParams = async () => {
@@ -55,9 +55,7 @@ export default async function RootLayout({
 }>) {
   const { resources, t, i18n } = await initTranslations(locale, ['common'])
 
-  const ua = await parseUA(headers())
-
-  const isMobile = ['mobile', 'tablet'].includes(ua.device.type!)
+  const isMobile = await isMobileDevice(headers())
 
   return (
     <html
@@ -98,7 +96,7 @@ export default async function RootLayout({
             namespaces={['common']}
             resources={resources}
           >
-            <main className="relative z-0 mx-auto flex min-h-screen max-w-[960px] flex-col items-center justify-center">
+            <main className="relative z-0 mx-auto flex min-h-screen max-w-[960px] flex-col items-center justify-center px-4 md:px-8">
               <Header />
               {children}
               <Footer t={t} i18n={i18n} />

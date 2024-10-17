@@ -17,6 +17,7 @@ export const DownloadLinks = ({ poiVersions }: DownloadLinksProps) => {
   const os = useAtomValue(osAtom)
   const spec = useAtomValue(specAtom)
   const { t } = useTranslation()
+
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const target: Target | undefined = platformToTarget[os!]?.[spec!]
 

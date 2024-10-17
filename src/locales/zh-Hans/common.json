@@ -52,5 +52,6 @@
   "Sighted by skilled lookouts:": "熟练见张员观察到了：",
   "Misc": "杂项",
   "KanColle Browser": "舰娘专用浏览器",
-  "Nightly builds": "每夜构建"
+  "Nightly builds": "每夜构建",
+  "mobile-hint": "poi 专为桌面设备设计，请尝试其他移动应用程序。"
 }
