@@ -2,7 +2,7 @@
 /* eslint-disable @next/next/no-page-custom-font */
 import '~/styles/globals.css'
 
-import { type Metadata } from 'next'
+import type { Metadata } from 'next'
 import { headers } from 'next/headers'
 
 import { Background } from '~/components/background'
@@ -63,7 +63,7 @@ export default async function RootLayout({
       className={cn({
         'font-ja': locale === 'ja',
         'font-zh-hant': locale === 'zh-Hant',
-        'font-sh-hans': locale === 'zh-Hans',
+        'font-zh-hans': locale === 'zh-Hans',
         'font-ko': locale === 'ko',
       })}
       suppressHydrationWarning
