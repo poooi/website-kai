@@ -1,6 +1,6 @@
 import { type Metadata } from 'next'
 import { remark } from 'remark'
-// import html from 'remark-html'
+import html from 'remark-html'
 
 import { Transition } from '~/components/transition'
 import { initTranslations } from '~/i18n'
@@ -40,13 +40,13 @@ export default async function HomePage(props: {
   const content =
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     (await import(`~/contents/explore/${locale}.md`)).default as string
-  const processedContent = await remark().process(content)
-  // const contentHtml = processedContent.toString()
+  const processedContent = await remark().use(html).process(content)
+  const contentHtml = processedContent.toString()
 
   return (
     <Transition
       className="prose w-full max-w-none grow dark:prose-invert"
-      dangerouslySetInnerHTML={{ __html: content }}
+      dangerouslySetInnerHTML={{ __html: contentHtml }}
     ></Transition>
   )
 }
