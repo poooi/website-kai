@@ -7,8 +7,9 @@ export const runtime = 'edge'
 
 export const GET = async (
   request: Request,
-  { params }: { params?: { filename: string } },
+  props: { params?: Promise<{ filename: string }> },
 ) => {
+  const params = await props.params
   const { filename } = params ?? {}
 
   if (!filename) {
