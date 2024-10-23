@@ -15,16 +15,18 @@ import {
 
 export const runtime = 'edge'
 
-export default async function HomePage({
-  params: { locale },
-}: {
-  params: { locale: string }
+export default async function HomePage(props: {
+  params: Promise<{ locale: string }>
 }) {
+  const params = await props.params
+
+  const { locale } = params
+
   const { t } = await initTranslations(locale, ['common'])
   const poiVersions = await fetchPoiVersions()
 
-  const { os, spec, target } = await detectTargetFromRequest(headers())
-  const isMobile = await isMobileDevice(headers())
+  const { os, spec, target } = await detectTargetFromRequest(await headers())
+  const isMobile = await isMobileDevice(await headers())
   const stableURL = getDownloadLink(poiVersions.version, target)
   const betaURL = getDownloadLink(poiVersions.betaVersion, target)
   return (

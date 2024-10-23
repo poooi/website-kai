@@ -12,15 +12,20 @@ import { detectTargetFromRequest, isMobileDevice } from '~/lib/target'
 
 export const runtime = 'edge'
 
-export const generateMetadata = async ({
-  params: { locale },
-  previousMetadata,
-}: Readonly<{
-  params: {
-    locale: string
-  }
-  previousMetadata: Metadata
-}>): Promise<Metadata> => {
+export const generateMetadata = async (
+  props: Readonly<{
+    params: Promise<{
+      locale: string
+    }>
+    previousMetadata: Metadata
+  }>,
+): Promise<Metadata> => {
+  const params = await props.params
+
+  const { locale } = params
+
+  const { previousMetadata } = props
+
   const { t } = await initTranslations(locale, ['common'])
   return {
     ...previousMetadata,
@@ -28,19 +33,22 @@ export const generateMetadata = async ({
   }
 }
 
-export default async function DownloadPage({
-  params: { locale },
-}: {
-  params: {
+export default async function DownloadPage(props: {
+  params: Promise<{
     locale: string
-  }
+  }>
 }) {
+  const params = await props.params
+
+  const { locale } = params
+
   const { t } = await initTranslations(locale, ['common'])
   const poiVersions = await fetchPoiVersions()
-  const { os: initialOS, spec: initialSpec } =
-    await detectTargetFromRequest(headers())
+  const { os: initialOS, spec: initialSpec } = await detectTargetFromRequest(
+    await headers(),
+  )
 
-  const isMobile = await isMobileDevice(headers())
+  const isMobile = await isMobileDevice(await headers())
 
   return (
     <Transition className="prose flex w-full max-w-none grow flex-col dark:prose-invert">

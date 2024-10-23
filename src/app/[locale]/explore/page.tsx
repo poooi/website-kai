@@ -7,15 +7,20 @@ import { initTranslations } from '~/i18n'
 
 export const runtime = 'edge'
 
-export const generateMetadata = async ({
-  params: { locale },
-  previousMetadata,
-}: Readonly<{
-  params: {
-    locale: string
-  }
-  previousMetadata: Metadata
-}>): Promise<Metadata> => {
+export const generateMetadata = async (
+  props: Readonly<{
+    params: Promise<{
+      locale: string
+    }>
+    previousMetadata: Metadata
+  }>,
+): Promise<Metadata> => {
+  const params = await props.params
+
+  const { locale } = params
+
+  const { previousMetadata } = props
+
   const { t } = await initTranslations(locale, ['common'])
   return {
     ...previousMetadata,
@@ -23,11 +28,15 @@ export const generateMetadata = async ({
   }
 }
 
-export default async function HomePage({
-  params: { locale },
-}: {
-  params: { locale: string }
+export default async function HomePage(props: {
+  params: Promise<{ locale: string }>
 }) {
+  const params = await props.params
+
+  const { locale } = params
+
+  console.log(locale)
+
   const content =
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     (await import(`~/contents/explore/${locale}.md`)).default as string
