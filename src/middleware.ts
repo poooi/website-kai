@@ -3,7 +3,7 @@ import { i18nRouter } from 'next-i18n-router'
 
 import { i18nConfig } from './i18n-config'
 
-const matcher = new RegExp('/((?!api|static|.*\\..*|_next).*)')
+const matcher = /^\/((?!api|static|.*\\..*|_next).*)/
 
 // FIXME: CF Pages does not always honor next.config.js headers config
 // Check if this is required when miragted to worker
