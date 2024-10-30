@@ -19,13 +19,17 @@ export const generateStaticParams = async () => {
   return i18nConfig.locales.map((locale) => ({ locale }))
 }
 
-export const generateMetadata = async ({
-  params: { locale },
-}: Readonly<{
-  params: {
-    locale: string
-  }
-}>): Promise<Metadata> => {
+export const generateMetadata = async (
+  props: Readonly<{
+    params: Promise<{
+      locale: string
+    }>
+  }>,
+): Promise<Metadata> => {
+  const params = await props.params
+
+  const { locale } = params
+
   const { t } = await initTranslations(locale, ['common'])
   return {
     title: `poi | ${t('KanColle Browser')}`,
@@ -44,18 +48,23 @@ export const generateMetadata = async ({
   }
 }
 
-export default async function RootLayout({
-  children,
-  params: { locale },
-}: Readonly<{
-  children: React.ReactNode
-  params: {
-    locale: string
-  }
-}>) {
+export default async function RootLayout(
+  props: Readonly<{
+    children: React.ReactNode
+    params: {
+      locale: string
+    }
+  }>,
+) {
+  const params = await props.params
+
+  const { locale } = params
+
+  const { children } = props
+
   const { resources, t, i18n } = await initTranslations(locale, ['common'])
 
-  const isMobile = await isMobileDevice(headers())
+  const isMobile = await isMobileDevice(await headers())
 
   return (
     <html
