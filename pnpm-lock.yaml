@@ -105,7 +105,7 @@ importers:
         version: 5.5.1
       next-themes:
         specifier: ^0.4.0
-        version: 0.4.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 0.4.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       polished:
         specifier: ^4.3.1
         version: 4.3.1
@@ -3688,8 +3688,8 @@ packages:
   next-i18n-router@5.5.1:
     resolution: {integrity: sha512-uJGYUAQS33LbRT3Jx+kurR/E79iPQo1jWZUYmc+614UkPt58k2XYyGloSvHR74b21i4K/d6eksdBj6T2WojjdA==}
 
-  next-themes@0.4.2:
-    resolution: {integrity: sha512-ps3yJW6vqwKu4GHzBmzcKUpswAmhdlad83TNasf6ZM/+1ma/Y9riZ+ERXYJmXL6YRQR05Yfu1iInclqspSFgbg==}
+  next-themes@0.4.3:
+    resolution: {integrity: sha512-nG84VPkTdUHR2YeD89YchvV4I9RbiMAql3GiLEQlPvq1ioaqPaIReK+yMRdg/zgiXws620qS1rU30TiWmmG9lA==}
     peerDependencies:
       react: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
       react-dom: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
@@ -8844,7 +8844,7 @@ snapshots:
       '@formatjs/intl-localematcher': 0.5.6
       negotiator: 0.6.4
 
-  next-themes@0.4.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  next-themes@0.4.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
