@@ -146,8 +146,8 @@ importers:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.15(ts-node@10.9.1(@types/node@22.9.0)(typescript@5.6.3)))
       ua-parser-js:
-        specifier: 2.0.0-rc.3
-        version: 2.0.0-rc.3
+        specifier: 2.0.0
+        version: 2.0.0
       unified:
         specifier: ^11.0.5
         version: 11.0.5
@@ -4724,8 +4724,8 @@ packages:
   ua-is-frozen@0.1.2:
     resolution: {integrity: sha512-RwKDW2p3iyWn4UbaxpP2+VxwqXh0jpvdxsYpZ5j/MLLiQOfbsV5shpgQiw93+KMYQPcteeMQ289MaAFzs3G9pw==}
 
-  ua-parser-js@2.0.0-rc.3:
-    resolution: {integrity: sha512-XNVpE+u+FyK2fUOVO7Gpyy58yVmH5jV+9nn+NbzxPf2YulgjiE00ECd+uwyH5+Jb82AakfL0+xPxA6jJeCYB7Q==}
+  ua-parser-js@2.0.0:
+    resolution: {integrity: sha512-SASgD4RlB7+SCMmlVNqrhPw0f/2pGawWBzJ2+LwGTD0GgNnrKGzPJDiraGHJDwW9Zm5DH2lTmUpqDpbZjJY4+Q==}
     hasBin: true
 
   ufo@1.5.4:
@@ -9925,7 +9925,7 @@ snapshots:
 
   ua-is-frozen@0.1.2: {}
 
-  ua-parser-js@2.0.0-rc.3:
+  ua-parser-js@2.0.0:
     dependencies:
       detect-europe-js: 0.1.2
       is-standalone-pwa: 0.1.1
