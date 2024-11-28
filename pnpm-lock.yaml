@@ -15,7 +15,7 @@ importers:
     dependencies:
       '@cloudflare/next-on-pages':
         specifier: ^1.13.3
-        version: 1.13.5(@cloudflare/workers-types@4.20241127.0)(vercel@39.1.0)(wrangler@3.88.0(@cloudflare/workers-types@4.20241127.0))
+        version: 1.13.6(@cloudflare/workers-types@4.20241127.0)(vercel@39.1.0)(wrangler@3.88.0(@cloudflare/workers-types@4.20241127.0))
       '@fontsource-variable/noto-sans':
         specifier: ^5.1.0
         version: 5.1.0
@@ -315,8 +315,8 @@ packages:
     resolution: {integrity: sha512-YLPHc8yASwjNkmcDMQMY35yiWjoKAKnhUbPRszBRS0YgH+IXtsMp61j+yTcnCE3oO2DgP0U3iejLC8FTtKDC8Q==}
     engines: {node: '>=16.13'}
 
-  '@cloudflare/next-on-pages@1.13.5':
-    resolution: {integrity: sha512-eKRrI14kCk6kuBIAO6WwMNSvH8fFzkMQj1G95/wLVW2xpUaU0EDxRcQJ0U9aB1tOm/sPWW76Udb92rxyrVJpBw==}
+  '@cloudflare/next-on-pages@1.13.6':
+    resolution: {integrity: sha512-7SrvJ5x5+gKYXRGaKqJU8uE205snzQ07mzYLoauL0+yUQo5AJ6ZdRuwg4OVa+duKdDsoGbaD7pMEn7SDK7XAxg==}
     hasBin: true
     peerDependencies:
       '@cloudflare/workers-types': ^4.20240208.0
@@ -3630,6 +3630,11 @@ packages:
     engines: {node: '>=16.13'}
     hasBin: true
 
+  miniflare@3.20241106.1:
+    resolution: {integrity: sha512-dM3RBlJE8rUFxnqlPCaFCq0E7qQqEQvKbYX7W/APGCK+rLcyLmEBzC4GQR/niXdNM/oV6gdg9AA50ghnn2ALuw==}
+    engines: {node: '>=16.13'}
+    hasBin: true
+
   minimatch@3.1.2:
     resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
 
@@ -5141,7 +5146,7 @@ snapshots:
     dependencies:
       mime: 3.0.0
 
-  '@cloudflare/next-on-pages@1.13.5(@cloudflare/workers-types@4.20241127.0)(vercel@39.1.0)(wrangler@3.88.0(@cloudflare/workers-types@4.20241127.0))':
+  '@cloudflare/next-on-pages@1.13.6(@cloudflare/workers-types@4.20241127.0)(vercel@39.1.0)(wrangler@3.88.0(@cloudflare/workers-types@4.20241127.0))':
     dependencies:
       acorn: 8.14.0
       ast-types: 0.14.2
@@ -5151,7 +5156,7 @@ snapshots:
       cookie: 0.5.0
       esbuild: 0.15.18
       js-yaml: 4.1.0
-      miniflare: 3.20241106.0
+      miniflare: 3.20241106.1
       package-manager-manager: 0.2.0
       pcre-to-regexp: 1.1.0
       semver: 7.6.3
@@ -8801,6 +8806,25 @@ snapshots:
   mimic-fn@2.1.0: {}
 
   miniflare@3.20241106.0:
+    dependencies:
+      '@cspotcode/source-map-support': 0.8.1
+      acorn: 8.14.0
+      acorn-walk: 8.3.4
+      capnp-ts: 0.7.0
+      exit-hook: 2.2.1
+      glob-to-regexp: 0.4.1
+      stoppable: 1.1.0
+      undici: 5.28.4
+      workerd: 1.20241106.1
+      ws: 8.18.0
+      youch: 3.3.4
+      zod: 3.23.8
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+
+  miniflare@3.20241106.1:
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       acorn: 8.14.0
