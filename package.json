@@ -91,6 +91,9 @@
   },
   "packageManager": "pnpm@9.14.4",
   "pnpm": {
+    "overrides": {
+      "@sentry/nextjs": "8.35.0"
+    },
     "patchedDependencies": {
       "decode-named-character-reference": "patches/decode-named-character-reference.patch"
     }
