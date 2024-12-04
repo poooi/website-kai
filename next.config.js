@@ -31,16 +31,16 @@ class CopyFontsWebpackPlugin {
         }
         CopyFontsWebpackPlugin.started = true
         const cssFiles = await globby(
-          path.resolve('node_modules/@fontsource-variable/**/*.css'),
+          path.resolve('node_modules/@ibm/**/woff2/**/*.css'),
         )
         const fontFiles = await globby(
-          path.resolve('node_modules/@fontsource-variable/**/files/*'),
+          path.resolve('node_modules/@ibm/**/woff2/**/*.woff2'),
         )
         const dest = path.resolve('public/fonts/')
         await fs.ensureDir('./public/fonts')
         await queue.addAll(
           cssFiles.map((cssFile) => () => {
-            const fontName = /@fontsource-variable\/(.+?)\//.exec(cssFile)[1]
+            const fontName = /@ibm\/(.+?)\//.exec(cssFile)[1]
             return fs.copy(
               cssFile,
               path.resolve(dest, fontName, path.basename(cssFile)),
@@ -49,10 +49,10 @@ class CopyFontsWebpackPlugin {
         )
         await queue.addAll(
           fontFiles.map((fontFile) => () => {
-            const fontName = /@fontsource-variable\/(.+?)\//.exec(fontFile)[1]
+            const fontName = /@ibm\/(.+?)\//.exec(fontFile)[1]
             return fs.copy(
               fontFile,
-              path.resolve(dest, fontName, 'files', path.basename(fontFile)),
+              path.resolve(dest, fontName, path.basename(fontFile)),
             )
           }),
         )

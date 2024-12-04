@@ -78,18 +78,18 @@ export default async function RootLayout(
       suppressHydrationWarning
     >
       <head>
-        <link href="/fonts/noto-sans/wght.css" rel="stylesheet" />
+        <link href="/fonts/plex-sans/IBMPlexSans-Text.css" rel="stylesheet" />
         {locale === 'ja' && (
-          <link href="/fonts/noto-sans-jp/wght.css" rel="stylesheet" />
+          <link href="/fonts/plex-sans-jp/IBMPlexSansJP-Text.css" rel="stylesheet" />
         )}
         {locale === 'zh-Hant' && (
-          <link href="/fonts/noto-sans-tc/wght.css" rel="stylesheet"></link>
+          <link href="/fonts/plex-sans-tc/IBMPlexSansTC-Text.css" rel="stylesheet"></link>
         )}
         {locale === 'zh-Hans' && (
-          <link href="/fonts/noto-sans-sc/wght.css" rel="stylesheet"></link>
+          <link href="/fonts/plex-sans-sc/IBMPlexSansSC-Text.css" rel="stylesheet"></link>
         )}
         {locale === 'ko' && (
-          <link href="/fonts/noto-sans-kr/wght.css" rel="stylesheet"></link>
+          <link href="/fonts/plex-sans-kr/IBMPlexSansKR-Text.css" rel="stylesheet"></link>
         )}
       </head>
       <body>
