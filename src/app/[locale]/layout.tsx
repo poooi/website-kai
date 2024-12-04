@@ -51,9 +51,9 @@ export const generateMetadata = async (
 export default async function RootLayout(
   props: Readonly<{
     children: React.ReactNode
-    params: {
+    params: Promise<{
       locale: string
-    }
+    }>
   }>,
 ) {
   const params = await props.params
@@ -78,18 +78,33 @@ export default async function RootLayout(
       suppressHydrationWarning
     >
       <head>
-        <link href="/fonts/noto-sans/wght.css" rel="stylesheet" />
+        <link
+          href="/fonts/plex-sans/IBMPlexSans-Regular.css"
+          rel="stylesheet"
+        />
         {locale === 'ja' && (
-          <link href="/fonts/noto-sans-jp/wght.css" rel="stylesheet" />
+          <link
+            href="/fonts/plex-sans-jp/IBMPlexSansJP-Regular.css"
+            rel="stylesheet"
+          />
         )}
         {locale === 'zh-Hant' && (
-          <link href="/fonts/noto-sans-tc/wght.css" rel="stylesheet"></link>
+          <link
+            href="/fonts/plex-sans-tc/IBMPlexSansTC-Regular.css"
+            rel="stylesheet"
+          ></link>
         )}
         {locale === 'zh-Hans' && (
-          <link href="/fonts/noto-sans-sc/wght.css" rel="stylesheet"></link>
+          <link
+            href="/fonts/plex-sans-sc/IBMPlexSansSC-Regular.css"
+            rel="stylesheet"
+          ></link>
         )}
         {locale === 'ko' && (
-          <link href="/fonts/noto-sans-kr/wght.css" rel="stylesheet"></link>
+          <link
+            href="/fonts/plex-sans-kr/IBMPlexSansKR-Regular.css"
+            rel="stylesheet"
+          ></link>
         )}
       </head>
       <body>
