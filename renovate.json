@@ -4,5 +4,5 @@
     "config:recommended",
     ":automergeAll"
   ],
-  "ignoreDeps": ["eslint", "@types/eslint", "@sentry/nextjs"]
+  "ignoreDeps": ["eslint", "@types/eslint", "@sentry/nextjs", "next"]
 }
