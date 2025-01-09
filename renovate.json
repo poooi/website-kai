@@ -4,5 +4,11 @@
     "config:recommended",
     ":automergeAll"
   ],
-  "ignoreDeps": ["eslint", "@types/eslint", "@sentry/nextjs", "next"]
+  "packageRules": [
+    {
+      "matchPackageNames": ["next"],
+      "followTag": "next-14"
+    }
+  ],
+  "ignoreDeps": ["eslint", "@types/eslint", "@sentry/nextjs"]
 }
