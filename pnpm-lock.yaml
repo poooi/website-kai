@@ -36,7 +36,7 @@ importers:
         version: 1.1.1
       '@icons-pack/react-simple-icons':
         specifier: ^11.0.0
-        version: 11.0.0(react@19.0.0)
+        version: 11.0.1(react@19.0.0)
       '@radix-ui/react-dialog':
         specifier: ^1.1.2
         version: 1.1.4(@types/react-dom@19.0.2(@types/react@19.0.4))(@types/react@19.0.4)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -646,8 +646,8 @@ packages:
     resolution: {integrity: sha512-1u/8f5TtDHXWNQe+YfIESesZGX2PmhEfyU0znlyFvATch+xc5fPYjXj2gWKMTmdKsDawqAm/BkJBQjx2CDlZww==}
     hasBin: true
 
-  '@icons-pack/react-simple-icons@11.0.0':
-    resolution: {integrity: sha512-o8ho4F8UiN7ie1X4gWUNJMgQw7lzPncfcXs6PHF02hDmwV71OngqI4eWEY+ibTNKaS5xdGyBXho9Zvx4JeyriA==}
+  '@icons-pack/react-simple-icons@11.0.1':
+    resolution: {integrity: sha512-K+PsqUAIuWHztSIlUc55CjTXpjSGkrM6Dl0YMKseJCLgbGZKnabaJZ5j8wtSizNaKRjadoQQ5fhjh1OSepdMeg==}
     peerDependencies:
       react: ^16.13 || ^17 || ^18 || ^19
 
@@ -4189,9 +4189,9 @@ packages:
     resolution: {integrity: sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==}
     engines: {node: '>=8.10.0'}
 
-  readdirp@4.0.2:
-    resolution: {integrity: sha512-yDMz9g+VaZkqBYS/ozoBJwaBhTbZo3UNYQHNRw1D3UFQB8oHB4uS/tAODO+ZLjGWmUbKnIlOWO+aaIiAxrUWHA==}
-    engines: {node: '>= 14.16.0'}
+  readdirp@4.1.1:
+    resolution: {integrity: sha512-h80JrZu/MHUZCyHu5ciuoI0+WxsCxzxJTILn6Fs8rxSnFPh+UVHYfeIxK1nVGugMqkfC4vJcBOYbkfkwYK0+gw==}
+    engines: {node: '>= 14.18.0'}
 
   reflect.getprototypeof@1.0.6:
     resolution: {integrity: sha512-fmfw4XgoDke3kdI6h4xcUz1dG8uaiv5q9gcEwLS4Pnth2kxT+GZ7YehS1JTMGBQmtV7Y4GFGbs2re2NqhdozUg==}
@@ -5320,7 +5320,7 @@ snapshots:
 
   '@ibm/telemetry-js@1.8.0': {}
 
-  '@icons-pack/react-simple-icons@11.0.0(react@19.0.0)':
+  '@icons-pack/react-simple-icons@11.0.1(react@19.0.0)':
     dependencies:
       react: 19.0.0
 
@@ -7045,11 +7045,11 @@ snapshots:
 
   chokidar@4.0.0:
     dependencies:
-      readdirp: 4.0.2
+      readdirp: 4.1.1
 
   chokidar@4.0.3:
     dependencies:
-      readdirp: 4.0.2
+      readdirp: 4.1.1
 
   chownr@1.1.4: {}
 
@@ -9221,7 +9221,7 @@ snapshots:
     dependencies:
       picomatch: 2.3.1
 
-  readdirp@4.0.2: {}
+  readdirp@4.1.1: {}
 
   reflect.getprototypeof@1.0.6:
     dependencies:
