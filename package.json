@@ -73,7 +73,7 @@
     "@typescript-eslint/parser": "^8.1.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
-    "eslint-config-next": "15.1.4",
+    "eslint-config-next": "15.1.5",
     "eslint-config-prettier": "^10.0.0",
     "eslint-plugin-next-on-pages": "^1.13.3",
     "eslint-plugin-prettier": "^5.2.1",
