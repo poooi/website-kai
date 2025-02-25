@@ -114,7 +114,7 @@ importers:
         version: 4.3.1
       random:
         specifier: ^5.1.0
-        version: 5.2.0
+        version: 5.3.0
       react:
         specifier: ^19.0.0
         version: 19.0.0
@@ -4067,8 +4067,8 @@ packages:
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
 
-  random@5.2.0:
-    resolution: {integrity: sha512-OS7NKhvUlcqapGiTbsKlB+X2/+UWyz0Ni0m9YYkG4zoiB4ov2Yp92PVA1GIleU7UKs9fnRUmPWEVdUEyWgluYA==}
+  random@5.3.0:
+    resolution: {integrity: sha512-Gm/L+xTpi1V+//XbnTnvRRlSsbHxJv+AeC1RzqaFLbWwXL8m+bvf6iM0+M+yQoAH8dmcWcZHmP/VZtOu5Zk2DQ==}
     engines: {node: '>=18'}
 
   randombytes@2.1.0:
@@ -9084,7 +9084,7 @@ snapshots:
 
   queue-microtask@1.2.3: {}
 
-  random@5.2.0: {}
+  random@5.3.0: {}
 
   randombytes@2.1.0:
     dependencies:
