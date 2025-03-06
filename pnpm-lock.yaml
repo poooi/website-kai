@@ -7,11 +7,6 @@ settings:
 overrides:
   '@sentry/nextjs': 8.35.0
 
-patchedDependencies:
-  decode-named-character-reference:
-    hash: 1d996df8d23f846c5bf1ee1872f66198428bd00e0155ac335a66b7d1c37df30a
-    path: patches/decode-named-character-reference.patch
-
 importers:
 
   .:
@@ -7142,7 +7137,7 @@ snapshots:
     dependencies:
       ms: 2.1.3
 
-  decode-named-character-reference@1.0.2(patch_hash=1d996df8d23f846c5bf1ee1872f66198428bd00e0155ac335a66b7d1c37df30a):
+  decode-named-character-reference@1.0.2:
     dependencies:
       character-entities: 2.0.2
 
@@ -8422,7 +8417,7 @@ snapshots:
     dependencies:
       '@types/mdast': 4.0.4
       '@types/unist': 3.0.3
-      decode-named-character-reference: 1.0.2(patch_hash=1d996df8d23f846c5bf1ee1872f66198428bd00e0155ac335a66b7d1c37df30a)
+      decode-named-character-reference: 1.0.2
       devlop: 1.1.0
       mdast-util-to-string: 4.0.0
       micromark: 4.0.1
@@ -8480,7 +8475,7 @@ snapshots:
 
   micromark-core-commonmark@2.0.2:
     dependencies:
-      decode-named-character-reference: 1.0.2(patch_hash=1d996df8d23f846c5bf1ee1872f66198428bd00e0155ac335a66b7d1c37df30a)
+      decode-named-character-reference: 1.0.2
       devlop: 1.1.0
       micromark-factory-destination: 2.0.1
       micromark-factory-label: 2.0.1
@@ -8555,7 +8550,7 @@ snapshots:
 
   micromark-util-decode-string@2.0.1:
     dependencies:
-      decode-named-character-reference: 1.0.2(patch_hash=1d996df8d23f846c5bf1ee1872f66198428bd00e0155ac335a66b7d1c37df30a)
+      decode-named-character-reference: 1.0.2
       micromark-util-character: 2.1.1
       micromark-util-decode-numeric-character-reference: 2.0.2
       micromark-util-symbol: 2.0.1
@@ -8593,7 +8588,7 @@ snapshots:
     dependencies:
       '@types/debug': 4.1.12
       debug: 4.4.0
-      decode-named-character-reference: 1.0.2(patch_hash=1d996df8d23f846c5bf1ee1872f66198428bd00e0155ac335a66b7d1c37df30a)
+      decode-named-character-reference: 1.0.2
       devlop: 1.1.0
       micromark-core-commonmark: 2.0.2
       micromark-factory-space: 2.0.1
