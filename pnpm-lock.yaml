@@ -84,7 +84,7 @@ importers:
         version: 9.5.2
       framer-motion:
         specifier: ^12.0.0
-        version: 12.4.11(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        version: 12.4.12(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       i18next:
         specifier: ^24.0.0
         version: 24.2.2(typescript@5.8.2)
@@ -2887,8 +2887,8 @@ packages:
     resolution: {integrity: sha512-tzN8e4TX8+kkxGPK8D5u0FNmjPUjw3lwC9lSLxxoB/+GtsJG91CO8bSWy73APlgAZzZbXEYZJuxjkHH2w+Ezhw==}
     engines: {node: '>= 6'}
 
-  framer-motion@12.4.11:
-    resolution: {integrity: sha512-MHeZlgzo9DnQ6+TFgRqJiOk4vWwsDcXFtxeXlVawVs1nwgcZW3966foGIgkIiIrBSPHB9RlbqspAxiYWosFT9g==}
+  framer-motion@12.4.12:
+    resolution: {integrity: sha512-zGRfz6ePwqlBetuCoUF4OjJ9X6XBjOYRB7ZLggvpRLMZBJGkrzuStRmOM3GaNqulBLNlfyBTITGeDU2j+1SQEw==}
     peerDependencies:
       '@emotion/is-prop-valid': '*'
       react: ^18.0.0 || ^19.0.0
@@ -7868,7 +7868,7 @@ snapshots:
       combined-stream: 1.0.8
       mime-types: 2.1.35
 
-  framer-motion@12.4.11(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
+  framer-motion@12.4.12(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
       motion-dom: 12.4.11
       motion-utils: 12.4.10
