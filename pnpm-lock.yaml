@@ -208,7 +208,7 @@ importers:
         version: 10.1.1(eslint@8.57.1)
       eslint-plugin-next-on-pages:
         specifier: ^1.13.3
-        version: 1.13.9(eslint@8.57.1)
+        version: 1.13.10(eslint@8.57.1)
       eslint-plugin-prettier:
         specifier: ^5.2.1
         version: 5.2.3(@types/eslint@8.56.12)(eslint-config-prettier@10.1.1(eslint@8.57.1))(eslint@8.57.1)(prettier@3.5.3)
@@ -2712,8 +2712,8 @@ packages:
     peerDependencies:
       eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8 || ^9
 
-  eslint-plugin-next-on-pages@1.13.9:
-    resolution: {integrity: sha512-jXX7zcoEEYcpgun2WTFcjNVFXo6SpwcbuW1wVGOIcacUfmorD55fweR6yvCRnp+4SpeVZSIPrcknfZdsDiCP7w==}
+  eslint-plugin-next-on-pages@1.13.10:
+    resolution: {integrity: sha512-p8wllngvsFEO+iOsKUFWmuN+hgkA1zt420sopfUuIDiw/SO1orH8KWPQ2xsqF+9c2ENCKyJ5OdipBM3H+kL8Dw==}
     peerDependencies:
       eslint: ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
 
@@ -7642,7 +7642,7 @@ snapshots:
       safe-regex-test: 1.1.0
       string.prototype.includes: 2.0.1
 
-  eslint-plugin-next-on-pages@1.13.9(eslint@8.57.1):
+  eslint-plugin-next-on-pages@1.13.10(eslint@8.57.1):
     dependencies:
       '@types/estree-jsx': 1.0.5
       comment-parser: 1.4.1
