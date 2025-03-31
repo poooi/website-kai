@@ -18,7 +18,7 @@ importers:
     dependencies:
       '@cloudflare/next-on-pages':
         specifier: ^1.13.3
-        version: 1.13.10(@cloudflare/workers-types@4.20250327.0)(vercel@41.0.2(rollup@3.29.5))(wrangler@3.107.3(@cloudflare/workers-types@4.20250327.0))
+        version: 1.13.11(@cloudflare/workers-types@4.20250327.0)(vercel@41.0.2(rollup@3.29.5))(wrangler@3.107.3(@cloudflare/workers-types@4.20250327.0))
       '@ibm/plex-sans':
         specifier: ^1.1.0
         version: 1.1.0
@@ -326,8 +326,8 @@ packages:
     resolution: {integrity: sha512-YLPHc8yASwjNkmcDMQMY35yiWjoKAKnhUbPRszBRS0YgH+IXtsMp61j+yTcnCE3oO2DgP0U3iejLC8FTtKDC8Q==}
     engines: {node: '>=16.13'}
 
-  '@cloudflare/next-on-pages@1.13.10':
-    resolution: {integrity: sha512-miboFA675/RzpHNe3nri1XO5cwtJCPfEZbL7mdlwwXqYw6DMlrppPaBNNjgbgXdLylHBV7h1+zfKdVDaQ20B8w==}
+  '@cloudflare/next-on-pages@1.13.11':
+    resolution: {integrity: sha512-Ceq/Q+Ua0p4VT5N6pi1QiBX5YYKlOSp0I69efmirSgcqB53Oz6+64aiso8mw7R7yIxYYKlxFRoTyIjQChoTg+Q==}
     hasBin: true
     peerDependencies:
       '@cloudflare/workers-types': ^4.20240208.0
@@ -3547,8 +3547,8 @@ packages:
     engines: {node: '>=16.13'}
     hasBin: true
 
-  miniflare@3.20250310.0:
-    resolution: {integrity: sha512-TQAxoo2ZiQYjiOJoK3bbcyjKD/u1E3akYOeSHc2Zcp1sLVydrgzSjmxtrn65/3BfDIrUgfYHyy9wspT6wzBy/A==}
+  miniflare@3.20250310.1:
+    resolution: {integrity: sha512-c9QPrgBUFzjL4pYvW6GIUw+NqeYlZGVHASKJqjIXB1WVsl14nYfpfHphYK8tluKaBqwA9NFyO5dC2zatJkC/mA==}
     engines: {node: '>=16.13'}
     hasBin: true
 
@@ -4682,10 +4682,6 @@ packages:
     resolution: {integrity: sha512-72RFADWFqKmUb2hmmvNODKL3p9hcB6Gt2DOQMis1SEBaV6a4MH8soBvzg+95CYhCKPFedut2JY9bMfrDl9D23g==}
     engines: {node: '>=14.0'}
 
-  undici@5.28.5:
-    resolution: {integrity: sha512-zICwjrDrcrUE0pyyJc1I2QzBkLM8FINsgOrt6WjA+BgajVq9Nxu2PbFFXUrAggLfDXlZGZBVZYw7WNV5KiBiBA==}
-    engines: {node: '>=14.0'}
-
   undici@5.29.0:
     resolution: {integrity: sha512-raqeBD6NQK4SkWhQzeYKd1KmIG6dllBOTt55Rmkt4HtI9mwdWtJljnrXjAFUBLTSN67HWrOIZ3EPF4kjUw80Bg==}
     engines: {node: '>=14.0'}
@@ -5083,7 +5079,7 @@ snapshots:
     dependencies:
       mime: 3.0.0
 
-  '@cloudflare/next-on-pages@1.13.10(@cloudflare/workers-types@4.20250327.0)(vercel@41.0.2(rollup@3.29.5))(wrangler@3.107.3(@cloudflare/workers-types@4.20250327.0))':
+  '@cloudflare/next-on-pages@1.13.11(@cloudflare/workers-types@4.20250327.0)(vercel@41.0.2(rollup@3.29.5))(wrangler@3.107.3(@cloudflare/workers-types@4.20250327.0))':
     dependencies:
       acorn: 8.14.1
       ast-types: 0.14.2
@@ -5093,7 +5089,7 @@ snapshots:
       cookie: 0.5.0
       esbuild: 0.15.18
       js-yaml: 4.1.0
-      miniflare: 3.20250310.0
+      miniflare: 3.20250310.1
       package-manager-manager: 0.2.0
       pcre-to-regexp: 1.1.0
       semver: 7.7.1
@@ -8672,7 +8668,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  miniflare@3.20250310.0:
+  miniflare@3.20250310.1:
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       acorn: 8.14.0
@@ -8680,7 +8676,7 @@ snapshots:
       exit-hook: 2.2.1
       glob-to-regexp: 0.4.1
       stoppable: 1.1.0
-      undici: 5.28.5
+      undici: 5.29.0
       workerd: 1.20250310.0
       ws: 8.18.0
       youch: 3.2.3
@@ -9828,10 +9824,6 @@ snapshots:
   undici-types@6.20.0: {}
 
   undici@5.28.4:
-    dependencies:
-      '@fastify/busboy': 2.1.1
-
-  undici@5.28.5:
     dependencies:
       '@fastify/busboy': 2.1.1
 
