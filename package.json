@@ -33,7 +33,7 @@
     "compare-versions": "^6.1.1",
     "execa": "^9.4.1",
     "framer-motion": "^12.0.0",
-    "i18next": "^24.0.0",
+    "i18next": "^25.0.0",
     "i18next-resources-to-backend": "^1.2.1",
     "jotai": "^2.10.0",
     "lodash": "^4.17.21",
