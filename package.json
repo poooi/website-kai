@@ -12,7 +12,7 @@
   "dependencies": {
     "@cloudflare/next-on-pages": "^1.13.3",
     "@ibm/plex-sans": "^1.1.0",
-    "@ibm/plex-sans-jp": "^1.1.0",
+    "@ibm/plex-sans-jp": "^2.0.0",
     "@ibm/plex-sans-kr": "^1.1.0",
     "@ibm/plex-sans-sc": "^1.1.0",
     "@ibm/plex-sans-tc": "^1.1.1",
