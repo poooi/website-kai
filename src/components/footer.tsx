@@ -5,6 +5,7 @@ import {
   SiOpencollective,
   SiSinaweibo,
   SiTelegram,
+  SiX,
 } from '@icons-pack/react-simple-icons'
 import { type TFunction, type i18n, type CustomTypeOptions } from 'i18next'
 
@@ -51,6 +52,11 @@ const footerItems = [
     url: 'https://opencollective.com/poi',
     icon: SiOpencollective,
     text: 'opencollective',
+  },
+  {
+    url: 'https://x.com/KochiyaOcean',
+    icon: SiX,
+    text: 'X',
   },
 ] satisfies FooterItem[]
 

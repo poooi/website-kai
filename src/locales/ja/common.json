@@ -53,5 +53,7 @@
   "Misc": "その他",
   "KanColle Browser": "艦これ専ブラ",
   "Nightly builds": "ナイトリービルド",
-  "mobile-hint": "poi はデスクトップデバイス向けに設計されています。代わりに他のモバイルアプリをお試しください。"
+  "mobile-hint": "poi はデスクトップデバイス向けに設計されています。代わりに他のモバイルアプリをお試しください。",
+  "X": "X",
+  "HTTPS game update supported!": "HTTPS 対応ゲーム更新が支援済み！"
 }

@@ -38,23 +38,40 @@ export default async function HomePage(props: {
           <p className="mt-4">{t('mobile-hint')}</p>
         ) : (
           <>
-            <div className="my-8 flex gap-8">
-              <Button className="h-fit flex-col" asChild>
-                <a href={stableURL}>
-                  <span>{t('download', { version: poiVersions.version })}</span>
-                  <span>{t('stable-hint')}</span>
-                </a>
-              </Button>
-              {compare(poiVersions.version, poiVersions.betaVersion, '<') && (
-                <Button variant="secondary" className="h-fit flex-col" asChild>
-                  <a href={betaURL}>
+            <div className="my-8">
+              <div className="flex gap-8">
+                <Button className="h-fit flex-col" asChild>
+                  <a href={stableURL}>
                     <span>
-                      {t('download', { version: poiVersions.betaVersion })}
+                      {t('download', { version: poiVersions.version })}
                     </span>
-                    <span>{t('beta-hint')}</span>
+                    <span>{t('stable-hint')}</span>
                   </a>
                 </Button>
-              )}
+                {compare(poiVersions.version, poiVersions.betaVersion, '<') && (
+                  <Button
+                    variant="secondary"
+                    className="h-fit flex-col"
+                    asChild
+                  >
+                    <a href={betaURL}>
+                      <span>
+                        {t('download', { version: poiVersions.betaVersion })}
+                      </span>
+                      <span>{t('beta-hint')}</span>
+                    </a>
+                  </Button>
+                )}
+              </div>
+              <div className="mt-2 flex items-center gap-2">
+                <Badge
+                  variant="outline"
+                  className="bg-green-500 text-white dark:bg-green-600"
+                >
+                  New
+                </Badge>
+                <span>{t('HTTPS game update supported!')}</span>
+              </div>
             </div>
             <div className="flex items-center gap-2">
               <span>{t('Sighted by skilled lookouts:')}</span>

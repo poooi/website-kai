@@ -53,5 +53,7 @@
   "Misc": "기타",
   "KanColle Browser": "칸콜레 브라우저",
   "Nightly builds": "나이트리 빌드",
-  "mobile-hint": "poi는 데스크톱 장치용으로 설계되었습니다. 대신 다른 모바일 앱을 사용해 보세요."
+  "mobile-hint": "poi는 데스크톱 장치용으로 설계되었습니다. 대신 다른 모바일 앱을 사용해 보세요.",
+  "X": "X",
+  "HTTPS game update supported!": "HTTPS 게임 업데이트가 지원됩니다!"
 }
