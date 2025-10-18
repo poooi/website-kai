@@ -1,4 +1,5 @@
 'use client'
+import { compare } from 'compare-versions'
 import { useAtomValue } from 'jotai'
 import { useTranslation } from 'react-i18next'
 
@@ -41,17 +42,19 @@ export const DownloadLinks = ({ poiVersions }: DownloadLinksProps) => {
           <span>{t('stable-hint')}</span>
         </a>
       </Button>
-      <Button
-        variant="secondary"
-        className="h-fit flex-col"
-        asChild
-        disabled={!betaURL}
-      >
-        <a href={betaURL}>
-          <span>{t('download', { version: poiVersions?.betaVersion })}</span>
-          <span>{t('beta-hint')}</span>
-        </a>
-      </Button>
+      {compare(poiVersions.version, poiVersions.betaVersion, '<') && (
+        <Button
+          variant="secondary"
+          className="h-fit flex-col"
+          asChild
+          disabled={!betaURL}
+        >
+          <a href={betaURL}>
+            <span>{t('download', { version: poiVersions?.betaVersion })}</span>
+            <span>{t('beta-hint')}</span>
+          </a>
+        </Button>
+      )}
     </div>
   )
 }
