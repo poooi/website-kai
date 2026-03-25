@@ -46,8 +46,8 @@ export const platformToTarget: Record<
     [PlatformSpec.ARM]: Target.winArm,
   },
   [OS.macos]: {
-    [PlatformSpec.X64Setup]: Target.macos,
     [PlatformSpec.ARM]: Target.macosArm,
+    [PlatformSpec.X64Setup]: Target.macos,
   },
   [OS.linux]: {
     [PlatformSpec.X64DEB]: Target.linuxDeb,
@@ -56,6 +56,29 @@ export const platformToTarget: Record<
     [PlatformSpec.ARMDEB]: Target.linuxDebArm,
     [PlatformSpec.ARMPortable]: Target.linuxArm,
   },
+}
+
+export const getPlatformSpecsForOS = (os: OS): PlatformSpec[] => {
+  return Object.keys(platformToTarget[os]) as PlatformSpec[]
+}
+
+export const getDefaultPlatformSpec = (
+  os: OS,
+  preferredSpec?: PlatformSpec,
+): PlatformSpec => {
+  const availableSpecs = getPlatformSpecsForOS(os)
+
+  if (preferredSpec && availableSpecs.includes(preferredSpec)) {
+    return preferredSpec
+  }
+
+  const fallbackSpec = availableSpecs[0]
+
+  if (!fallbackSpec) {
+    throw new Error(`No platform specs configured for OS: ${os}`)
+  }
+
+  return fallbackSpec
 }
 
 const DEFAULT_URI = 'https://github.com/poooi/poi/releases'

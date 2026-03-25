@@ -15,7 +15,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
-import { OS, type PlatformSpec, platformToTarget } from '~/lib/target'
+import {
+  getDefaultPlatformSpec,
+  getPlatformSpecsForOS,
+  OS,
+  type PlatformSpec,
+} from '~/lib/target'
 
 interface PlatformSelectProps {
   initialOS?: OS
@@ -40,8 +45,12 @@ export const PlatformSelect = ({
   }, [t])
 
   const specOptions = useMemo(() => {
-    return Object.keys(platformToTarget[os!] ?? {}).map((spec) => ({
-      label: t(spec as PlatformSpec),
+    if (!os) {
+      return []
+    }
+
+    return getPlatformSpecsForOS(os).map((spec) => ({
+      label: t(spec),
       value: spec,
     }))
   }, [t, os])
@@ -53,8 +62,9 @@ export const PlatformSelect = ({
           value={os as string}
           options={osOptions}
           onChange={(value) => {
-            setOS(value as OS)
-            setSpec(undefined)
+            const nextOS = value as OS
+            setOS(nextOS)
+            setSpec(getDefaultPlatformSpec(nextOS, spec))
           }}
         />
       </div>

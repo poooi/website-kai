@@ -6,7 +6,11 @@ import { notFound } from 'next/navigation'
  * @returns new Response for the server to return
  */
 export const reverseFetch = async (url: string) => {
-  const resp = await fetch(url)
+  const resp = await fetch(url, {
+    next: {
+      revalidate: 300,
+    },
+  })
   if (!resp.ok) {
     notFound()
   }
