@@ -160,7 +160,7 @@ export const detectTargetFromRequest = async (
       target: Target.linuxRpm,
     }
   }
-  if (os.name === 'Mac OS') {
+  if (os.name === 'macOS') {
     if (cpu.architecture === 'arm64' || cpu.architecture === 'arm') {
       return {
         os: OS.macos,
