@@ -161,17 +161,20 @@ export const detectTargetFromRequest = async (
     }
   }
   if (os.name === 'macOS') {
-    if (cpu.architecture === 'arm64' || cpu.architecture === 'arm') {
+    // UAParser relies on high-entropy Client Hints for Mac CPU architecture.
+    // Serve Intel when the hint is explicit; otherwise default to Apple silicon.
+    // Learn more: https://github.com/faisalman/ua-parser-js/blob/18d39b53dd803710cb8e76856d18c1dcf7533d11/src/main/ua-parser.js#L122
+    if (cpu.architecture === 'amd64') {
       return {
         os: OS.macos,
-        spec: PlatformSpec.ARM,
-        target: Target.macosArm,
+        spec: PlatformSpec.X64Setup,
+        target: Target.macos,
       }
     }
     return {
       os: OS.macos,
-      spec: PlatformSpec.X64Setup,
-      target: Target.macos,
+      spec: PlatformSpec.ARM,
+      target: Target.macosArm,
     }
   }
   if (os.name === 'Windows') {
