@@ -18,7 +18,7 @@ jobs:
         npm install -g corepack@latest
         corepack pnpm install
     - name: Install Playwright Browsers
-      run: corepack pnpm exec playwright install --with-deps
+      run: corepack pnpm exec playwright install chrome --with-deps
     - name: Run Playwright tests
       run: corepack pnpm exec playwright test
     - uses: actions/upload-artifact@v4

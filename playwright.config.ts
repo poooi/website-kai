@@ -1,5 +1,4 @@
-import { devices } from '@playwright/test'
-import { defineConfig } from 'next/experimental/testmode/playwright.js'
+import { defineConfig, devices } from '@playwright/test'
 
 // @ts-expect-error - NODE_ENV is set for the test environment
 process.env.NODE_ENV = 'test'
@@ -23,8 +22,8 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: 'Google Chrome',
+      use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     },
   ],
 
