@@ -66,6 +66,9 @@ const config = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  experimental: {
+    testProxy: process.env.NODE_ENV === 'test',
+  },
   trailingSlash: true,
   webpack: (/** @type {import('webpack').Configuration} */ config) => {
     config.plugins.push(new CopyFontsWebpackPlugin())
