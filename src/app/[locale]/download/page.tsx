@@ -10,8 +10,6 @@ import { initTranslations } from '~/i18n'
 import { fetchPoiVersions } from '~/lib/fetch-poi-versions'
 import { detectTargetFromRequest, isMobileDevice } from '~/lib/target'
 
-export const runtime = 'edge'
-
 export const generateMetadata = async (
   props: Readonly<{
     params: Promise<{

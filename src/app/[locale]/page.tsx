@@ -13,8 +13,6 @@ import {
   isMobileDevice,
 } from '~/lib/target'
 
-export const runtime = 'edge'
-
 export default async function HomePage(props: {
   params: Promise<{ locale: string }>
 }) {

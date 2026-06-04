@@ -7,8 +7,6 @@ const size = {
   height: 630,
 }
 
-export const runtime = 'edge'
-
 const Image = async () => {
   const logoSrc = await fetch(
     new URL('../../assets/poi.png', import.meta.url),

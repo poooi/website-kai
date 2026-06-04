@@ -5,8 +5,6 @@ import html from 'remark-html'
 import { Transition } from '~/components/transition'
 import { initTranslations } from '~/i18n'
 
-export const runtime = 'edge'
-
 export const generateMetadata = async (
   props: Readonly<{
     params: Promise<{

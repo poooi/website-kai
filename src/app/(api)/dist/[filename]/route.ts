@@ -3,8 +3,6 @@ import { notFound } from 'next/navigation'
 import { fetchPoiVersions } from '~/lib/fetch-poi-versions'
 import { reverseFetch } from '~/lib/reverse-fetch'
 
-export const runtime = 'edge'
-
 export const GET = async (
   request: Request,
   props: { params?: Promise<{ filename: string }> },
