@@ -1,0 +1,11 @@
+allowBuilds:
+  '@ibm/plex-sans': true
+  '@ibm/plex-sans-jp': true
+  '@ibm/plex-sans-kr': true
+  '@ibm/plex-sans-sc': true
+  '@ibm/plex-sans-tc': true
+  '@sentry/cli': true
+  esbuild: true
+  sharp: true
+  unrs-resolver: true
+  workerd: true
