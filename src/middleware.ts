@@ -26,6 +26,21 @@ const shouldLocalize = (pathname: string): boolean => {
 
 // FIXME: CF Pages does not always honor next.config.js headers config
 // Check if this is required when miragted to worker
+const clientHintHeaders = [
+  {
+    key: 'Accept-CH',
+    value: 'Sec-CH-UA-Platform, Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Mobile',
+  },
+  {
+    key: 'Critical-CH',
+    value: 'Sec-CH-UA-Platform, Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Mobile',
+  },
+  {
+    key: 'Vary',
+    value: 'Sec-CH-UA-Platform, Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Mobile',
+  },
+]
+
 const poiHeaders = [
   {
     key: 'X-Poi-Codename',
@@ -45,9 +60,13 @@ const poiHeaders = [
   },
 ]
 
+const clientHintValues =
+  'Sec-CH-UA-Platform, Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Mobile'
+
 export function middleware(request: NextRequest) {
+  const localize = shouldLocalize(request.nextUrl.pathname)
   let resp: NextResponse
-  if (shouldLocalize(request.nextUrl.pathname)) {
+  if (localize) {
     resp = i18nRouter(request, i18nConfig)
   } else {
     resp = NextResponse.next()
@@ -56,5 +75,12 @@ export function middleware(request: NextRequest) {
   poiHeaders.forEach((header) => {
     resp.headers.set(header.key, header.value)
   })
+
+  if (localize) {
+    resp.headers.set('Accept-CH', clientHintValues)
+    resp.headers.set('Critical-CH', clientHintValues)
+    resp.headers.set('Vary', clientHintValues)
+  }
+
   return resp
 }
