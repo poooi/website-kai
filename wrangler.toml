@@ -9,5 +9,5 @@ binding = "ASSETS"
 
 routes = [
   { pattern = "poi.moe", custom_domain = true },
-  { pattern = "www.poi.moe", custom_domain = true },
+  { pattern = "update.poi.moe", custom_domain = true },
 ]
