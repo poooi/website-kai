@@ -66,9 +66,6 @@ const config = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  experimental: {
-    testProxy: process.env.NODE_ENV === 'test',
-  },
   trailingSlash: true,
   webpack: (/** @type {import('webpack').Configuration} */ config) => {
     config.plugins.push(new CopyFontsWebpackPlugin())
@@ -149,5 +146,3 @@ export default withSentryConfig(config, {
   // https://vercel.com/docs/cron-jobs
   automaticVercelMonitors: true,
 })
-
-import('@opennextjs/cloudflare').then(m => m.initOpenNextCloudflareForDev());

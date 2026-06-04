@@ -63,7 +63,7 @@ const poiHeaders = [
 const clientHintValues =
   'Sec-CH-UA-Platform, Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Mobile'
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const localize = shouldLocalize(request.nextUrl.pathname)
   let resp: NextResponse
   if (localize) {
