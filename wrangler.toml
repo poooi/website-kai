@@ -6,3 +6,8 @@ main = ".open-next/worker.js"
 [assets]
 directory = ".open-next/assets"
 binding = "ASSETS"
+
+routes = [
+  { pattern = "poi.moe", custom_domain = true },
+  { pattern = "www.poi.moe", custom_domain = true },
+]
