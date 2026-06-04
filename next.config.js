@@ -108,6 +108,7 @@ const config = {
 // Injected content via Sentry wizard below
 
 export default withSentryConfig(config, {
+  autoInstrumentMiddleware: false,
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options
 
