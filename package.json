@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "opennextjs-cloudflare build && node scripts/copy-worker.mjs",
+    "build": "opennextjs-cloudflare build",
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start",
