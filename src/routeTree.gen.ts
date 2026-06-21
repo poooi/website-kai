@@ -9,38 +9,101 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StatusRouteImport } from './routes/status'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as UpdateFilenameRouteImport } from './routes/update.$filename'
+import { Route as FcdFilenameRouteImport } from './routes/fcd.$filename'
+import { Route as DistFilenameRouteImport } from './routes/dist.$filename'
 
+const StatusRoute = StatusRouteImport.update({
+  id: '/status',
+  path: '/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UpdateFilenameRoute = UpdateFilenameRouteImport.update({
+  id: '/update/$filename',
+  path: '/update/$filename',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FcdFilenameRoute = FcdFilenameRouteImport.update({
+  id: '/fcd/$filename',
+  path: '/fcd/$filename',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DistFilenameRoute = DistFilenameRouteImport.update({
+  id: '/dist/$filename',
+  path: '/dist/$filename',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/status': typeof StatusRoute
+  '/dist/$filename': typeof DistFilenameRoute
+  '/fcd/$filename': typeof FcdFilenameRoute
+  '/update/$filename': typeof UpdateFilenameRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/status': typeof StatusRoute
+  '/dist/$filename': typeof DistFilenameRoute
+  '/fcd/$filename': typeof FcdFilenameRoute
+  '/update/$filename': typeof UpdateFilenameRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/status': typeof StatusRoute
+  '/dist/$filename': typeof DistFilenameRoute
+  '/fcd/$filename': typeof FcdFilenameRoute
+  '/update/$filename': typeof UpdateFilenameRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/status'
+    | '/dist/$filename'
+    | '/fcd/$filename'
+    | '/update/$filename'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/status'
+    | '/dist/$filename'
+    | '/fcd/$filename'
+    | '/update/$filename'
+  id:
+    | '__root__'
+    | '/'
+    | '/status'
+    | '/dist/$filename'
+    | '/fcd/$filename'
+    | '/update/$filename'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  StatusRoute: typeof StatusRoute
+  DistFilenameRoute: typeof DistFilenameRoute
+  FcdFilenameRoute: typeof FcdFilenameRoute
+  UpdateFilenameRoute: typeof UpdateFilenameRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/status': {
+      id: '/status'
+      path: '/status'
+      fullPath: '/status'
+      preLoaderRoute: typeof StatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +111,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/update/$filename': {
+      id: '/update/$filename'
+      path: '/update/$filename'
+      fullPath: '/update/$filename'
+      preLoaderRoute: typeof UpdateFilenameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fcd/$filename': {
+      id: '/fcd/$filename'
+      path: '/fcd/$filename'
+      fullPath: '/fcd/$filename'
+      preLoaderRoute: typeof FcdFilenameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dist/$filename': {
+      id: '/dist/$filename'
+      path: '/dist/$filename'
+      fullPath: '/dist/$filename'
+      preLoaderRoute: typeof DistFilenameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  StatusRoute: StatusRoute,
+  DistFilenameRoute: DistFilenameRoute,
+  FcdFilenameRoute: FcdFilenameRoute,
+  UpdateFilenameRoute: UpdateFilenameRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
