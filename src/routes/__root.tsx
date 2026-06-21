@@ -1,5 +1,8 @@
+/* eslint-disable @next/next/no-css-tags */
 /* eslint-disable @next/next/no-head-element */
 import { createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
+
+import '~/styles/globals.css'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -22,6 +25,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     <html lang="ja">
       <head>
         <HeadContent />
+        <link
+          href="/fonts/plex-sans/IBMPlexSans-Regular.css"
+          rel="stylesheet"
+        />
       </head>
       <body>
         {children}

@@ -7,6 +7,11 @@ test('renders the isolated TanStack preview route', async ({ page }) => {
     page.getByRole('heading', { name: 'poi TanStack preview' }),
   ).toBeVisible()
   await expect(page.getByText('proves the scaffold builds')).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Status route' })).toBeVisible()
+  await expect(page.locator('body')).toHaveCSS(
+    'background-color',
+    'rgb(255, 255, 255)',
+  )
   expect(response).not.toBeNull()
   const headers = response!.headers()
   expect(headers['x-poi-codename']).toBe('Shiratsuyu')
@@ -36,6 +41,14 @@ test('serves static assets before SSR with cache headers', async ({
   expect(response.headers()['cache-control']).toContain('public')
 })
 
+test('serves copied IBM Plex font assets', async ({ request }) => {
+  const response = await request.get('/fonts/plex-sans/IBMPlexSans-Regular.css')
+
+  expect(response.status()).toBe(200)
+  expect(response.headers()['cache-control']).toBe('public,max-age=3600')
+  await expect(response.text()).resolves.toContain('IBM Plex Sans')
+})
+
 test('serves hashed Vite assets with immutable cache headers', async ({
   page,
   request,
@@ -53,6 +66,16 @@ test('serves hashed Vite assets with immutable cache headers', async ({
   expect(response.headers()['cache-control']).toBe(
     'public,max-age=31536000,immutable',
   )
+})
+
+test('serves static social image routes', async ({ request }) => {
+  for (const path of ['/opengraph-image', '/twitter-image']) {
+    const response = await request.get(path)
+
+    expect(response.status()).toBe(200)
+    expect(response.headers()['content-type']).toBe('image/png')
+    expect(response.headers()['cache-control']).toBe('public,max-age=3600')
+  }
 })
 
 test('reserves monitoring route without locale/page headers', async ({

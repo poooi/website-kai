@@ -9,15 +9,27 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TwitterImageRouteImport } from './routes/twitter-image'
 import { Route as StatusRouteImport } from './routes/status'
+import { Route as OpengraphImageRouteImport } from './routes/opengraph-image'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UpdateFilenameRouteImport } from './routes/update.$filename'
 import { Route as FcdFilenameRouteImport } from './routes/fcd.$filename'
 import { Route as DistFilenameRouteImport } from './routes/dist.$filename'
 
+const TwitterImageRoute = TwitterImageRouteImport.update({
+  id: '/twitter-image',
+  path: '/twitter-image',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StatusRoute = StatusRouteImport.update({
   id: '/status',
   path: '/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OpengraphImageRoute = OpengraphImageRouteImport.update({
+  id: '/opengraph-image',
+  path: '/opengraph-image',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -43,14 +55,18 @@ const DistFilenameRoute = DistFilenameRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/opengraph-image': typeof OpengraphImageRoute
   '/status': typeof StatusRoute
+  '/twitter-image': typeof TwitterImageRoute
   '/dist/$filename': typeof DistFilenameRoute
   '/fcd/$filename': typeof FcdFilenameRoute
   '/update/$filename': typeof UpdateFilenameRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/opengraph-image': typeof OpengraphImageRoute
   '/status': typeof StatusRoute
+  '/twitter-image': typeof TwitterImageRoute
   '/dist/$filename': typeof DistFilenameRoute
   '/fcd/$filename': typeof FcdFilenameRoute
   '/update/$filename': typeof UpdateFilenameRoute
@@ -58,7 +74,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/opengraph-image': typeof OpengraphImageRoute
   '/status': typeof StatusRoute
+  '/twitter-image': typeof TwitterImageRoute
   '/dist/$filename': typeof DistFilenameRoute
   '/fcd/$filename': typeof FcdFilenameRoute
   '/update/$filename': typeof UpdateFilenameRoute
@@ -67,21 +85,27 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/opengraph-image'
     | '/status'
+    | '/twitter-image'
     | '/dist/$filename'
     | '/fcd/$filename'
     | '/update/$filename'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/opengraph-image'
     | '/status'
+    | '/twitter-image'
     | '/dist/$filename'
     | '/fcd/$filename'
     | '/update/$filename'
   id:
     | '__root__'
     | '/'
+    | '/opengraph-image'
     | '/status'
+    | '/twitter-image'
     | '/dist/$filename'
     | '/fcd/$filename'
     | '/update/$filename'
@@ -89,7 +113,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  OpengraphImageRoute: typeof OpengraphImageRoute
   StatusRoute: typeof StatusRoute
+  TwitterImageRoute: typeof TwitterImageRoute
   DistFilenameRoute: typeof DistFilenameRoute
   FcdFilenameRoute: typeof FcdFilenameRoute
   UpdateFilenameRoute: typeof UpdateFilenameRoute
@@ -97,11 +123,25 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/twitter-image': {
+      id: '/twitter-image'
+      path: '/twitter-image'
+      fullPath: '/twitter-image'
+      preLoaderRoute: typeof TwitterImageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/status': {
       id: '/status'
       path: '/status'
       fullPath: '/status'
       preLoaderRoute: typeof StatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/opengraph-image': {
+      id: '/opengraph-image'
+      path: '/opengraph-image'
+      fullPath: '/opengraph-image'
+      preLoaderRoute: typeof OpengraphImageRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -137,7 +177,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  OpengraphImageRoute: OpengraphImageRoute,
   StatusRoute: StatusRoute,
+  TwitterImageRoute: TwitterImageRoute,
   DistFilenameRoute: DistFilenameRoute,
   FcdFilenameRoute: FcdFilenameRoute,
   UpdateFilenameRoute: UpdateFilenameRoute,
