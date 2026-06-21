@@ -2,20 +2,13 @@ import { expect } from '@playwright/test'
 import { test } from 'next/experimental/testmode/playwright.js'
 
 test.describe('dist', () => {
-  test('/dist/poi-10.9.2-arm64-win.7z', async ({ page, next }) => {
-    next.onFetch(() => {
-      return new Response('')
+  test('/dist/poi-10.9.2-arm64-win.7z', async ({ request }) => {
+    const response = await request.get('/dist/poi-10.9.2-arm64-win.7z', {
+      maxRedirects: 0,
     })
 
-    const downloadPromise = page.waitForEvent('download')
-    try {
-      await page.goto('/dist/poi-10.9.2-arm64-win.7z')
-    } catch (e) {
-      /* do nothing */
-    }
-    const file = await downloadPromise
-
-    expect(file.url()).toContain('poi-10.9.2-arm64-win.7z')
+    expect(response.status()).toBe(301)
+    expect(response.headers().location).toContain('poi-10.9.2-arm64-win.7z')
   })
 
   test('/dist/latest.yml', async ({ page, next }) => {
@@ -94,13 +87,16 @@ test.describe('dist', () => {
       return new Response('', { status: 404 })
     })
 
+    let error: unknown
     try {
       await page.goto('/dist/latest.yml')
     } catch (e) {
-      expect(e instanceof Error).toBeTruthy()
-      if (e instanceof Error) {
-        expect(e.message).toContain('ERR_HTTP_RESPONSE_CODE_FAILURE')
-      }
+      error = e
+    }
+
+    expect(error).toBeInstanceOf(Error)
+    if (error instanceof Error) {
+      expect(error.message).toContain('ERR_HTTP_RESPONSE_CODE_FAILURE')
     }
   })
 })

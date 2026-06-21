@@ -6,7 +6,12 @@
   "scripts": {
     "build": "opennextjs-cloudflare build",
     "dev": "next dev",
-    "lint": "next lint",
+    "lint": "eslint src specs next.config.js playwright.config.ts playwright.next.config.ts tailwind.config.ts --ext .js,.cjs,.ts,.tsx --ignore-pattern next-env.d.ts",
+    "lint:next": "eslint src specs next.config.js playwright.config.ts playwright.next.config.ts tailwind.config.ts --ext .js,.cjs,.ts,.tsx --ignore-pattern next-env.d.ts",
+    "typecheck": "tsc --noEmit",
+    "typecheck:next": "tsc --noEmit",
+    "test:unit": "vitest run src",
+    "test:e2e:next": "playwright test --config=playwright.next.config.ts",
     "start": "next start",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
@@ -88,6 +93,7 @@
     "prettier-plugin-tailwindcss": "^0.6.14",
     "tailwindcss": "^3.4.18",
     "typescript": "^5.9.3",
+    "vitest": "^3.2.4",
     "wrangler": "^4.97.0"
   },
   "ct3aMetadata": {

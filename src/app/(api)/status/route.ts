@@ -1,4 +1,3 @@
-export const GET = async (request: Request) => {
-  const ipCountry = request.headers.get('CF-IPCountry')
-  return Response.json({ message: 'poi poi poi!', region: ipCountry })
-}
+import { handleStatus } from '~/lib/route-handlers'
+
+export const GET = async (request: Request) => handleStatus(request)

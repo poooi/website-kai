@@ -40,7 +40,10 @@ class CopyFontsWebpackPlugin {
         await fs.ensureDir('./public/fonts')
         await queue.addAll(
           cssFiles.map((cssFile) => () => {
-            const fontName = /@ibm\/(.+?)\//.exec(cssFile)[1]
+            const fontName = /@ibm\/(.+?)\//.exec(cssFile)?.[1]
+            if (!fontName) {
+              throw new Error(`Could not infer IBM font name from ${cssFile}`)
+            }
             return fs.copy(
               cssFile,
               path.resolve(dest, fontName, path.basename(cssFile)),
@@ -49,7 +52,10 @@ class CopyFontsWebpackPlugin {
         )
         await queue.addAll(
           fontFiles.map((fontFile) => () => {
-            const fontName = /@ibm\/(.+?)\//.exec(fontFile)[1]
+            const fontName = /@ibm\/(.+?)\//.exec(fontFile)?.[1]
+            if (!fontName) {
+              throw new Error(`Could not infer IBM font name from ${fontFile}`)
+            }
             return fs.copy(
               fontFile,
               path.resolve(dest, fontName, path.basename(fontFile)),
@@ -71,6 +77,9 @@ const config = {
   },
   trailingSlash: true,
   webpack: (/** @type {import('webpack').Configuration} */ config) => {
+    config.plugins ??= []
+    config.module ??= {}
+    config.module.rules ??= []
     config.plugins.push(new CopyFontsWebpackPlugin())
     config.module.rules.push({
       test: /\.md/,
