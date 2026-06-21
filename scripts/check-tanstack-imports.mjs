@@ -15,11 +15,12 @@ const srcRoot = path.resolve('src')
 const forbidden = [
   {
     label: 'Next.js runtime imports',
-    pattern: /from\s+['"]next(?:\/|['"])/,
+    isMatch: (specifier) =>
+      specifier === 'next' || specifier.startsWith('next/'),
   },
   {
     label: 'Node.js runtime imports',
-    pattern: /from\s+['"]node:/,
+    isMatch: (specifier) => specifier.startsWith('node:'),
   },
 ]
 
@@ -80,15 +81,18 @@ const scanFile = async (file) => {
   seen.add(absolute)
 
   const source = await readFile(absolute, 'utf8')
-  forbidden.forEach(({ label, pattern }) => {
-    if (pattern.test(source)) {
-      failures.push(
-        `${absolute}: ${label} are not allowed in TanStack runtime code`,
-      )
-    }
+  const imports = [...source.matchAll(importPattern)].map((match) => match[1])
+
+  imports.forEach((specifier) => {
+    forbidden.forEach(({ label, isMatch }) => {
+      if (isMatch(specifier)) {
+        failures.push(
+          `${absolute}: ${label} are not allowed in TanStack runtime code`,
+        )
+      }
+    })
   })
 
-  const imports = [...source.matchAll(importPattern)].map((match) => match[1])
   await Promise.all(
     imports.map(async (specifier) => {
       const resolved = await resolveImport(specifier, absolute)
