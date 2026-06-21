@@ -1,10 +1,69 @@
 import { expect, test } from '@playwright/test'
 
 test('renders the isolated TanStack preview route', async ({ page }) => {
-  await page.goto('/')
+  const response = await page.goto('/')
 
   await expect(
     page.getByRole('heading', { name: 'poi TanStack preview' }),
   ).toBeVisible()
   await expect(page.getByText('proves the scaffold builds')).toBeVisible()
+  expect(response).not.toBeNull()
+  const headers = response!.headers()
+  expect(headers['x-poi-codename']).toBe('Shiratsuyu')
+  expect(headers['x-poi-greetings']).toBe('poi?')
+  expect(headers['accept-ch']).toContain('Sec-CH-UA-Platform')
+  expect(headers['critical-ch']).toContain('Sec-CH-UA-Platform')
+  expect(headers.vary).toContain('Sec-CH-UA-Platform')
+  expect(headers['cache-control']).toBe('no-store')
+})
+
+test('marks HEAD page responses as no-store', async ({ request }) => {
+  const response = await request.head('/')
+
+  expect(response.status()).toBe(200)
+  expect(response.headers()['x-poi-codename']).toBe('Shiratsuyu')
+  expect(response.headers()['cache-control']).toBe('no-store')
+})
+
+test('serves static assets before SSR with cache headers', async ({
+  request,
+}) => {
+  const response = await request.get('/favicon.ico')
+
+  expect(response.status()).toBe(200)
+  expect(response.headers()['x-poi-codename']).toBeUndefined()
+  expect(response.headers()['accept-ch']).toBeUndefined()
+  expect(response.headers()['cache-control']).toContain('public')
+})
+
+test('serves hashed Vite assets with immutable cache headers', async ({
+  page,
+  request,
+}) => {
+  await page.goto('/')
+  const scriptSrc = await page
+    .locator('script[src^="/assets/"]')
+    .first()
+    .getAttribute('src')
+
+  expect(scriptSrc).toBeTruthy()
+  const response = await request.get(scriptSrc!)
+
+  expect(response.status()).toBe(200)
+  expect(response.headers()['cache-control']).toBe(
+    'public,max-age=31536000,immutable',
+  )
+})
+
+test('reserves monitoring route without locale/page headers', async ({
+  request,
+}) => {
+  for (const path of ['/api/monitoring', '/api/monitoring/']) {
+    const response = await request.get(path)
+
+    expect(response.status()).toBe(405)
+    expect(response.headers().allow).toBe('POST')
+    expect(response.headers()['x-poi-codename']).toBe('Shiratsuyu')
+    expect(response.headers()['accept-ch']).toBeUndefined()
+  }
 })
