@@ -46,7 +46,16 @@ test('serves copied IBM Plex font assets', async ({ request }) => {
 
   expect(response.status()).toBe(200)
   expect(response.headers()['cache-control']).toBe('public,max-age=3600')
-  await expect(response.text()).resolves.toContain('IBM Plex Sans')
+  const css = await response.text()
+  expect(css).toContain('IBM Plex Sans')
+
+  const fontPath = /url\(["']?(.+?\.woff2)["']?\)/.exec(css)?.[1]
+  expect(fontPath).toBeTruthy()
+  const fontResponse = await request.get(`/fonts/plex-sans/${fontPath}`)
+
+  expect(fontResponse.status()).toBe(200)
+  expect(fontResponse.headers()['cache-control']).toBe('public,max-age=3600')
+  expect(fontResponse.headers()['content-type']).toContain('font/woff2')
 })
 
 test('serves hashed Vite assets with immutable cache headers', async ({
