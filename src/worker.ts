@@ -8,6 +8,21 @@ interface WorkerEnv {
   ASSETS?: AssetsBinding
 }
 
+interface ExecutionContextLike {
+  waitUntil(promise: Promise<unknown>): void
+  passThroughOnException?(): void
+}
+
+type StartHandlerWithContext = (
+  request: Request,
+  options: {
+    context: {
+      ctx: ExecutionContextLike
+      env: WorkerEnv
+    }
+  },
+) => Promise<Response>
+
 const clientHintValues =
   'Sec-CH-UA-Platform, Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Mobile'
 
@@ -118,17 +133,26 @@ const handleAsset = async (request: Request, env: WorkerEnv) => {
   return withAssetHeaders(response, request)
 }
 
+const isMonitoringPath = (pathname: string) => {
+  return pathname === '/api/monitoring' || pathname === '/api/monitoring/'
+}
+
 const worker = {
-  async fetch(request: Request, env: WorkerEnv) {
+  async fetch(request: Request, env: WorkerEnv, ctx: ExecutionContextLike) {
     const { pathname } = new URL(request.url)
 
     let response: Response | undefined
-    if (pathname === '/api/monitoring') {
+    if (isMonitoringPath(pathname)) {
       response = handleMonitoringStub(request)
     }
 
     response ??= await handleAsset(request, env)
-    response ??= await startHandler.fetch(request)
+    response ??= await (startHandler.fetch as StartHandlerWithContext)(
+      request,
+      {
+        context: { env, ctx },
+      },
+    )
 
     return withGlobalHeaders(response, request)
   },

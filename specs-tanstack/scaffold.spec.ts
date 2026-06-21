@@ -58,10 +58,12 @@ test('serves hashed Vite assets with immutable cache headers', async ({
 test('reserves monitoring route without locale/page headers', async ({
   request,
 }) => {
-  const response = await request.get('/api/monitoring')
+  for (const path of ['/api/monitoring', '/api/monitoring/']) {
+    const response = await request.get(path)
 
-  expect(response.status()).toBe(405)
-  expect(response.headers().allow).toBe('POST')
-  expect(response.headers()['x-poi-codename']).toBe('Shiratsuyu')
-  expect(response.headers()['accept-ch']).toBeUndefined()
+    expect(response.status()).toBe(405)
+    expect(response.headers().allow).toBe('POST')
+    expect(response.headers()['x-poi-codename']).toBe('Shiratsuyu')
+    expect(response.headers()['accept-ch']).toBeUndefined()
+  }
 })
