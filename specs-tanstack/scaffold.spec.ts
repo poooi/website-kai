@@ -78,12 +78,19 @@ test('serves hashed Vite assets with immutable cache headers', async ({
 })
 
 test('serves static social image routes', async ({ request }) => {
-  for (const path of ['/opengraph-image', '/twitter-image']) {
+  for (const path of [
+    '/opengraph-image',
+    '/opengraph-image/',
+    '/twitter-image',
+    '/twitter-image/',
+  ]) {
     const response = await request.get(path)
 
     expect(response.status()).toBe(200)
     expect(response.headers()['content-type']).toBe('image/png')
     expect(response.headers()['cache-control']).toBe('public,max-age=3600')
+    expect(response.headers()['accept-ch']).toBeUndefined()
+    expect(response.headers().vary).not.toContain('Sec-CH-UA-Platform')
   }
 })
 

@@ -37,12 +37,18 @@ const isHashedViteAsset = (pathname: string) => {
   return pathname.startsWith('/assets/')
 }
 
+const isSocialImagePath = (pathname: string) => {
+  const normalized = pathname.endsWith('/') ? pathname.slice(0, -1) : pathname
+  return normalized === '/opengraph-image' || normalized === '/twitter-image'
+}
+
 const isPageRequest = (request: Request) => {
   const { pathname } = new URL(request.url)
   return (
     (request.method === 'GET' || request.method === 'HEAD') &&
     !pathname.startsWith('/api/') &&
     !pathname.startsWith('/status') &&
+    !isSocialImagePath(pathname) &&
     !isFileRequest(pathname)
   )
 }
