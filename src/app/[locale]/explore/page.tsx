@@ -10,18 +10,14 @@ export const generateMetadata = async (
     params: Promise<{
       locale: string
     }>
-    previousMetadata: Metadata
   }>,
 ): Promise<Metadata> => {
   const params = await props.params
 
   const { locale } = params
 
-  const { previousMetadata } = props
-
   const { t } = await initTranslations(locale, ['common'])
   return {
-    ...previousMetadata,
     title: `poi | ${t('KanColle Browser')} | ${t('Explore')}`,
   }
 }
