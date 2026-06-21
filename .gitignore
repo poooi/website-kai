@@ -43,6 +43,11 @@ yarn-error.log*
 # open-next
 .open-next
 
+# TanStack Start / Vite
+.output
+.wrangler
+dist
+
 # typescript
 *.tsbuildinfo
 
@@ -51,6 +56,7 @@ yarn-error.log*
 node_modules/
 /test-results/
 /playwright-report/
+/playwright-report-tanstack/
 /blob-report/
 /playwright/.cache/
 

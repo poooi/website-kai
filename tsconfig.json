@@ -40,5 +40,13 @@
     ".next/dev/types/**/*.ts",
     ".next/dev/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "next-env.d.ts", ".next/dev"]
+  "exclude": [
+    "node_modules",
+    "next-env.d.ts",
+    ".next/dev",
+    ".open-next",
+    ".output",
+    ".wrangler",
+    "dist"
+  ]
 }
