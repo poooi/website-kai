@@ -167,7 +167,7 @@ importers:
         version: 11.0.4
       '@types/lodash':
         specifier: ^4.17.20
-        version: 4.17.20
+        version: 4.17.24
       '@types/node':
         specifier: ^22.18.11
         version: 22.18.11
@@ -2443,8 +2443,8 @@ packages:
   '@types/jsonfile@6.1.4':
     resolution: {integrity: sha512-D5qGUYwjvnNNextdU59/+fI+spnwtTFmyQP0h+PfIOSkNfpU6AOICUOkm4i0OnSk+NyjdPJrxCDro0sJsWlRpQ==}
 
-  '@types/lodash@4.17.20':
-    resolution: {integrity: sha512-H3MHACvFUEiujabxhaI/ImO6gUrd8oOurg7LQtS7mbwIXA/cUqWrvBsaeJ23aZEPk1TAYkurjfMbSELfoCXlGA==}
+  '@types/lodash@4.17.24':
+    resolution: {integrity: sha512-gIW7lQLZbue7lRSWEFql49QJJWThrTFFeIMJdp3eH4tKoxm1OvEPg02rm4wCCSHS0cL3/Fizimb35b7k8atwsQ==}
 
   '@types/mdast@4.0.4':
     resolution: {integrity: sha512-kGaNbPh1k7AFzgpud/gMdvIm5xuECykRR+JnWKQno9TAXVa6WIVCGTPvYGekIDL4uwCZQSYbUxNBSb1aUo79oA==}
@@ -8304,7 +8304,7 @@ snapshots:
     dependencies:
       '@types/node': 22.18.11
 
-  '@types/lodash@4.17.20': {}
+  '@types/lodash@4.17.24': {}
 
   '@types/mdast@4.0.4':
     dependencies:
