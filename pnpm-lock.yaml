@@ -24,8 +24,8 @@ importers:
         specifier: ^1.1.1
         version: 1.1.1
       '@icons-pack/react-simple-icons':
-        specifier: ^12.9.0
-        version: 12.9.0(react@19.2.7)
+        specifier: ^13.0.0
+        version: 13.13.0(react@19.2.7)
       '@radix-ui/react-dialog':
         specifier: ^1.1.15
         version: 1.1.15(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -1163,8 +1163,9 @@ packages:
     resolution: {integrity: sha512-F8+/NNUwtm8BuFz18O9KPvIFTFDo8GUSoyhPxPjEpk7nEyEzWGfhIiEPhL00B2NdHRLDSljh3AiCfSnL/tutiQ==}
     hasBin: true
 
-  '@icons-pack/react-simple-icons@12.9.0':
-    resolution: {integrity: sha512-GLb2ayO78ZjjmI7GMpCDlXcELEr3DPO89nordI/JC8dMiJDMzuPb3qeOTt+SWcFOyJ+SAh9C/feUCpiBSM8ZLQ==}
+  '@icons-pack/react-simple-icons@13.13.0':
+    resolution: {integrity: sha512-B5HhQMIpcSH4z8IZ8HFhD59CboHceKYMpPC9kAwGyKntvPdyJJv26DLu4Z1wAjcCLyrJhf11tMhiQGom9Rxb9g==}
+    engines: {node: '>=24', pnpm: '>=10'}
     peerDependencies:
       react: ^16.13 || ^17 || ^18 || ^19
 
@@ -7045,7 +7046,7 @@ snapshots:
 
   '@ibm/telemetry-js@1.10.2': {}
 
-  '@icons-pack/react-simple-icons@12.9.0(react@19.2.7)':
+  '@icons-pack/react-simple-icons@13.13.0(react@19.2.7)':
     dependencies:
       react: 19.2.7
 
