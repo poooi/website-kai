@@ -63,6 +63,32 @@ describe('handleFcd', () => {
     await expect(response.json()).resolves.toEqual([{ name: 'map' }])
   })
 
+  it('passes upstream response bodies through as streams', async () => {
+    const target =
+      'https://raw.githubusercontent.com/poooi/poi/master/assets/data/fcd/large.json'
+    const body = new ReadableStream({
+      start(controller) {
+        controller.enqueue(new TextEncoder().encode('{"items":['))
+        controller.enqueue(new TextEncoder().encode('"large"'))
+        controller.enqueue(new TextEncoder().encode(']}'))
+        controller.close()
+      },
+    })
+    const fetcher = mockFetch({
+      [target]: new Response(body),
+    })
+
+    const response = await handleFcd(
+      makeRequest('/fcd/large.json'),
+      { filename: 'large.json' },
+      { fetcher },
+    )
+
+    expect(response.status).toBe(200)
+    expect(response.body).not.toBeNull()
+    await expect(response.json()).resolves.toEqual({ items: ['large'] })
+  })
+
   it('rejects invalid filenames', async () => {
     const response = await handleFcd(makeRequest('/fcd/meta.md'), {
       filename: 'meta.md',

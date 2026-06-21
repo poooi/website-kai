@@ -67,3 +67,46 @@ test('reserves monitoring route without locale/page headers', async ({
     expect(response.headers()['accept-ch']).toBeUndefined()
   }
 })
+
+test('serves status through the TanStack Worker route', async ({ request }) => {
+  const response = await request.get('/status', {
+    headers: {
+      'CF-IPCountry': 'JP',
+    },
+  })
+
+  expect(response.status()).toBe(200)
+  expect(response.headers()['x-poi-codename']).toBe('Shiratsuyu')
+  expect(response.headers()['accept-ch']).toBeUndefined()
+  await expect(response.json()).resolves.toEqual({
+    message: 'poi poi poi!',
+    region: 'JP',
+  })
+})
+
+test('serves dist artifact redirects through the TanStack Worker route', async ({
+  request,
+}) => {
+  const response = await request.get('/dist/poi-10.9.2-win.7z', {
+    maxRedirects: 0,
+  })
+
+  expect(response.status()).toBe(301)
+  expect(response.headers()['x-poi-codename']).toBe('Shiratsuyu')
+  expect(response.headers().location).toBe(
+    'https://github.com/poooi/poi/releases/download/v10.9.2/poi-10.9.2-win.7z',
+  )
+})
+
+test('serves invalid proxy route inputs as 404 through TanStack', async ({
+  request,
+}) => {
+  const fcdResponse = await request.get('/fcd/meta.md')
+  const updateResponse = await request.get('/update/file.exe')
+  const distResponse = await request.get('/dist/file.exe')
+
+  for (const response of [fcdResponse, updateResponse, distResponse]) {
+    expect(response.status()).toBe(404)
+    expect(response.headers()['x-poi-codename']).toBe('Shiratsuyu')
+  }
+})
