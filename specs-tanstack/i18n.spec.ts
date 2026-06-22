@@ -230,6 +230,13 @@ test('keeps system theme selected after client-hint dark SSR', async ({
 
   await page.emulateMedia({ colorScheme: 'light' })
   await expect(page.locator('html')).not.toHaveClass(/dark/)
+  await expect(
+    page
+      .locator('canvas')
+      .evaluate((canvas: HTMLCanvasElement) =>
+        canvas.getContext('2d')?.getImageData(0, 0, 1, 1).data.join(','),
+      ),
+  ).resolves.toBeDefined()
 
   await context.close()
 })
