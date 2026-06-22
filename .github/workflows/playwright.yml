@@ -33,7 +33,7 @@ jobs:
         run: corepack pnpm run test:e2e:next
       - name: Run TanStack Playwright tests
         run: corepack pnpm run test:e2e:tanstack
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
