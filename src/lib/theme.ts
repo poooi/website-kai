@@ -28,3 +28,25 @@ export const getThemeCookie = (cookie: string | null | undefined) => {
   const theme = parseCookieString(cookie)[themeCookieName]
   return isTheme(theme) ? theme : undefined
 }
+
+export const getPreferredColorScheme = (headers: Headers) => {
+  const preferredColorScheme = headers
+    .get('Sec-CH-Prefers-Color-Scheme')
+    ?.replace(/^"|"$/g, '')
+  return preferredColorScheme === 'dark' || preferredColorScheme === 'light'
+    ? preferredColorScheme
+    : undefined
+}
+
+export const resolveServerTheme = (headers: Headers) => {
+  const theme = getThemeCookie(headers.get('Cookie'))
+  if (theme === 'dark' || theme === 'light') {
+    return theme
+  }
+
+  return getPreferredColorScheme(headers)
+}
+
+export const getServerThemePreference = (headers: Headers): Theme => {
+  return getThemeCookie(headers.get('Cookie')) ?? 'system'
+}

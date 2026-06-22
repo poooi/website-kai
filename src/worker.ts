@@ -36,7 +36,7 @@ type StartHandlerWithContext = (
 ) => Promise<Response>
 
 const clientHintValues =
-  'Sec-CH-UA-Platform, Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Mobile'
+  'Sec-CH-UA-Platform, Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Mobile, Sec-CH-Prefers-Color-Scheme'
 
 const buildDate = process.env.BUILD_DATE ?? 'development'
 const commitHash = process.env.COMMIT_HASH ?? 'development'

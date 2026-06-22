@@ -25,8 +25,11 @@ test('renders the isolated TanStack preview route', async ({ page }) => {
   expect(headers['x-poi-codename']).toBe('Shiratsuyu')
   expect(headers['x-poi-greetings']).toBe('poi?')
   expect(headers['accept-ch']).toContain('Sec-CH-UA-Platform')
+  expect(headers['accept-ch']).toContain('Sec-CH-Prefers-Color-Scheme')
   expect(headers['critical-ch']).toContain('Sec-CH-UA-Platform')
+  expect(headers['critical-ch']).toContain('Sec-CH-Prefers-Color-Scheme')
   expect(headers.vary).toContain('Sec-CH-UA-Platform')
+  expect(headers.vary).toContain('Sec-CH-Prefers-Color-Scheme')
   expect(headers['cache-control']).toBe('no-store')
 })
 

@@ -19,7 +19,7 @@ import { I18nProvider } from '~/components/i18n-provider'
 import { ThemeProvider } from '~/components/theme-provider'
 import { defaultLocale, isSupportedLocale } from '~/lib/i18n-routing'
 import { isMobileDevice } from '~/lib/target'
-import { getThemeCookie } from '~/lib/theme'
+import { getServerThemePreference, resolveServerTheme } from '~/lib/theme'
 import { cn } from '~/lib/utils'
 import enCommon from '~/locales/en/common.json'
 import frCommon from '~/locales/fr/common.json'
@@ -40,17 +40,6 @@ const resources = {
 const getCurrentRequestHeaders = createServerOnlyFn(
   () => new Headers(getRequestHeaders()),
 )
-
-const getThemeRequestCookie = (context: TanStackRouterContext) => {
-  const requestHeaders =
-    context.serverContext?.requestHeaders ?? context.requestHeaders
-  if (requestHeaders) {
-    return new Headers(requestHeaders).get('Cookie')
-  }
-  return typeof document === 'undefined'
-    ? getCurrentRequestHeaders().get('Cookie')
-    : document.cookie
-}
 
 const getCurrentRequestHeadersForRoot = (context: TanStackRouterContext) => {
   const requestHeaders =
@@ -81,7 +70,8 @@ export const Route = createRootRouteWithContext<TanStackRouterContext>()({
     const headers = getCurrentRequestHeadersForRoot(context)
     return {
       isMobile: await isMobileDevice(headers),
-      theme: getThemeCookie(getThemeRequestCookie(context)),
+      theme: resolveServerTheme(headers),
+      themePreference: getServerThemePreference(headers),
     }
   },
   head: () => ({
@@ -106,7 +96,7 @@ export const Route = createRootRouteWithContext<TanStackRouterContext>()({
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
-  const { isMobile, theme } = Route.useLoaderData()
+  const { isMobile, theme, themePreference } = Route.useLoaderData()
   const locale = useRouterState({
     select: (state) => {
       const routeLocale = state.matches
@@ -167,7 +157,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <ThemeProvider
           attribute="class"
-          defaultTheme={theme ?? 'system'}
+          defaultTheme={themePreference}
           enableSystem
           disableTransitionOnChange
         >

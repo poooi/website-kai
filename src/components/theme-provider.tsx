@@ -3,11 +3,12 @@
 import {
   atom,
   Provider as JotaiProvider,
+  useAtom,
   useAtomValue,
   useSetAtom,
 } from 'jotai'
 import { useHydrateAtoms } from 'jotai/utils'
-import { useEffect, type PropsWithChildren } from 'react'
+import { useEffect, useRef, type PropsWithChildren } from 'react'
 
 import {
   getThemeCookie,
@@ -26,8 +27,6 @@ interface ThemeProviderProps extends PropsWithChildren {
 const storageKey = themeCookieName
 
 const themeAtom = atom<Theme>('system')
-const enableSystemAtom = atom(true)
-const disableTransitionOnChangeAtom = atom(false)
 
 const getSystemTheme = () => {
   return window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -63,15 +62,6 @@ const applyTheme = (
   restoreTransitions?.()
 }
 
-const setThemeAtom = atom(null, (get, set, nextTheme: Theme) => {
-  const enableSystem = get(enableSystemAtom)
-  const disableTransitionOnChange = get(disableTransitionOnChangeAtom)
-  window.localStorage.setItem(storageKey, nextTheme)
-  setThemeCookie(nextTheme)
-  set(themeAtom, nextTheme)
-  applyTheme(nextTheme, enableSystem, disableTransitionOnChange)
-})
-
 export const ThemeProvider = ({
   attribute = 'class',
   children,
@@ -94,19 +84,14 @@ export const ThemeProvider = ({
 }
 
 const ThemeHydrator = ({
-  attribute = 'class',
   children,
   defaultTheme = 'system',
   disableTransitionOnChange = false,
   enableSystem = true,
 }: ThemeProviderProps) => {
-  useHydrateAtoms([
-    [themeAtom, defaultTheme],
-    [enableSystemAtom, enableSystem],
-    [disableTransitionOnChangeAtom, disableTransitionOnChange],
-  ])
-  const theme = useAtomValue(themeAtom)
-  const setTheme = useSetAtom(themeAtom)
+  useHydrateAtoms([[themeAtom, defaultTheme]])
+  const [theme, setTheme] = useAtom(themeAtom)
+  const skipThemeEffect = useRef(true)
 
   useEffect(() => {
     const cookieTheme = getThemeCookie(document.cookie)
@@ -115,24 +100,27 @@ const ThemeHydrator = ({
       cookieTheme ?? (isTheme(storedTheme) ? storedTheme : defaultTheme)
     setTheme(initialTheme)
     applyTheme(initialTheme, enableSystem, disableTransitionOnChange)
-  }, [
-    attribute,
-    defaultTheme,
-    disableTransitionOnChange,
-    enableSystem,
-    setTheme,
-  ])
+  }, [defaultTheme, disableTransitionOnChange, enableSystem, setTheme])
 
   useEffect(() => {
-    if (!enableSystem || theme !== 'system') {
-      return
+    const skipPersistence = skipThemeEffect.current
+    if (skipPersistence) {
+      skipThemeEffect.current = false
     }
 
-    const media = window.matchMedia('(prefers-color-scheme: dark)')
-    const handleChange = () =>
-      applyTheme('system', true, disableTransitionOnChange)
-    media.addEventListener('change', handleChange)
-    return () => media.removeEventListener('change', handleChange)
+    if (!skipPersistence) {
+      window.localStorage.setItem(storageKey, theme)
+      setThemeCookie(theme)
+      applyTheme(theme, enableSystem, disableTransitionOnChange)
+    }
+
+    if (enableSystem && theme === 'system') {
+      const media = window.matchMedia('(prefers-color-scheme: dark)')
+      const handleChange = () =>
+        applyTheme('system', true, disableTransitionOnChange)
+      media.addEventListener('change', handleChange)
+      return () => media.removeEventListener('change', handleChange)
+    }
   }, [disableTransitionOnChange, enableSystem, theme])
 
   return <>{children}</>
@@ -140,7 +128,7 @@ const ThemeHydrator = ({
 
 export const useTheme = () => {
   return {
-    setTheme: useSetAtom(setThemeAtom),
+    setTheme: useSetAtom(themeAtom),
     theme: useAtomValue(themeAtom),
   }
 }

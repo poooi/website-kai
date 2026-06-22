@@ -197,6 +197,43 @@ test('uses theme cookie for server-rendered explicit dark theme', async ({
   expect(await response.text()).toContain('<html lang="en" class="dark')
 })
 
+test('uses Sec-CH-Prefers-Color-Scheme for server-rendered system theme', async ({
+  request,
+}) => {
+  const response = await request.get('/en', {
+    headers: {
+      'Sec-CH-Prefers-Color-Scheme': '"dark"',
+    },
+  })
+
+  expect(await response.text()).toContain('<html lang="en" class="dark')
+})
+
+test('keeps system theme selected after client-hint dark SSR', async ({
+  browser,
+}) => {
+  const context = await browser.newContext({
+    baseURL: 'http://127.0.0.1:3002',
+    colorScheme: 'dark',
+    extraHTTPHeaders: {
+      'Sec-CH-Prefers-Color-Scheme': '"dark"',
+    },
+  })
+  const page = await context.newPage()
+
+  await page.goto('/en')
+  await expect(page.locator('html')).toHaveClass(/dark/)
+  await page.getByRole('button', { name: 'Theme' }).click()
+  await expect(
+    page.getByRole('menuitemradio', { name: 'System' }),
+  ).toHaveAttribute('aria-checked', 'true')
+
+  await page.emulateMedia({ colorScheme: 'light' })
+  await expect(page.locator('html')).not.toHaveClass(/dark/)
+
+  await context.close()
+})
+
 test('ignores malformed theme cookies during SSR', async ({ request }) => {
   const response = await request.get('/en', {
     headers: {

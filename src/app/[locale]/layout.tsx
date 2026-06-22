@@ -13,7 +13,7 @@ import { ThemeProvider } from '~/components/theme-provider'
 import { initTranslations } from '~/i18n'
 import { i18nConfig } from '~/i18n-config'
 import { isMobileDevice } from '~/lib/target'
-import { getThemeCookie } from '~/lib/theme'
+import { getServerThemePreference, resolveServerTheme } from '~/lib/theme'
 import { cn } from '~/lib/utils'
 
 export const generateStaticParams = async () => {
@@ -67,7 +67,8 @@ export default async function RootLayout(
 
   const requestHeaders = await headers()
   const isMobile = await isMobileDevice(requestHeaders)
-  const theme = getThemeCookie(requestHeaders.get('Cookie'))
+  const theme = resolveServerTheme(requestHeaders)
+  const themePreference = getServerThemePreference(requestHeaders)
 
   return (
     <html
@@ -114,7 +115,7 @@ export default async function RootLayout(
       <body>
         <ThemeProvider
           attribute="class"
-          defaultTheme={theme ?? 'system'}
+          defaultTheme={themePreference}
           enableSystem
           disableTransitionOnChange
         >
