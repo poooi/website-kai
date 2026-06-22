@@ -28,7 +28,7 @@ function HomePage() {
       </div>
       <div className="flex items-center gap-2">
         <Badge variant="outline" className="bg-green-500 text-white">
-          New
+          {t.newLabel}
         </Badge>
         <span>{t.httpsUpdateSupported}</span>
       </div>

@@ -107,6 +107,37 @@ const handleLocaleRedirects = (request: Request) => {
     return undefined
   }
 
+  const pathSegments = pathname.split('/').filter(Boolean)
+  const firstSegment = pathSegments[0]
+  const secondSegment = pathSegments[1]
+  const knownUnprefixedPage =
+    pathSegments.length === 1 &&
+    (firstSegment === 'download' || firstSegment === 'explore')
+  const knownDefaultPage = pathSegments.length === 0 || knownUnprefixedPage
+  const localeShapedSegment =
+    !!firstSegment && /^[a-z]{2}(?:-[A-Za-z]+)?$/.test(firstSegment)
+  const supportedLocalizedPage =
+    firstSegment &&
+    isSupportedLocale(firstSegment) &&
+    (pathSegments.length === 1 ||
+      (pathSegments.length === 2 &&
+        (secondSegment === 'download' || secondSegment === 'explore')))
+  const knownLocalizedPage =
+    firstSegment &&
+    !knownUnprefixedPage &&
+    !isSupportedLocale(firstSegment) &&
+    (pathSegments.length === 1 ||
+      (localeShapedSegment &&
+        pathSegments.length === 2 &&
+        (secondSegment === 'download' || secondSegment === 'explore')))
+  if (knownLocalizedPage) {
+    return new Response('', { status: 404 })
+  }
+
+  if (!knownDefaultPage && !supportedLocalizedPage) {
+    return new Response('', { status: 404 })
+  }
+
   const locale = getPathLocale(pathname)
   let canonicalPathname = pathname
   if (canonicalPathname !== '/' && canonicalPathname.endsWith('/')) {
@@ -118,24 +149,6 @@ const handleLocaleRedirects = (request: Request) => {
 
   if (canonicalPathname !== pathname) {
     return redirectTo(request, canonicalPathname, 308)
-  }
-
-  const pathSegments = pathname.split('/').filter(Boolean)
-  const firstSegment = pathSegments[0]
-  const secondSegment = pathSegments[1]
-  const knownUnprefixedPage =
-    firstSegment === 'download' || firstSegment === 'explore'
-  const localeShapedSegment =
-    !!firstSegment && /^[a-z]{2}(?:-[A-Za-z]+)?$/.test(firstSegment)
-  const knownLocalizedPage =
-    firstSegment &&
-    !knownUnprefixedPage &&
-    !isSupportedLocale(firstSegment) &&
-    (pathSegments.length === 1 ||
-      (localeShapedSegment &&
-        (secondSegment === 'download' || secondSegment === 'explore')))
-  if (knownLocalizedPage) {
-    return new Response('', { status: 404 })
   }
 
   if (!locale) {

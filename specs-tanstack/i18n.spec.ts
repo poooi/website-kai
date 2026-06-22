@@ -92,6 +92,7 @@ test('serves localized non-default content', async ({ page }) => {
     page.getByText('Scalable KanColle browser and tool.'),
   ).toBeVisible()
   await expect(page.getByRole('link', { name: 'Download' })).toBeVisible()
+  await expect(page.getByText('New')).toBeVisible()
 })
 
 test('serves localized download and explore pages', async ({ page }) => {
@@ -110,9 +111,43 @@ test('serves localized download and explore pages', async ({ page }) => {
 test('rejects unsupported locale-like prefixes', async ({ request }) => {
   const localeResponse = await request.get('/es/download')
   const unknownPageResponse = await request.get('/about')
+  const unknownNestedPageResponse = await request.get('/about/team', {
+    headers: { Cookie: 'NEXT_LOCALE=fr' },
+    maxRedirects: 0,
+  })
+  const unknownNestedKnownPageResponse = await request.get('/download/foo', {
+    headers: { Cookie: 'NEXT_LOCALE=fr' },
+    maxRedirects: 0,
+  })
+  const unknownNestedKnownPageSlashResponse = await request.get(
+    '/download/foo/',
+    {
+      headers: { Cookie: 'NEXT_LOCALE=fr' },
+      maxRedirects: 0,
+    },
+  )
+  const unknownDefaultLocaleNestedResponse = await request.get(
+    '/ja/download/foo',
+    {
+      maxRedirects: 0,
+    },
+  )
+  const unknownDefaultLocaleProxyResponse = await request.get('/ja/dist/en', {
+    maxRedirects: 0,
+  })
 
   expect(localeResponse.status()).toBe(404)
   expect(unknownPageResponse.status()).toBe(404)
+  expect(unknownNestedPageResponse.status()).toBe(404)
+  expect(unknownNestedPageResponse.headers().location).toBeUndefined()
+  expect(unknownNestedKnownPageResponse.status()).toBe(404)
+  expect(unknownNestedKnownPageResponse.headers().location).toBeUndefined()
+  expect(unknownNestedKnownPageSlashResponse.status()).toBe(404)
+  expect(unknownNestedKnownPageSlashResponse.headers().location).toBeUndefined()
+  expect(unknownDefaultLocaleNestedResponse.status()).toBe(404)
+  expect(unknownDefaultLocaleNestedResponse.headers().location).toBeUndefined()
+  expect(unknownDefaultLocaleProxyResponse.status()).toBe(404)
+  expect(unknownDefaultLocaleProxyResponse.headers().location).toBeUndefined()
 })
 
 test('does not localize API, proxy, asset, or generated image routes', async ({

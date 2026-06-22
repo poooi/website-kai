@@ -43,6 +43,7 @@ export const loadCommonTranslations = async (
     language: t('language'),
     mobileHint: t('mobile-hint'),
     name: t('name'),
+    newLabel: t('New'),
     nightlyBuilds: t('Nightly builds'),
     oldVersions: t('Old versions'),
     sourceCode: t('Source code'),
