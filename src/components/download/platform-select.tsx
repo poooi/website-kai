@@ -56,6 +56,7 @@ export const PlatformSelect = ({
       <div>{labels.operatingSystem}</div>
       <div>
         <ComboBox
+          placeholder={labels.operatingSystem}
           value={os as string}
           options={osOptions}
           onChange={(value) => {
@@ -67,6 +68,7 @@ export const PlatformSelect = ({
       <div>{labels.platform}</div>
       <div>
         <ComboBox
+          placeholder={labels.platform}
           value={spec as string}
           options={specOptions}
           onChange={(value) => {
@@ -84,15 +86,28 @@ interface ComboBoxProps {
   options: { label: string; value: string }[]
   onChange: (value: string) => void
   disabled?: boolean
+  placeholder: string
 }
 
-const ComboBox = ({ options, value, onChange, disabled }: ComboBoxProps) => {
+const ComboBox = ({
+  disabled,
+  onChange,
+  options,
+  placeholder,
+  value,
+}: ComboBoxProps) => {
   const currentLabel =
-    options.find((option) => option.value === value)?.label ?? ''
+    options.find((option) => option.value === value)?.label ?? placeholder
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" disabled={disabled} className="w-56">
+        <Button
+          variant="outline"
+          disabled={disabled}
+          className="w-56"
+          aria-label={currentLabel}
+          title={currentLabel}
+        >
           <span className="grow text-end">{currentLabel}</span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>

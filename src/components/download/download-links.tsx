@@ -28,13 +28,12 @@ export const DownloadLinks = ({ labels, poiVersions }: DownloadLinksProps) => {
   const stableURL = target ? getDownloadLink(poiVersions.version, target) : ''
   const betaURL = target ? getDownloadLink(poiVersions.betaVersion, target) : ''
 
+  if (!target) {
+    return null
+  }
+
   return (
-    <div
-      aria-hidden={!os || !spec}
-      className={cn('not-prose my-8 flex gap-8', {
-        'opacity-0': !os || !spec,
-      })}
-    >
+    <div className={cn('not-prose my-8 flex gap-8')}>
       <Button className="h-fit flex-col" asChild disabled={!stableURL}>
         <a href={stableURL}>
           <span>{labels.stable}</span>

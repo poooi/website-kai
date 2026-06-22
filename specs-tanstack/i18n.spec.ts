@@ -153,8 +153,12 @@ test('renders desktop request-aware download links', async ({ browser }) => {
   const linuxItem = page.getByRole('menuitem', { name: 'Linux' })
   await expect(linuxItem).toBeVisible()
   await linuxItem.click()
-  await expect(platformButtons.nth(1)).toBeVisible()
-  await platformButtons.nth(1).click()
+  const platformButton = page.getByRole('button', { name: 'Platform' })
+  await expect(platformButton).toBeVisible()
+  await expect(
+    page.getByRole('link', { name: /Download v10\.9\.2/ }),
+  ).toHaveCount(0)
+  await platformButton.click()
   const portableItem = page.getByRole('menuitem', { name: '64-bit portable' })
   await expect(portableItem).toBeVisible()
   await portableItem.click()

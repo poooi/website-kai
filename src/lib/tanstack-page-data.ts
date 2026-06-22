@@ -57,7 +57,13 @@ const loadPoiVersions = async (env?: ServerContext['env']) => {
   const fixture =
     env?.TANSTACK_TEST_POI_VERSIONS ?? process.env.TANSTACK_TEST_POI_VERSIONS
   if (fixture) {
-    return poiVersionsSchema.parse(JSON.parse(fixture) as unknown)
+    try {
+      return poiVersionsSchema.parse(JSON.parse(fixture) as unknown)
+    } catch (error) {
+      throw new Error('Invalid TANSTACK_TEST_POI_VERSIONS fixture JSON', {
+        cause: error,
+      })
+    }
   }
 
   return await fetchPoiVersions()
@@ -137,7 +143,9 @@ export const loadRequestAwarePageData = async (
   const serverContext = normalizeServerContext(context)
   const headers = serverContext?.requestHeaders
     ? new Headers(serverContext.requestHeaders)
-    : getCurrentRequestHeaders()
+    : typeof document === 'undefined'
+      ? getCurrentRequestHeaders()
+      : new Headers()
   const [{ t }, poiVersions, platform] = await Promise.all([
     initTranslations(supportedLocale, ['common']),
     loadPoiVersions(serverContext?.env),
