@@ -115,6 +115,72 @@ test('serves localized download and explore pages', async ({ page }) => {
   await expect(page.locator('main')).toContainText('poi')
 })
 
+test('serves framework-neutral header navigation controls', async ({
+  page,
+}) => {
+  await page.goto('/en')
+
+  await expect(page.getByRole('link', { name: 'poi' })).toHaveAttribute(
+    'href',
+    '/en',
+  )
+  await expect(page.getByAltText('poi')).toHaveAttribute('src', /poi-.*\.png/)
+  await expect(page.getByRole('link', { name: 'Explore' })).toHaveAttribute(
+    'href',
+    '/en/explore',
+  )
+  await expect(
+    page.getByRole('link', { name: 'Download', exact: true }),
+  ).toHaveAttribute('href', '/en/download')
+})
+
+test('keeps header pathname current after client history changes', async ({
+  page,
+}) => {
+  await page.goto('/en')
+  await page.evaluate(() => {
+    window.history.pushState({}, '', '/en/download')
+  })
+
+  await expect(page.getByRole('link', { name: 'poi' })).not.toHaveClass(
+    /opacity-0/,
+  )
+  await page.getByRole('button', { name: 'English' }).click()
+  await page.getByRole('menuitemradio', { name: 'français' }).click()
+  await expect(page).toHaveURL('http://127.0.0.1:3002/fr/download')
+})
+
+test('switches language with NEXT_LOCALE and canonical URL', async ({
+  page,
+}) => {
+  await page.goto('/en')
+
+  await page.getByRole('button', { name: 'English' }).click()
+  await page.getByRole('menuitemradio', { name: 'français' }).click()
+
+  await expect(page).toHaveURL('http://127.0.0.1:3002/fr')
+  await expect(page.locator('html')).toHaveAttribute('lang', 'fr')
+  const cookies = await page.context().cookies('http://127.0.0.1:3002')
+  expect(cookies.find((cookie) => cookie.name === 'NEXT_LOCALE')?.value).toBe(
+    'fr',
+  )
+})
+
+test('switches theme without next-themes', async ({ page }) => {
+  await page.goto('/en')
+
+  await page.getByRole('button', { name: 'Theme' }).click()
+  await page.getByRole('menuitemradio', { name: 'Chibaheit' }).click()
+  await expect(page.locator('html')).toHaveClass(/dark/)
+  await expect(
+    page.evaluate(() => localStorage.getItem('theme')),
+  ).resolves.toBe('dark')
+
+  await page.getByRole('button', { name: 'Theme' }).click()
+  await page.getByRole('menuitemradio', { name: 'Lilywhite' }).click()
+  await expect(page.locator('html')).not.toHaveClass(/dark/)
+})
+
 test('renders desktop request-aware download links', async ({ browser }) => {
   const context = await browser.newContext({
     baseURL: 'http://127.0.0.1:3002',
@@ -147,7 +213,10 @@ test('renders desktop request-aware download links', async ({ browser }) => {
     page.getByRole('link', { name: /Download v10\.9\.2/ }),
   ).toHaveAttribute('href', '/dist/poi-setup-10.9.2.exe')
   await expect(page.getByText('Operating system')).toBeVisible()
-  const platformButtons = page.getByRole('button')
+  const platformControls = page
+    .locator('section')
+    .filter({ hasText: 'Operating system' })
+  const platformButtons = platformControls.getByRole('button')
   await expect(platformButtons).toHaveCount(2)
   await platformButtons.first().click()
   const linuxItem = page.getByRole('menuitem', { name: 'Linux' })

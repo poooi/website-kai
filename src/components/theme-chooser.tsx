@@ -1,9 +1,9 @@
 'use client'
 
 import { MoonIcon, SunIcon } from 'lucide-react'
-import { useTheme } from 'next-themes'
 import { useTranslation } from 'react-i18next'
 
+import { type Theme, useTheme } from '~/components/theme-provider'
 import { Button } from '~/components/ui/button'
 import {
   DropdownMenu,
@@ -17,6 +17,11 @@ export const ThemeChooser = () => {
   const { theme, setTheme } = useTheme()
 
   const { t } = useTranslation()
+  const handleThemeChange = (value: string) => {
+    if (value === 'dark' || value === 'light' || value === 'system') {
+      setTheme(value satisfies Theme)
+    }
+  }
 
   return (
     <DropdownMenu>
@@ -33,7 +38,7 @@ export const ThemeChooser = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>
+        <DropdownMenuRadioGroup value={theme} onValueChange={handleThemeChange}>
           <DropdownMenuRadioItem value="light">
             {t('Lilywhite')}
           </DropdownMenuRadioItem>

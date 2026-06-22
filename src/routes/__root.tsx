@@ -6,10 +6,32 @@ import {
   createRootRouteWithContext,
   useRouterState,
 } from '@tanstack/react-router'
+import type { Resource } from 'i18next'
 import { Provider as JotaiProvider } from 'jotai'
 
 import '~/styles/globals.css'
+import { Background } from '~/components/background'
+import { FooterClient } from '~/components/footer-client'
+import { Header } from '~/components/header'
+import { I18nProvider } from '~/components/i18n-provider'
+import { ThemeProvider } from '~/components/theme-provider'
 import { defaultLocale, isSupportedLocale } from '~/lib/i18n-routing'
+import { cn } from '~/lib/utils'
+import enCommon from '~/locales/en/common.json'
+import frCommon from '~/locales/fr/common.json'
+import jaCommon from '~/locales/ja/common.json'
+import koCommon from '~/locales/ko/common.json'
+import zhHansCommon from '~/locales/zh-Hans/common.json'
+import zhHantCommon from '~/locales/zh-Hant/common.json'
+
+const resources = {
+  en: { common: enCommon },
+  fr: { common: frCommon },
+  ja: { common: jaCommon },
+  ko: { common: koCommon },
+  'zh-Hans': { common: zhHansCommon },
+  'zh-Hant': { common: zhHantCommon },
+} satisfies Resource
 
 export interface TanStackRouterContext {
   env?: {
@@ -41,10 +63,7 @@ export const Route = createRootRouteWithContext<TanStackRouterContext>()({
           'Scalable KanColle browser and tool, for Windows, macOS and Linux. 一个可扩展的舰队Collectionブラウザ。拡張可能な艦隊これくしょんブラウザ。',
       },
     ],
-    links: [
-      { rel: 'icon', href: '/favicon.ico' },
-      { rel: 'stylesheet', href: '/fonts/plex-sans/IBMPlexSans-Regular.css' },
-    ],
+    links: [{ rel: 'icon', href: '/favicon.ico' }],
   }),
   shellComponent: RootDocument,
 })
@@ -65,12 +84,69 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   })
 
   return (
-    <html lang={locale}>
+    <html
+      lang={locale}
+      className={cn({
+        'font-ja': locale === 'ja',
+        'font-zh-hant': locale === 'zh-Hant',
+        'font-zh-hans': locale === 'zh-Hans',
+        'font-ko': locale === 'ko',
+      })}
+      suppressHydrationWarning
+    >
       <head>
+        <link
+          href="/fonts/plex-sans/IBMPlexSans-Regular.css"
+          rel="stylesheet"
+        />
+        {locale === 'ja' && (
+          <link
+            href="/fonts/plex-sans-jp/IBMPlexSansJP-Regular.css"
+            rel="stylesheet"
+          />
+        )}
+        {locale === 'zh-Hant' && (
+          <link
+            href="/fonts/plex-sans-tc/IBMPlexSansTC-Regular.css"
+            rel="stylesheet"
+          />
+        )}
+        {locale === 'zh-Hans' && (
+          <link
+            href="/fonts/plex-sans-sc/IBMPlexSansSC-Regular.css"
+            rel="stylesheet"
+          />
+        )}
+        {locale === 'ko' && (
+          <link
+            href="/fonts/plex-sans-kr/IBMPlexSansKR-Regular.css"
+            rel="stylesheet"
+          />
+        )}
         <HeadContent />
       </head>
       <body>
-        <JotaiProvider>{children}</JotaiProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <div className="hidden md:block">
+            <Background />
+          </div>
+          <I18nProvider
+            locale={locale}
+            namespaces={['common']}
+            resources={resources}
+          >
+            <div className="relative z-0 mx-auto flex min-h-screen max-w-[960px] flex-col items-center justify-center px-4 md:px-8">
+              <Header />
+              <JotaiProvider>{children}</JotaiProvider>
+              <FooterClient />
+            </div>
+          </I18nProvider>
+        </ThemeProvider>
         <Scripts />
       </body>
     </html>

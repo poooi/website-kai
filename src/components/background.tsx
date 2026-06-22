@@ -2,10 +2,11 @@
 
 import debounce from 'lodash/debounce'
 import times from 'lodash/times'
-import { useTheme } from 'next-themes'
 import { rgba } from 'polished'
 import random from 'random'
 import { useEffect, useRef } from 'react'
+
+import { useTheme } from '~/components/theme-provider'
 
 /**
  * Draws an hexagone
