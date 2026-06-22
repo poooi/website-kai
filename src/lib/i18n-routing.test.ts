@@ -1,6 +1,17 @@
 import { describe, expect, it } from 'vitest'
 
-import { resolvePreferredLocale } from './i18n-routing'
+import { parseCookieHeader, resolvePreferredLocale } from './i18n-routing'
+
+describe('parseCookieHeader', () => {
+  it('uses a null-prototype cookie map for untrusted cookie names', () => {
+    const cookies = parseCookieHeader('__proto__=polluted; constructor=value')
+
+    expect(Object.getPrototypeOf(cookies)).toBeNull()
+    expect(cookies.__proto__).toBe('polluted')
+    expect(cookies.constructor).toBe('value')
+    expect(Object.prototype).not.toHaveProperty('polluted')
+  })
+})
 
 describe('resolvePreferredLocale', () => {
   it('honors Accept-Language q-values', () => {

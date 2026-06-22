@@ -39,7 +39,7 @@ export const localizePath = (pathname: string, locale: string) => {
 }
 
 export const parseCookieHeader = (cookieHeader: string | null) => {
-  const cookies: Record<string, string> = {}
+  const cookies = Object.create(null) as Record<string, string>
   for (const entry of (cookieHeader ?? '').split(';')) {
     const trimmed = entry.trim()
     if (!trimmed) {
