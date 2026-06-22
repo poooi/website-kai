@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest'
 
-import { detectTargetFromRequest, OS, PlatformSpec, Target } from './target'
+import {
+  detectTargetFromRequest,
+  isMobileDevice,
+  OS,
+  parseUA,
+  PlatformSpec,
+  Target,
+} from './target'
 
 describe('detectTargetFromRequest', () => {
   it('maps Windows ARM client hints to the Windows ARM target', async () => {
@@ -18,6 +25,21 @@ describe('detectTargetFromRequest', () => {
       os: OS.windows,
       spec: PlatformSpec.ARM,
       target: Target.winArm,
+    })
+  })
+
+  describe('isMobileDevice', () => {
+    it('classifies wearable user agents as mobile devices', async () => {
+      const headers = new Headers({
+        'User-Agent':
+          'Mozilla/5.0 (Linux; Android 13; Google Pixel Watch Build/TWD9.230205.001) ' +
+          'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
+      })
+
+      await expect(parseUA(headers)).resolves.toMatchObject({
+        device: { type: 'wearable' },
+      })
+      await expect(isMobileDevice(headers)).resolves.toBe(true)
     })
   })
 

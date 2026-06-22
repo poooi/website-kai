@@ -123,7 +123,7 @@ const isMobileUA = (ua: Awaited<ReturnType<typeof parseUA>>) => {
     'tablet',
     'console',
     'smarttv',
-    'wearbale',
+    'wearable',
     'embedded',
   ].includes(ua.device.type!)
 }
