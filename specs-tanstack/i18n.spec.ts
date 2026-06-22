@@ -108,6 +108,7 @@ test('rejects unsupported locale-like prefixes', async ({ request }) => {
 
 test('does not localize API, proxy, asset, or generated image routes', async ({
   request,
+  page,
 }) => {
   const statusResponse = await request.get('/status', {
     headers: { Cookie: 'NEXT_LOCALE=en' },
@@ -123,4 +124,7 @@ test('does not localize API, proxy, asset, or generated image routes', async ({
   expect(assetResponse.status()).toBe(200)
   expect(imageResponse.status()).toBe(200)
   expect(imageResponse.headers()['content-type']).toBe('image/png')
+
+  await page.goto('/dist/en')
+  await expect(page.locator('html')).toHaveAttribute('lang', 'ja')
 })

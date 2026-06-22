@@ -38,14 +38,15 @@ export const Route = createRootRoute({
 function RootDocument({ children }: { children: React.ReactNode }) {
   const locale = useRouterState({
     select: (state) => {
-      return (
-        state.matches
-          .flatMap((match) => Object.values(match.params))
-          .find(
-            (param): param is string =>
-              typeof param === 'string' && isSupportedLocale(param),
-          ) ?? defaultLocale
-      )
+      const routeLocale = state.matches
+        .map((match) => {
+          return 'locale' in match.params ? match.params.locale : undefined
+        })
+        .find(
+          (param): param is string =>
+            typeof param === 'string' && isSupportedLocale(param),
+        )
+      return routeLocale ?? defaultLocale
     },
   })
 
