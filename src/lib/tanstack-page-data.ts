@@ -1,5 +1,7 @@
+import sanitize from 'rehype-sanitize'
+import stringify from 'rehype-stringify'
 import { remark } from 'remark'
-import html from 'remark-html'
+import rehype from 'remark-rehype'
 
 import { initTranslations } from '~/i18n'
 import {
@@ -58,5 +60,7 @@ export const loadExploreHtml = async (locale: string = defaultLocale) => {
     throw new Response('', { status: 404 })
   }
 
-  return (await remark().use(html).process(content)).toString()
+  return (
+    await remark().use(rehype).use(sanitize).use(stringify).process(content)
+  ).toString()
 }
