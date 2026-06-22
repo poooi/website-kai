@@ -98,7 +98,7 @@
     "eslint-plugin-prettier": "^5.5.4",
     "fs-extra": "^11.3.2",
     "globby": "^16.0.0",
-    "p-queue": "^8.1.1",
+    "p-queue": "^9.0.0",
     "postcss": "^8.5.15",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.6.14",
