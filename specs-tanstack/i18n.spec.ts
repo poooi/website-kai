@@ -11,7 +11,9 @@ test('serves default locale content at unprefixed root', async ({ page }) => {
   await page.goto('/')
 
   await expect(page.getByText(/拡張可能/)).toBeVisible()
-  await expect(page.getByRole('link', { name: 'ダウンロード' })).toBeVisible()
+  await expect(
+    page.getByRole('link', { name: 'ダウンロードオプション' }),
+  ).toBeVisible()
 })
 
 test('redirects locale preference to non-default locale path', async ({
@@ -96,21 +98,139 @@ test('serves localized non-default content', async ({ page }) => {
   await expect(
     page.getByText('Scalable KanColle browser and tool.'),
   ).toBeVisible()
-  await expect(page.getByRole('link', { name: 'Download' })).toBeVisible()
-  await expect(page.getByText('New')).toBeVisible()
+  await expect(
+    page.getByRole('link', { name: 'Download options' }),
+  ).toBeVisible()
+  await expect(page.getByText('New', { exact: true })).toBeVisible()
 })
 
 test('serves localized download and explore pages', async ({ page }) => {
   await page.goto('/en/download')
   await expect(page.getByRole('heading', { name: 'Download' })).toBeVisible()
-  await expect(
-    page.getByRole('heading', { name: 'Old versions' }),
-  ).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Others' })).toBeVisible()
   await expect(page.getByRole('link', { name: 'Nightly builds' })).toBeVisible()
   await expect(page.getByRole('link', { name: 'Source code' })).toBeVisible()
 
   await page.goto('/en/explore')
   await expect(page.locator('main')).toContainText('poi')
+})
+
+test('renders desktop request-aware download links', async ({ browser }) => {
+  const context = await browser.newContext({
+    baseURL: 'http://127.0.0.1:3002',
+    extraHTTPHeaders: {
+      'Sec-CH-UA-Arch': '"x86"',
+      'Sec-CH-UA-Bitness': '"64"',
+      'Sec-CH-UA-Mobile': '?0',
+      'Sec-CH-UA-Platform': '"Windows"',
+    },
+    userAgent:
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ' +
+      '(KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
+  })
+  const page = await context.newPage()
+
+  await page.goto('/en')
+  await expect(
+    page.getByRole('link', { name: /Download v10\.9\.2/ }),
+  ).toHaveAttribute('href', '/dist/poi-setup-10.9.2.exe')
+  await expect(
+    page.getByRole('link', { name: /Download v10\.10\.0-beta\.1/ }),
+  ).toHaveAttribute('href', '/dist/poi-setup-10.10.0-beta.1.exe')
+  await expect(page.getByText('Sighted by skilled lookouts:')).toBeVisible()
+  await expect(page.getByText('Windows')).toBeVisible()
+  await expect(page.getByText('64-bit')).toBeVisible()
+
+  await page.getByRole('link', { name: 'Download options' }).click()
+  await expect(page).toHaveURL('http://127.0.0.1:3002/en/download')
+  await expect(
+    page.getByRole('link', { name: /Download v10\.9\.2/ }),
+  ).toHaveAttribute('href', '/dist/poi-setup-10.9.2.exe')
+  await expect(page.getByText('Operating system')).toBeVisible()
+  const platformButtons = page.getByRole('button')
+  await expect(platformButtons).toHaveCount(2)
+  await platformButtons.first().click()
+  const linuxItem = page.getByRole('menuitem', { name: 'Linux' })
+  await expect(linuxItem).toBeVisible()
+  await linuxItem.click()
+  const platformButton = page.getByRole('button', { name: 'Platform' })
+  await expect(platformButton).toBeVisible()
+  await expect(
+    page.getByRole('link', { name: /Download v10\.9\.2/ }),
+  ).toHaveCount(0)
+  await platformButton.click()
+  const portableItem = page.getByRole('menuitem', { name: '64-bit portable' })
+  await expect(portableItem).toBeVisible()
+  await portableItem.click()
+  await expect(
+    page.getByRole('link', { name: /Download v10\.9\.2/ }),
+  ).toHaveAttribute('href', '/dist/poi-10.9.2.7z')
+
+  await context.close()
+})
+
+test('renders mobile request-aware hint without download links', async ({
+  browser,
+}) => {
+  const context = await browser.newContext({
+    baseURL: 'http://127.0.0.1:3002',
+    extraHTTPHeaders: {
+      'Sec-CH-UA-Mobile': '?1',
+      'Sec-CH-UA-Platform': '"iOS"',
+    },
+    isMobile: true,
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) ' +
+      'AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
+  })
+  const page = await context.newPage()
+
+  await page.goto('/en')
+  await expect(
+    page.getByText('poi is designed for desktop devices'),
+  ).toBeVisible()
+  await expect(
+    page.getByRole('link', { name: /Download v10\.9\.2/ }),
+  ).toHaveCount(0)
+
+  await page.goto('/en/download')
+  await expect(
+    page.getByText('poi is designed for desktop devices'),
+  ).toBeVisible()
+  await expect(
+    page.getByRole('link', { name: /Download v10\.9\.2/ }),
+  ).toHaveCount(0)
+
+  await context.close()
+})
+
+test('does not leak SSR platform state between download requests', async ({
+  request,
+}) => {
+  const windowsResponse = await request.get('/en/download', {
+    headers: {
+      'Sec-CH-UA-Arch': '"x86"',
+      'Sec-CH-UA-Bitness': '"64"',
+      'Sec-CH-UA-Mobile': '?0',
+      'Sec-CH-UA-Platform': '"Windows"',
+      'User-Agent':
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+    },
+  })
+  const linuxArmResponse = await request.get('/en/download', {
+    headers: {
+      'Sec-CH-UA-Arch': '"arm"',
+      'Sec-CH-UA-Mobile': '?0',
+      'Sec-CH-UA-Platform': '"Linux"',
+      'User-Agent': 'Mozilla/5.0 (X11; Linux aarch64) AppleWebKit/537.36',
+    },
+  })
+
+  const windowsHtml = await windowsResponse.text()
+  const linuxArmHtml = await linuxArmResponse.text()
+  expect(windowsHtml).toContain('/dist/poi-setup-10.9.2.exe')
+  expect(linuxArmHtml).toContain('/dist/poi-10.9.2-arm64.7z')
+  expect(linuxArmHtml).not.toContain('/dist/poi-setup-10.9.2.exe')
 })
 
 test('rejects unsupported locale-like prefixes', async ({ request }) => {

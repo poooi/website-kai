@@ -16,6 +16,7 @@ interface AssetsBinding {
 
 interface WorkerEnv {
   ASSETS?: AssetsBinding
+  TANSTACK_TEST_POI_VERSIONS?: string
 }
 
 interface ExecutionContextLike {
@@ -29,6 +30,7 @@ type StartHandlerWithContext = (
     context: {
       ctx: ExecutionContextLike
       env: WorkerEnv
+      requestHeaders: [string, string][]
     }
   },
 ) => Promise<Response>
@@ -273,7 +275,7 @@ const worker = {
     response ??= await (startHandler.fetch as StartHandlerWithContext)(
       request,
       {
-        context: { env, ctx },
+        context: { env, ctx, requestHeaders: [...request.headers] },
       },
     )
 

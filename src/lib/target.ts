@@ -103,35 +103,46 @@ export const getDownloadLink = (
   }
 }
 
-interface DetectionResult {
+export interface DetectionResult {
   os: OS
   spec: PlatformSpec
   target: Target
+}
+
+export interface RequestPlatformResult extends DetectionResult {
+  isMobile: boolean
 }
 
 export const parseUA = async (headers: Headers) => {
   return UAParser(Object.fromEntries(headers)).withClientHints()
 }
 
-export const isMobileDevice = async (headers: Headers) => {
-  const ua = await parseUA(headers)
+const isMobileUA = (ua: Awaited<ReturnType<typeof parseUA>>) => {
   return [
     'mobile',
     'tablet',
     'console',
     'smarttv',
-    'wearbale',
+    'wearable',
     'embedded',
   ].includes(ua.device.type!)
 }
 
-export const detectTargetFromRequest = async (
-  headers: Headers,
-): Promise<DetectionResult> => {
-  const { os, cpu } = await parseUA(headers)
+export const isMobileDevice = async (headers: Headers) => {
+  return isMobileUA(await parseUA(headers))
+}
+
+const detectTargetFromUA = (
+  ua: Awaited<ReturnType<typeof parseUA>>,
+): DetectionResult => {
+  const { os, cpu } = ua
   if (os.name === 'Linux') {
     if (cpu.architecture === 'arm64' || cpu.architecture === 'arm') {
-      return { os: OS.linux, spec: PlatformSpec.ARM, target: Target.linuxArm }
+      return {
+        os: OS.linux,
+        spec: PlatformSpec.ARMPortable,
+        target: Target.linuxArm,
+      }
     }
     return {
       os: OS.linux,
@@ -139,6 +150,7 @@ export const detectTargetFromRequest = async (
       target: Target.linux,
     }
   }
+
   if (os.name === 'Debian' || os.name === 'Ubuntu') {
     if (cpu.architecture === 'arm64' || cpu.architecture === 'arm') {
       return {
@@ -147,6 +159,7 @@ export const detectTargetFromRequest = async (
         target: Target.linuxDebArm,
       }
     }
+
     return {
       os: OS.linux,
       spec: PlatformSpec.X64DEB,
@@ -154,6 +167,13 @@ export const detectTargetFromRequest = async (
     }
   }
   if (os.name === 'CentOS' || os.name === 'Fedora') {
+    if (cpu.architecture === 'arm64' || cpu.architecture === 'arm') {
+      return {
+        os: OS.linux,
+        spec: PlatformSpec.ARMPortable,
+        target: Target.linuxArm,
+      }
+    }
     return {
       os: OS.linux,
       spec: PlatformSpec.X64RPM,
@@ -175,6 +195,13 @@ export const detectTargetFromRequest = async (
     }
   }
   if (os.name === 'Windows') {
+    if (cpu.architecture === 'arm64' || cpu.architecture === 'arm') {
+      return {
+        os: OS.windows,
+        spec: PlatformSpec.ARM,
+        target: Target.winArm,
+      }
+    }
     if (cpu.architecture === 'ia64' || cpu.architecture === 'amd64') {
       return {
         os: OS.windows,
@@ -192,5 +219,21 @@ export const detectTargetFromRequest = async (
     os: OS.linux,
     spec: PlatformSpec.X64Portable,
     target: Target.linux,
+  }
+}
+
+export const detectTargetFromRequest = async (
+  headers: Headers,
+): Promise<DetectionResult> => {
+  return detectTargetFromUA(await parseUA(headers))
+}
+
+export const detectRequestPlatform = async (
+  headers: Headers,
+): Promise<RequestPlatformResult> => {
+  const ua = await parseUA(headers)
+  return {
+    ...detectTargetFromUA(ua),
+    isMobile: isMobileUA(ua),
   }
 }
