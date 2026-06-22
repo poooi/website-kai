@@ -1,5 +1,15 @@
 import startHandler from '@tanstack/react-start/server-entry'
 
+import {
+  defaultLocale,
+  getPathLocale,
+  isDefaultLocale,
+  isSupportedLocale,
+  localizePath,
+  resolvePreferredLocale,
+  stripLocalePrefix,
+} from '~/lib/i18n-routing'
+
 interface AssetsBinding {
   fetch(request: Request): Promise<Response>
 }
@@ -42,6 +52,13 @@ const isSocialImagePath = (pathname: string) => {
   return normalized === '/opengraph-image' || normalized === '/twitter-image'
 }
 
+const isProxyRootPath = (pathname: string) => {
+  const normalized = pathname === '/' ? pathname : pathname.replace(/\/+$/, '')
+  return (
+    normalized === '/dist' || normalized === '/fcd' || normalized === '/update'
+  )
+}
+
 const isPageRequest = (request: Request) => {
   const { pathname } = new URL(request.url)
   return (
@@ -51,6 +68,101 @@ const isPageRequest = (request: Request) => {
     !isSocialImagePath(pathname) &&
     !isFileRequest(pathname)
   )
+}
+
+const isPagePath = (pathname: string) => {
+  return (
+    !pathname.startsWith('/api/') &&
+    !pathname.startsWith('/status') &&
+    !isProxyRootPath(pathname) &&
+    !pathname.startsWith('/dist/') &&
+    !pathname.startsWith('/fcd/') &&
+    !pathname.startsWith('/update/') &&
+    !isSocialImagePath(pathname) &&
+    !isFileRequest(pathname)
+  )
+}
+
+const redirectTo = (request: Request, pathname: string, status: 307 | 308) => {
+  const url = new URL(request.url)
+  url.pathname = pathname
+  const headers = new Headers()
+  if (status === 307) {
+    headers.set('Cache-Control', 'no-store')
+    headers.set('Vary', 'Cookie, Accept-Language')
+  }
+  headers.set('Content-Type', 'text/plain; charset=utf-8')
+  return new Response('', {
+    headers: {
+      ...Object.fromEntries(headers),
+      Location: url.toString(),
+    },
+    status,
+  })
+}
+
+const handleLocaleRedirects = (request: Request) => {
+  const { pathname } = new URL(request.url)
+  if (request.method !== 'GET' && request.method !== 'HEAD') {
+    return undefined
+  }
+
+  if (!isPagePath(pathname)) {
+    return undefined
+  }
+
+  const pathSegments = pathname.split('/').filter(Boolean)
+  const firstSegment = pathSegments[0]
+  const secondSegment = pathSegments[1]
+  const knownUnprefixedPage =
+    pathSegments.length === 1 &&
+    (firstSegment === 'download' || firstSegment === 'explore')
+  const knownDefaultPage = pathSegments.length === 0 || knownUnprefixedPage
+  const localeShapedSegment =
+    !!firstSegment && /^[a-z]{2}(?:-[A-Za-z]+)?$/.test(firstSegment)
+  const supportedLocalizedPage =
+    firstSegment &&
+    isSupportedLocale(firstSegment) &&
+    (pathSegments.length === 1 ||
+      (pathSegments.length === 2 &&
+        (secondSegment === 'download' || secondSegment === 'explore')))
+  const knownLocalizedPage =
+    firstSegment &&
+    !knownUnprefixedPage &&
+    !isSupportedLocale(firstSegment) &&
+    (pathSegments.length === 1 ||
+      (localeShapedSegment &&
+        pathSegments.length === 2 &&
+        (secondSegment === 'download' || secondSegment === 'explore')))
+  if (knownLocalizedPage) {
+    return new Response('', { status: 404 })
+  }
+
+  if (!knownDefaultPage && !supportedLocalizedPage) {
+    return new Response('', { status: 404 })
+  }
+
+  const locale = getPathLocale(pathname)
+  let canonicalPathname = pathname
+  if (canonicalPathname !== '/' && canonicalPathname.endsWith('/')) {
+    canonicalPathname = canonicalPathname.replace(/\/+$/, '')
+  }
+  if (locale && isDefaultLocale(locale)) {
+    canonicalPathname = stripLocalePrefix(canonicalPathname)
+  }
+
+  if (canonicalPathname !== pathname) {
+    return redirectTo(request, canonicalPathname, 308)
+  }
+
+  if (!locale) {
+    const preferredLocale = resolvePreferredLocale(request.headers)
+    if (preferredLocale !== defaultLocale) {
+      return redirectTo(request, localizePath(pathname, preferredLocale), 307)
+    }
+  }
+
+  return undefined
 }
 
 const appendVary = (headers: Headers, value: string) => {
@@ -152,6 +264,11 @@ const worker = {
       response = handleMonitoringStub(request)
     }
 
+    if (isProxyRootPath(pathname)) {
+      response = new Response('', { status: 404 })
+    }
+
+    response ??= handleLocaleRedirects(request)
     response ??= await handleAsset(request, env)
     response ??= await (startHandler.fetch as StartHandlerWithContext)(
       request,
