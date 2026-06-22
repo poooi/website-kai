@@ -54,6 +54,23 @@ const setThemeCookie = (theme: Theme) => {
   document.cookie = `${themeCookieName}=${theme};max-age=31536000;path=/;sameSite=lax`
 }
 
+const getStoredTheme = () => {
+  try {
+    const storedTheme = window.localStorage.getItem(storageKey)
+    return isTheme(storedTheme) ? storedTheme : undefined
+  } catch {
+    return undefined
+  }
+}
+
+const setStoredTheme = (theme: Theme) => {
+  try {
+    window.localStorage.setItem(storageKey, theme)
+  } catch {
+    // Storage can be disabled; the theme cookie still preserves preference.
+  }
+}
+
 const applyTheme = (
   theme: Theme,
   enableSystem: boolean,
@@ -109,9 +126,7 @@ const ThemeHydrator = ({
 
   useLayoutEffect(() => {
     const cookieTheme = getThemeCookie(document.cookie)
-    const storedTheme = window.localStorage.getItem(storageKey)
-    const initialTheme =
-      cookieTheme ?? (isTheme(storedTheme) ? storedTheme : defaultTheme)
+    const initialTheme = cookieTheme ?? getStoredTheme() ?? defaultTheme
     setTheme(initialTheme)
     setResolvedTheme(
       applyTheme(initialTheme, enableSystem, disableTransitionOnChange),
@@ -131,7 +146,7 @@ const ThemeHydrator = ({
     }
 
     if (!skipPersistence) {
-      window.localStorage.setItem(storageKey, theme)
+      setStoredTheme(theme)
       setThemeCookie(theme)
       setResolvedTheme(
         applyTheme(theme, enableSystem, disableTransitionOnChange),

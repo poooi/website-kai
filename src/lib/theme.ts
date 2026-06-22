@@ -1,9 +1,15 @@
-export type Theme = 'dark' | 'light' | 'system'
+import { z } from 'zod'
+
+export const themeSchema = z.enum(['dark', 'light', 'system'])
+
+export const colorSchemeSchema = z.enum(['dark', 'light'])
+
+export type Theme = z.infer<typeof themeSchema>
 
 export const themeCookieName = 'theme'
 
 export const isTheme = (value: string | null | undefined): value is Theme => {
-  return value === 'dark' || value === 'light' || value === 'system'
+  return themeSchema.safeParse(value).success
 }
 
 export const parseCookieString = (cookie: string) => {
@@ -26,16 +32,14 @@ export const getThemeCookie = (cookie: string | null | undefined) => {
     return undefined
   }
   const theme = parseCookieString(cookie)[themeCookieName]
-  return isTheme(theme) ? theme : undefined
+  return themeSchema.safeParse(theme).data
 }
 
 export const getPreferredColorScheme = (headers: Headers) => {
   const preferredColorScheme = headers
     .get('Sec-CH-Prefers-Color-Scheme')
     ?.replace(/^"|"$/g, '')
-  return preferredColorScheme === 'dark' || preferredColorScheme === 'light'
-    ? preferredColorScheme
-    : undefined
+  return colorSchemeSchema.safeParse(preferredColorScheme).data
 }
 
 export const resolveServerTheme = (headers: Headers) => {

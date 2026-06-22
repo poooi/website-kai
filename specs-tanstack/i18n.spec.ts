@@ -261,6 +261,32 @@ test('ignores invalid stored theme values', async ({ page }) => {
   await expect(page.locator('html')).toHaveClass(/dark/)
 })
 
+test('theme switching works when localStorage is unavailable', async ({
+  browser,
+}) => {
+  const context = await browser.newContext({
+    baseURL: 'http://127.0.0.1:3002',
+  })
+  await context.addInitScript(() => {
+    Storage.prototype.getItem = () => {
+      throw new Error('localStorage disabled')
+    }
+    Storage.prototype.setItem = () => {
+      throw new Error('localStorage disabled')
+    }
+  })
+  const page = await context.newPage()
+
+  await page.goto('/en')
+  await page.getByRole('button', { name: 'Theme' }).click()
+  await page.getByRole('menuitemradio', { name: 'Chibaheit' }).click()
+  await expect(page.locator('html')).toHaveClass(/dark/)
+  const cookies = await page.context().cookies('http://127.0.0.1:3002')
+  expect(cookies.find((cookie) => cookie.name === 'theme')?.value).toBe('dark')
+
+  await context.close()
+})
+
 test('does not mount background canvas on small screens', async ({ page }) => {
   await page.setViewportSize({ width: 500, height: 800 })
   await page.goto('/en')
