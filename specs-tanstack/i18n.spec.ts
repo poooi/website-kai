@@ -175,10 +175,53 @@ test('switches theme without next-themes', async ({ page }) => {
   await expect(
     page.evaluate(() => localStorage.getItem('theme')),
   ).resolves.toBe('dark')
+  const darkCookies = await page.context().cookies('http://127.0.0.1:3002')
+  expect(darkCookies.find((cookie) => cookie.name === 'theme')?.value).toBe(
+    'dark',
+  )
 
   await page.getByRole('button', { name: 'Theme' }).click()
   await page.getByRole('menuitemradio', { name: 'Lilywhite' }).click()
   await expect(page.locator('html')).not.toHaveClass(/dark/)
+})
+
+test('uses theme cookie for server-rendered explicit dark theme', async ({
+  request,
+}) => {
+  const response = await request.get('/en', {
+    headers: {
+      Cookie: 'theme=dark',
+    },
+  })
+
+  expect(await response.text()).toContain('<html lang="en" class="dark')
+})
+
+test('ignores malformed theme cookies during SSR', async ({ request }) => {
+  const response = await request.get('/en', {
+    headers: {
+      Cookie: 'theme=%',
+    },
+  })
+
+  expect(response.status()).toBe(200)
+})
+
+test('ignores invalid stored theme values', async ({ page }) => {
+  await page.goto('/en')
+  await page.evaluate(() => localStorage.setItem('theme', 'invalid'))
+  await page.reload()
+
+  await page.getByRole('button', { name: 'Theme' }).click()
+  await page.getByRole('menuitemradio', { name: 'Chibaheit' }).click()
+  await expect(page.locator('html')).toHaveClass(/dark/)
+})
+
+test('does not mount background canvas on small screens', async ({ page }) => {
+  await page.setViewportSize({ width: 500, height: 800 })
+  await page.goto('/en')
+
+  await expect(page.locator('canvas')).toHaveCount(0)
 })
 
 test('renders desktop request-aware download links', async ({ browser }) => {

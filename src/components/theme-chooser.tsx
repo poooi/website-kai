@@ -3,7 +3,7 @@
 import { MoonIcon, SunIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { type Theme, useTheme } from '~/components/theme-provider'
+import { useTheme } from '~/components/theme-provider'
 import { Button } from '~/components/ui/button'
 import {
   DropdownMenu,
@@ -12,6 +12,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
+import { type Theme } from '~/lib/theme'
 
 export const ThemeChooser = () => {
   const { theme, setTheme } = useTheme()

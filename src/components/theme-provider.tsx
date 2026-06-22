@@ -1,16 +1,20 @@
 'use client'
 
 import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  type PropsWithChildren,
-} from 'react'
+  atom,
+  Provider as JotaiProvider,
+  useAtomValue,
+  useSetAtom,
+} from 'jotai'
+import { useHydrateAtoms } from 'jotai/utils'
+import { useEffect, type PropsWithChildren } from 'react'
 
-export type Theme = 'dark' | 'light' | 'system'
+import {
+  getThemeCookie,
+  isTheme,
+  themeCookieName,
+  type Theme,
+} from '~/lib/theme'
 
 interface ThemeProviderProps extends PropsWithChildren {
   attribute?: 'class'
@@ -19,14 +23,11 @@ interface ThemeProviderProps extends PropsWithChildren {
   enableSystem?: boolean
 }
 
-interface ThemeContextValue {
-  setTheme: (theme: Theme) => void
-  theme: Theme
-}
+const storageKey = themeCookieName
 
-const ThemeContext = createContext<ThemeContextValue | undefined>(undefined)
-
-const storageKey = 'theme'
+const themeAtom = atom<Theme>('system')
+const enableSystemAtom = atom(true)
+const disableTransitionOnChangeAtom = atom(false)
 
 const getSystemTheme = () => {
   return window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -34,25 +35,93 @@ const getSystemTheme = () => {
     : 'light'
 }
 
-const applyTheme = (theme: Theme, enableSystem: boolean) => {
+const disableTransitions = () => {
+  const style = document.createElement('style')
+  style.appendChild(document.createTextNode('*{transition:none!important}'))
+  document.head.appendChild(style)
+  window.getComputedStyle(document.body)
+  return () => {
+    style.remove()
+  }
+}
+
+const setThemeCookie = (theme: Theme) => {
+  document.cookie = `${themeCookieName}=${theme};max-age=31536000;path=/;sameSite=lax`
+}
+
+const applyTheme = (
+  theme: Theme,
+  enableSystem: boolean,
+  disableTransitionOnChange: boolean,
+) => {
+  const restoreTransitions = disableTransitionOnChange
+    ? disableTransitions()
+    : undefined
   const resolvedTheme =
     theme === 'system' && enableSystem ? getSystemTheme() : theme
   document.documentElement.classList.toggle('dark', resolvedTheme === 'dark')
+  restoreTransitions?.()
 }
 
+const setThemeAtom = atom(null, (get, set, nextTheme: Theme) => {
+  const enableSystem = get(enableSystemAtom)
+  const disableTransitionOnChange = get(disableTransitionOnChangeAtom)
+  window.localStorage.setItem(storageKey, nextTheme)
+  setThemeCookie(nextTheme)
+  set(themeAtom, nextTheme)
+  applyTheme(nextTheme, enableSystem, disableTransitionOnChange)
+})
+
 export const ThemeProvider = ({
+  attribute = 'class',
   children,
   defaultTheme = 'system',
+  disableTransitionOnChange = false,
   enableSystem = true,
 }: ThemeProviderProps) => {
-  const [theme, setThemeState] = useState<Theme>(defaultTheme)
+  return (
+    <JotaiProvider>
+      <ThemeHydrator
+        attribute={attribute}
+        defaultTheme={defaultTheme}
+        disableTransitionOnChange={disableTransitionOnChange}
+        enableSystem={enableSystem}
+      >
+        {children}
+      </ThemeHydrator>
+    </JotaiProvider>
+  )
+}
+
+const ThemeHydrator = ({
+  attribute = 'class',
+  children,
+  defaultTheme = 'system',
+  disableTransitionOnChange = false,
+  enableSystem = true,
+}: ThemeProviderProps) => {
+  useHydrateAtoms([
+    [themeAtom, defaultTheme],
+    [enableSystemAtom, enableSystem],
+    [disableTransitionOnChangeAtom, disableTransitionOnChange],
+  ])
+  const theme = useAtomValue(themeAtom)
+  const setTheme = useSetAtom(themeAtom)
 
   useEffect(() => {
-    const storedTheme = window.localStorage.getItem(storageKey) as Theme | null
-    const initialTheme = storedTheme ?? defaultTheme
-    setThemeState(initialTheme)
-    applyTheme(initialTheme, enableSystem)
-  }, [defaultTheme, enableSystem])
+    const cookieTheme = getThemeCookie(document.cookie)
+    const storedTheme = window.localStorage.getItem(storageKey)
+    const initialTheme =
+      cookieTheme ?? (isTheme(storedTheme) ? storedTheme : defaultTheme)
+    setTheme(initialTheme)
+    applyTheme(initialTheme, enableSystem, disableTransitionOnChange)
+  }, [
+    attribute,
+    defaultTheme,
+    disableTransitionOnChange,
+    enableSystem,
+    setTheme,
+  ])
 
   useEffect(() => {
     if (!enableSystem || theme !== 'system') {
@@ -60,29 +129,18 @@ export const ThemeProvider = ({
     }
 
     const media = window.matchMedia('(prefers-color-scheme: dark)')
-    const handleChange = () => applyTheme('system', true)
+    const handleChange = () =>
+      applyTheme('system', true, disableTransitionOnChange)
     media.addEventListener('change', handleChange)
     return () => media.removeEventListener('change', handleChange)
-  }, [enableSystem, theme])
+  }, [disableTransitionOnChange, enableSystem, theme])
 
-  const setTheme = useCallback(
-    (nextTheme: Theme) => {
-      window.localStorage.setItem(storageKey, nextTheme)
-      setThemeState(nextTheme)
-      applyTheme(nextTheme, enableSystem)
-    },
-    [enableSystem],
-  )
-
-  const value = useMemo(() => ({ setTheme, theme }), [setTheme, theme])
-
-  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+  return <>{children}</>
 }
 
 export const useTheme = () => {
-  const context = useContext(ThemeContext)
-  if (!context) {
-    throw new Error('useTheme must be used within ThemeProvider')
+  return {
+    setTheme: useSetAtom(setThemeAtom),
+    theme: useAtomValue(themeAtom),
   }
-  return context
 }

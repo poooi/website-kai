@@ -6,16 +6,20 @@ import {
   createRootRouteWithContext,
   useRouterState,
 } from '@tanstack/react-router'
+import { createServerOnlyFn } from '@tanstack/react-start'
+import { getRequestHeaders } from '@tanstack/react-start/server'
 import type { Resource } from 'i18next'
 import { Provider as JotaiProvider } from 'jotai'
 
 import '~/styles/globals.css'
-import { Background } from '~/components/background'
+import { DesktopBackground } from '~/components/desktop-background'
 import { FooterClient } from '~/components/footer-client'
 import { Header } from '~/components/header'
 import { I18nProvider } from '~/components/i18n-provider'
 import { ThemeProvider } from '~/components/theme-provider'
 import { defaultLocale, isSupportedLocale } from '~/lib/i18n-routing'
+import { isMobileDevice } from '~/lib/target'
+import { getThemeCookie } from '~/lib/theme'
 import { cn } from '~/lib/utils'
 import enCommon from '~/locales/en/common.json'
 import frCommon from '~/locales/fr/common.json'
@@ -33,6 +37,32 @@ const resources = {
   'zh-Hant': { common: zhHantCommon },
 } satisfies Resource
 
+const getCurrentRequestHeaders = createServerOnlyFn(
+  () => new Headers(getRequestHeaders()),
+)
+
+const getThemeRequestCookie = (context: TanStackRouterContext) => {
+  const requestHeaders =
+    context.serverContext?.requestHeaders ?? context.requestHeaders
+  if (requestHeaders) {
+    return new Headers(requestHeaders).get('Cookie')
+  }
+  return typeof document === 'undefined'
+    ? getCurrentRequestHeaders().get('Cookie')
+    : document.cookie
+}
+
+const getCurrentRequestHeadersForRoot = (context: TanStackRouterContext) => {
+  const requestHeaders =
+    context.serverContext?.requestHeaders ?? context.requestHeaders
+  if (requestHeaders) {
+    return new Headers(requestHeaders)
+  }
+  return typeof document === 'undefined'
+    ? getCurrentRequestHeaders()
+    : new Headers()
+}
+
 export interface TanStackRouterContext {
   env?: {
     TANSTACK_TEST_POI_VERSIONS?: string
@@ -47,6 +77,13 @@ export interface TanStackRouterContext {
 }
 
 export const Route = createRootRouteWithContext<TanStackRouterContext>()({
+  loader: async ({ context }) => {
+    const headers = getCurrentRequestHeadersForRoot(context)
+    return {
+      isMobile: await isMobileDevice(headers),
+      theme: getThemeCookie(getThemeRequestCookie(context)),
+    }
+  },
   head: () => ({
     meta: [
       { charSet: 'utf-8' },
@@ -69,6 +106,7 @@ export const Route = createRootRouteWithContext<TanStackRouterContext>()({
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const { isMobile, theme } = Route.useLoaderData()
   const locale = useRouterState({
     select: (state) => {
       const routeLocale = state.matches
@@ -87,6 +125,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     <html
       lang={locale}
       className={cn({
+        dark: theme === 'dark',
         'font-ja': locale === 'ja',
         'font-zh-hant': locale === 'zh-Hant',
         'font-zh-hans': locale === 'zh-Hans',
@@ -128,13 +167,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme={theme ?? 'system'}
           enableSystem
           disableTransitionOnChange
         >
-          <div className="hidden md:block">
-            <Background />
-          </div>
+          <DesktopBackground initialEnabled={!isMobile} />
           <I18nProvider
             locale={locale}
             namespaces={['common']}

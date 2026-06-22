@@ -43,7 +43,7 @@ const subscribe = (onStoreChange: () => void) => {
 
 const getPathname = () => window.location.pathname
 
-const getServerSnapshot = () => '/'
+const getServerSnapshot = () => undefined
 
 export const useI18nPathname = () => {
   const pathname = useSyncExternalStore(
@@ -52,6 +52,10 @@ export const useI18nPathname = () => {
     getServerSnapshot,
   )
   const { i18n } = useTranslation()
+
+  if (!pathname) {
+    return undefined
+  }
 
   if (pathname === `/${i18n.language}`) {
     return '/'

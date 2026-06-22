@@ -30,7 +30,8 @@ export const LanguageChooser = () => {
       const expires = date.toUTCString()
       document.cookie = `NEXT_LOCALE=${newLocale};expires=${expires};path=/`
 
-      window.location.assign(localizePath(currentPathname, newLocale))
+      const pathname = currentPathname ?? window.location.pathname
+      window.location.assign(localizePath(pathname, newLocale))
     },
     [currentPathname],
   )
