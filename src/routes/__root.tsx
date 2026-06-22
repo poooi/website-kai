@@ -1,8 +1,14 @@
 /* eslint-disable @next/next/no-css-tags */
 /* eslint-disable @next/next/no-head-element */
-import { createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
+import {
+  createRootRoute,
+  HeadContent,
+  Scripts,
+  useRouterState,
+} from '@tanstack/react-router'
 
 import '~/styles/globals.css'
+import { defaultLocale, isSupportedLocale } from '~/lib/i18n-routing'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -13,22 +19,40 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'poi TanStack preview',
+        title: 'poi',
       },
+      {
+        name: 'description',
+        content:
+          'Scalable KanColle browser and tool, for Windows, macOS and Linux. 一个可扩展的舰队Collectionブラウザ。拡張可能な艦隊これくしょんブラウザ。',
+      },
+    ],
+    links: [
+      { rel: 'icon', href: '/favicon.ico' },
+      { rel: 'stylesheet', href: '/fonts/plex-sans/IBMPlexSans-Regular.css' },
     ],
   }),
   shellComponent: RootDocument,
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const locale = useRouterState({
+    select: (state) => {
+      return (
+        state.matches
+          .flatMap((match) => Object.values(match.params))
+          .find(
+            (param): param is string =>
+              typeof param === 'string' && isSupportedLocale(param),
+          ) ?? defaultLocale
+      )
+    },
+  })
+
   return (
-    <html lang="ja">
+    <html lang={locale}>
       <head>
         <HeadContent />
-        <link
-          href="/fonts/plex-sans/IBMPlexSans-Regular.css"
-          rel="stylesheet"
-        />
       </head>
       <body>
         {children}

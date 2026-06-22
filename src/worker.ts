@@ -1,5 +1,15 @@
 import startHandler from '@tanstack/react-start/server-entry'
 
+import {
+  defaultLocale,
+  getPathLocale,
+  isDefaultLocale,
+  isSupportedLocale,
+  localizePath,
+  resolvePreferredLocale,
+  stripLocalePrefix,
+} from '~/lib/i18n-routing'
+
 interface AssetsBinding {
   fetch(request: Request): Promise<Response>
 }
@@ -51,6 +61,72 @@ const isPageRequest = (request: Request) => {
     !isSocialImagePath(pathname) &&
     !isFileRequest(pathname)
   )
+}
+
+const isPagePath = (pathname: string) => {
+  return (
+    !pathname.startsWith('/api/') &&
+    !pathname.startsWith('/status') &&
+    !isSocialImagePath(pathname) &&
+    !isFileRequest(pathname)
+  )
+}
+
+const redirectTo = (request: Request, pathname: string, status: 307 | 308) => {
+  const url = new URL(request.url)
+  url.pathname = pathname
+  const headers = new Headers()
+  if (status === 307) {
+    headers.set('Cache-Control', 'no-store')
+    headers.set('Vary', 'Cookie, Accept-Language')
+  }
+  return new Response('', {
+    headers: {
+      ...Object.fromEntries(headers),
+      Location: url.toString(),
+    },
+    status,
+  })
+}
+
+const handleLocaleRedirects = (request: Request) => {
+  const { pathname } = new URL(request.url)
+  if (!isPagePath(pathname)) {
+    return undefined
+  }
+
+  if (pathname !== '/' && pathname.endsWith('/')) {
+    return redirectTo(request, pathname.replace(/\/+$/, ''), 308)
+  }
+
+  const locale = getPathLocale(pathname)
+  if (locale && isDefaultLocale(locale)) {
+    return redirectTo(request, stripLocalePrefix(pathname), 308)
+  }
+
+  const firstSegment = pathname.split('/').find(Boolean)
+  const secondSegment = pathname.split('/').filter(Boolean)[1]
+  const knownUnprefixedPage =
+    firstSegment === 'download' || firstSegment === 'explore'
+  const knownLocalizedPage =
+    firstSegment &&
+    !knownUnprefixedPage &&
+    !isSupportedLocale(firstSegment) &&
+    (secondSegment === undefined ||
+      secondSegment === 'download' ||
+      secondSegment === 'explore')
+  if (knownLocalizedPage) {
+    return new Response('', { status: 404 })
+  }
+
+  if (!locale) {
+    const preferredLocale = resolvePreferredLocale(request.headers)
+    if (preferredLocale !== defaultLocale) {
+      return redirectTo(request, localizePath(pathname, preferredLocale), 307)
+    }
+  }
+
+  return undefined
 }
 
 const appendVary = (headers: Headers, value: string) => {
@@ -152,6 +228,7 @@ const worker = {
       response = handleMonitoringStub(request)
     }
 
+    response ??= handleLocaleRedirects(request)
     response ??= await handleAsset(request, env)
     response ??= await (startHandler.fetch as StartHandlerWithContext)(
       request,

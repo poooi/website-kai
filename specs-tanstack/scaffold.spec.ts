@@ -2,13 +2,18 @@ import { expect, test } from '@playwright/test'
 
 test('renders the isolated TanStack preview route', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'light' })
+  await page.context().addCookies([
+    {
+      name: 'NEXT_LOCALE',
+      url: 'http://127.0.0.1:3002',
+      value: 'ja',
+    },
+  ])
   const response = await page.goto('/')
 
-  await expect(
-    page.getByRole('heading', { name: 'poi TanStack preview' }),
-  ).toBeVisible()
-  await expect(page.getByText('proves the scaffold builds')).toBeVisible()
-  await expect(page.getByRole('link', { name: 'Status route' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'poi' })).toBeVisible()
+  await expect(page.getByText(/拡張可能/)).toBeVisible()
+  await expect(page.getByRole('link', { name: 'ダウンロード' })).toBeVisible()
   await expect(page.locator('body')).toHaveCSS(
     'background-color',
     'rgb(255, 255, 255)',
