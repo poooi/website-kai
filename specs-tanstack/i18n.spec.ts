@@ -62,12 +62,19 @@ test('canonicalizes default locale prefixes and trailing slashes', async ({
   const defaultLocaleResponse = await request.get('/ja/download', {
     maxRedirects: 0,
   })
+  const defaultLocaleSlashResponse = await request.get('/ja/download/', {
+    maxRedirects: 0,
+  })
   const trailingSlashResponse = await request.get('/en/download/', {
     maxRedirects: 0,
   })
 
   expect(defaultLocaleResponse.status()).toBe(308)
   expect(defaultLocaleResponse.headers().location).toBe(
+    'http://127.0.0.1:3002/download',
+  )
+  expect(defaultLocaleSlashResponse.status()).toBe(308)
+  expect(defaultLocaleSlashResponse.headers().location).toBe(
     'http://127.0.0.1:3002/download',
   )
   expect(trailingSlashResponse.status()).toBe(308)
@@ -101,17 +108,26 @@ test('serves localized download and explore pages', async ({ page }) => {
 })
 
 test('rejects unsupported locale-like prefixes', async ({ request }) => {
-  const response = await request.get('/es/download')
+  const localeResponse = await request.get('/es/download')
+  const unknownPageResponse = await request.get('/about')
 
-  expect(response.status()).toBe(404)
+  expect(localeResponse.status()).toBe(404)
+  expect(unknownPageResponse.status()).toBe(404)
 })
 
 test('does not localize API, proxy, asset, or generated image routes', async ({
   request,
-  page,
 }) => {
   const statusResponse = await request.get('/status', {
     headers: { Cookie: 'NEXT_LOCALE=en' },
+  })
+  const distResponse = await request.get('/dist/en', {
+    headers: { Cookie: 'NEXT_LOCALE=fr' },
+    maxRedirects: 0,
+  })
+  const distRootResponse = await request.get('/dist', {
+    headers: { Cookie: 'NEXT_LOCALE=fr' },
+    maxRedirects: 0,
   })
   const assetResponse = await request.get('/favicon.ico', {
     headers: { Cookie: 'NEXT_LOCALE=en' },
@@ -121,10 +137,17 @@ test('does not localize API, proxy, asset, or generated image routes', async ({
   })
 
   expect(statusResponse.status()).toBe(200)
+  expect(distResponse.status()).toBe(404)
+  expect(distRootResponse.status()).toBe(404)
+  expect(distRootResponse.headers().location).toBeUndefined()
   expect(assetResponse.status()).toBe(200)
   expect(imageResponse.status()).toBe(200)
   expect(imageResponse.headers()['content-type']).toBe('image/png')
 
-  await page.goto('/dist/en')
-  await expect(page.locator('html')).toHaveAttribute('lang', 'ja')
+  const distNoExtensionResponse = await request.get('/dist/en', {
+    headers: { Cookie: 'NEXT_LOCALE=fr' },
+    maxRedirects: 0,
+  })
+  expect(distNoExtensionResponse.status()).toBe(404)
+  expect(distNoExtensionResponse.headers().location).toBeUndefined()
 })

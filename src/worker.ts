@@ -52,6 +52,10 @@ const isSocialImagePath = (pathname: string) => {
   return normalized === '/opengraph-image' || normalized === '/twitter-image'
 }
 
+const isProxyRootPath = (pathname: string) => {
+  return pathname === '/dist' || pathname === '/fcd' || pathname === '/update'
+}
+
 const isPageRequest = (request: Request) => {
   const { pathname } = new URL(request.url)
   return (
@@ -67,6 +71,10 @@ const isPagePath = (pathname: string) => {
   return (
     !pathname.startsWith('/api/') &&
     !pathname.startsWith('/status') &&
+    !isProxyRootPath(pathname) &&
+    !pathname.startsWith('/dist/') &&
+    !pathname.startsWith('/fcd/') &&
+    !pathname.startsWith('/update/') &&
     !isSocialImagePath(pathname) &&
     !isFileRequest(pathname)
   )
@@ -99,26 +107,33 @@ const handleLocaleRedirects = (request: Request) => {
     return undefined
   }
 
-  if (pathname !== '/' && pathname.endsWith('/')) {
-    return redirectTo(request, pathname.replace(/\/+$/, ''), 308)
-  }
-
   const locale = getPathLocale(pathname)
+  let canonicalPathname = pathname
+  if (canonicalPathname !== '/' && canonicalPathname.endsWith('/')) {
+    canonicalPathname = canonicalPathname.replace(/\/+$/, '')
+  }
   if (locale && isDefaultLocale(locale)) {
-    return redirectTo(request, stripLocalePrefix(pathname), 308)
+    canonicalPathname = stripLocalePrefix(canonicalPathname)
   }
 
-  const firstSegment = pathname.split('/').find(Boolean)
-  const secondSegment = pathname.split('/').filter(Boolean)[1]
+  if (canonicalPathname !== pathname) {
+    return redirectTo(request, canonicalPathname, 308)
+  }
+
+  const pathSegments = pathname.split('/').filter(Boolean)
+  const firstSegment = pathSegments[0]
+  const secondSegment = pathSegments[1]
   const knownUnprefixedPage =
     firstSegment === 'download' || firstSegment === 'explore'
+  const localeShapedSegment =
+    !!firstSegment && /^[a-z]{2}(?:-[A-Za-z]+)?$/.test(firstSegment)
   const knownLocalizedPage =
     firstSegment &&
     !knownUnprefixedPage &&
     !isSupportedLocale(firstSegment) &&
-    (secondSegment === undefined ||
-      secondSegment === 'download' ||
-      secondSegment === 'explore')
+    (pathSegments.length === 1 ||
+      (localeShapedSegment &&
+        (secondSegment === 'download' || secondSegment === 'explore')))
   if (knownLocalizedPage) {
     return new Response('', { status: 404 })
   }
@@ -230,6 +245,10 @@ const worker = {
     let response: Response | undefined
     if (isMonitoringPath(pathname)) {
       response = handleMonitoringStub(request)
+    }
+
+    if (isProxyRootPath(pathname)) {
+      response = new Response('', { status: 404 })
     }
 
     response ??= handleLocaleRedirects(request)
