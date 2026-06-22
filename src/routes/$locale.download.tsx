@@ -38,6 +38,24 @@ function LocalizedDownloadPage() {
             {t.oldVersions}
           </a>
         </Button>
+        <Button variant="link" asChild>
+          <a
+            href="https://nightly.poi.moe/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            {t.nightlyBuilds}
+          </a>
+        </Button>
+        <Button variant="link" asChild>
+          <a
+            href="https://github.com/poooi/poi"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            {t.sourceCode}
+          </a>
+        </Button>
       </div>
     </main>
   )

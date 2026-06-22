@@ -35,7 +35,7 @@ export const localizePath = (pathname: string, locale: string) => {
     return stripped
   }
 
-  return stripped === '/' ? `/${locale}/` : `/${locale}${stripped}`
+  return stripped === '/' ? `/${locale}` : `/${locale}${stripped}`
 }
 
 export const parseCookieHeader = (cookieHeader: string | null) => {

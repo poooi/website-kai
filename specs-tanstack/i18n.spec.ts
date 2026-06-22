@@ -17,6 +17,12 @@ test('serves default locale content at unprefixed root', async ({ page }) => {
 test('redirects locale preference to non-default locale path', async ({
   request,
 }) => {
+  const rootResponse = await request.get('/', {
+    headers: {
+      Cookie: 'NEXT_LOCALE=en',
+    },
+    maxRedirects: 0,
+  })
   const response = await request.get('/download?x=1', {
     headers: {
       Cookie: 'NEXT_LOCALE=fr',
@@ -24,6 +30,8 @@ test('redirects locale preference to non-default locale path', async ({
     maxRedirects: 0,
   })
 
+  expect(rootResponse.status()).toBe(307)
+  expect(rootResponse.headers().location).toBe('http://127.0.0.1:3002/en')
   expect(response.status()).toBe(307)
   expect(response.headers().location).toBe(
     'http://127.0.0.1:3002/fr/download?x=1',
@@ -31,6 +39,21 @@ test('redirects locale preference to non-default locale path', async ({
   expect(response.headers()['cache-control']).toBe('no-store')
   expect(response.headers().vary).toContain('Cookie')
   expect(response.headers().vary).toContain('Accept-Language')
+})
+
+test('does not redirect non-GET page requests for locale negotiation', async ({
+  request,
+}) => {
+  const response = await request.post('/download', {
+    data: '',
+    headers: {
+      Cookie: 'NEXT_LOCALE=fr',
+    },
+    maxRedirects: 0,
+  })
+
+  expect(response.status()).not.toBe(307)
+  expect(response.status()).not.toBe(308)
 })
 
 test('canonicalizes default locale prefixes and trailing slashes', async ({
@@ -70,6 +93,8 @@ test('serves localized download and explore pages', async ({ page }) => {
   await expect(
     page.getByRole('heading', { name: 'Old versions' }),
   ).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Nightly builds' })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Source code' })).toBeVisible()
 
   await page.goto('/en/explore')
   await expect(page.locator('main')).toContainText('poi')

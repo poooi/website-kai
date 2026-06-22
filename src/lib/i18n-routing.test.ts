@@ -28,6 +28,12 @@ describe('resolvePreferredLocale', () => {
     ).toBe('zh-Hans')
   })
 
+  it('localizes the root path without adding a trailing slash', async () => {
+    const { localizePath } = await import('./i18n-routing')
+
+    expect(localizePath('/', 'en')).toBe('/en')
+  })
+
   it('maps Chinese script-region tags to script locales', () => {
     expect(
       resolvePreferredLocale(

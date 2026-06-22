@@ -91,6 +91,10 @@ const redirectTo = (request: Request, pathname: string, status: 307 | 308) => {
 
 const handleLocaleRedirects = (request: Request) => {
   const { pathname } = new URL(request.url)
+  if (request.method !== 'GET' && request.method !== 'HEAD') {
+    return undefined
+  }
+
   if (!isPagePath(pathname)) {
     return undefined
   }
