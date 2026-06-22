@@ -88,6 +88,7 @@ const redirectTo = (request: Request, pathname: string, status: 307 | 308) => {
     headers.set('Cache-Control', 'no-store')
     headers.set('Vary', 'Cookie, Accept-Language')
   }
+  headers.set('Content-Type', 'text/plain; charset=utf-8')
   return new Response('', {
     headers: {
       ...Object.fromEntries(headers),

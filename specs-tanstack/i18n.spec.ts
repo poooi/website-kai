@@ -81,6 +81,11 @@ test('canonicalizes default locale prefixes and trailing slashes', async ({
   expect(trailingSlashResponse.headers().location).toBe(
     'http://127.0.0.1:3002/en/download',
   )
+  expect(defaultLocaleResponse.headers()['cache-control']).toBeUndefined()
+  expect(trailingSlashResponse.headers()['cache-control']).toBeUndefined()
+  expect(defaultLocaleResponse.headers()['content-type']).toContain(
+    'text/plain',
+  )
 })
 
 test('serves localized non-default content', async ({ page }) => {
