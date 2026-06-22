@@ -8,3 +8,6 @@
 
 /favicon.ico
   Cache-Control: public,max-age=3600
+
+/fonts/*
+  Cache-Control: public,max-age=3600
