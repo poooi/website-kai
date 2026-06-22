@@ -53,7 +53,10 @@ const isSocialImagePath = (pathname: string) => {
 }
 
 const isProxyRootPath = (pathname: string) => {
-  return pathname === '/dist' || pathname === '/fcd' || pathname === '/update'
+  const normalized = pathname === '/' ? pathname : pathname.replace(/\/+$/, '')
+  return (
+    normalized === '/dist' || normalized === '/fcd' || normalized === '/update'
+  )
 }
 
 const isPageRequest = (request: Request) => {

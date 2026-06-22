@@ -169,6 +169,10 @@ test('does not localize API, proxy, asset, or generated image routes', async ({
     headers: { Cookie: 'NEXT_LOCALE=fr' },
     maxRedirects: 0,
   })
+  const distRootSlashResponse = await request.get('/dist/', {
+    headers: { Cookie: 'NEXT_LOCALE=fr' },
+    maxRedirects: 0,
+  })
   const assetResponse = await request.get('/favicon.ico', {
     headers: { Cookie: 'NEXT_LOCALE=en' },
   })
@@ -178,16 +182,12 @@ test('does not localize API, proxy, asset, or generated image routes', async ({
 
   expect(statusResponse.status()).toBe(200)
   expect(distResponse.status()).toBe(404)
+  expect(distResponse.headers().location).toBeUndefined()
   expect(distRootResponse.status()).toBe(404)
   expect(distRootResponse.headers().location).toBeUndefined()
+  expect(distRootSlashResponse.status()).toBe(404)
+  expect(distRootSlashResponse.headers().location).toBeUndefined()
   expect(assetResponse.status()).toBe(200)
   expect(imageResponse.status()).toBe(200)
   expect(imageResponse.headers()['content-type']).toBe('image/png')
-
-  const distNoExtensionResponse = await request.get('/dist/en', {
-    headers: { Cookie: 'NEXT_LOCALE=fr' },
-    maxRedirects: 0,
-  })
-  expect(distNoExtensionResponse.status()).toBe(404)
-  expect(distNoExtensionResponse.headers().location).toBeUndefined()
 })

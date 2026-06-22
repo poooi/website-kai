@@ -19,6 +19,8 @@ const exploreContentByLocale = import.meta.glob<string>(
   },
 )
 
+const exploreHtmlByLocale = new Map<SupportedLocale, string>()
+
 export const requireSupportedLocale = (locale: string): SupportedLocale => {
   if (!isSupportedLocale(locale)) {
     // TanStack route loaders consume thrown Responses for HTTP status control.
@@ -53,6 +55,11 @@ export const loadCommonTranslations = async (
 
 export const loadExploreHtml = async (locale: string = defaultLocale) => {
   const supportedLocale = requireSupportedLocale(locale)
+  const cachedHtml = exploreHtmlByLocale.get(supportedLocale)
+  if (cachedHtml !== undefined) {
+    return cachedHtml
+  }
+
   const content =
     exploreContentByLocale[`../contents/explore/${supportedLocale}.md`]
   if (!content) {
@@ -61,7 +68,9 @@ export const loadExploreHtml = async (locale: string = defaultLocale) => {
     throw new Response('', { status: 404 })
   }
 
-  return (
+  const html = (
     await remark().use(rehype).use(sanitize).use(stringify).process(content)
   ).toString()
+  exploreHtmlByLocale.set(supportedLocale, html)
+  return html
 }
