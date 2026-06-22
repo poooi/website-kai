@@ -44,6 +44,9 @@ export default defineConfig({
   define: {
     'process.env.BUILD_DATE': JSON.stringify(buildDate),
     'process.env.COMMIT_HASH': JSON.stringify(commitHash),
+    'process.env.TANSTACK_TEST_POI_VERSIONS': JSON.stringify(
+      process.env.TANSTACK_TEST_POI_VERSIONS ?? '',
+    ),
   },
   plugins: [
     cloudflare({

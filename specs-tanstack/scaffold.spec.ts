@@ -13,7 +13,9 @@ test('renders the isolated TanStack preview route', async ({ page }) => {
 
   await expect(page.getByRole('heading', { name: 'poi' })).toBeVisible()
   await expect(page.getByText(/拡張可能/)).toBeVisible()
-  await expect(page.getByRole('link', { name: 'ダウンロード' })).toBeVisible()
+  await expect(
+    page.getByRole('link', { name: 'ダウンロードオプション' }),
+  ).toBeVisible()
   await expect(page.locator('body')).toHaveCSS(
     'background-color',
     'rgb(255, 255, 255)',

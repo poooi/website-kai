@@ -1,16 +1,30 @@
 /* eslint-disable @next/next/no-css-tags */
 /* eslint-disable @next/next/no-head-element */
 import {
-  createRootRoute,
   HeadContent,
   Scripts,
+  createRootRouteWithContext,
   useRouterState,
 } from '@tanstack/react-router'
+import { Provider as JotaiProvider } from 'jotai'
 
 import '~/styles/globals.css'
 import { defaultLocale, isSupportedLocale } from '~/lib/i18n-routing'
 
-export const Route = createRootRoute({
+export interface TanStackRouterContext {
+  env?: {
+    TANSTACK_TEST_POI_VERSIONS?: string
+  }
+  requestHeaders?: [string, string][]
+  serverContext?: {
+    env?: {
+      TANSTACK_TEST_POI_VERSIONS?: string
+    }
+    requestHeaders?: [string, string][]
+  }
+}
+
+export const Route = createRootRouteWithContext<TanStackRouterContext>()({
   head: () => ({
     meta: [
       { charSet: 'utf-8' },
@@ -56,7 +70,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {children}
+        <JotaiProvider>{children}</JotaiProvider>
         <Scripts />
       </body>
     </html>

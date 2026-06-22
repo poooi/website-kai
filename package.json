@@ -17,7 +17,7 @@
     "dev:tanstack": "vite dev --config vite.config.ts --host 127.0.0.1 --port 3002",
     "build:tanstack": "vite build --config vite.config.ts",
     "preview:tanstack": "vite preview --config vite.config.ts --host 127.0.0.1 --port 3002",
-    "test:e2e:tanstack": "vite build --config vite.config.ts && playwright test --config=playwright.tanstack.config.ts",
+    "test:e2e:tanstack": "node scripts/test-tanstack-e2e.mjs",
     "cf-typegen:tanstack": "wrangler types --config wrangler.tanstack.jsonc --env-interface TanStackCloudflareEnv cloudflare-tanstack-env.d.ts",
     "start": "next start",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
