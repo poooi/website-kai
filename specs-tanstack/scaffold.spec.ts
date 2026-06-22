@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 test('renders the isolated TanStack preview route', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'light' })
   const response = await page.goto('/')
 
   await expect(
@@ -42,7 +43,8 @@ test('serves static assets before SSR with cache headers', async ({
 })
 
 test('serves copied IBM Plex font assets', async ({ request }) => {
-  const response = await request.get('/fonts/plex-sans/IBMPlexSans-Regular.css')
+  const cssPath = '/fonts/plex-sans/IBMPlexSans-Regular.css'
+  const response = await request.get(cssPath)
 
   expect(response.status()).toBe(200)
   expect(response.headers()['cache-control']).toBe('public,max-age=3600')
@@ -51,7 +53,8 @@ test('serves copied IBM Plex font assets', async ({ request }) => {
 
   const fontPath = /url\(["']?(.+?\.woff2)["']?\)/.exec(css)?.[1]
   expect(fontPath).toBeTruthy()
-  const fontResponse = await request.get(`/fonts/plex-sans/${fontPath}`)
+  const fontUrl = new URL(fontPath!, `https://example.test${cssPath}`).pathname
+  const fontResponse = await request.get(fontUrl)
 
   expect(fontResponse.status()).toBe(200)
   expect(fontResponse.headers()['cache-control']).toBe('public,max-age=3600')
