@@ -5,16 +5,15 @@ import { useEffect } from 'react'
 import { sentryDsn, sentryRelease } from '~/lib/sentry'
 
 let initialized = false
+let initialization: Promise<void> | undefined
 
 export const SentryClient = () => {
   useEffect(() => {
-    if (initialized) {
+    if (initialized || initialization) {
       return
     }
 
-    initialized = true
-    initialized = true
-    void import('@sentry/react')
+    initialization = import('@sentry/react')
       .then((Sentry) => {
         Sentry.init({
           dsn: sentryDsn,
@@ -25,9 +24,13 @@ export const SentryClient = () => {
           tracesSampleRate: 0.01,
           tunnel: '/api/monitoring',
         })
+        initialized = true
       })
       .catch(() => {
         initialized = false
+      })
+      .finally(() => {
+        initialization = undefined
       })
   }, [])
 

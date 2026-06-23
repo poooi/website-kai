@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs'
-import { readFile, readdir } from 'node:fs/promises'
+import { readFile, readdir, rm } from 'node:fs/promises'
 import path from 'node:path'
 
 import { execa } from 'execa'
@@ -44,6 +44,12 @@ const countMapsWithDebugIds = async (maps) => {
   return contents.filter((content) => content.includes('"debug_id"')).length
 }
 
+const removeMaps = async () => {
+  const maps = (await Promise.all(artifactDirs.map((dir) => collectMaps(dir)))).flat()
+  await Promise.all(maps.map((map) => rm(map)))
+  return maps.length
+}
+
 const maps = await collectMaps(distDir)
 if (maps.length === 0) {
   throw new Error('No TanStack sourcemaps found under dist/. Run build first.')
@@ -77,8 +83,9 @@ if (
   !process.env.SENTRY_AUTH_TOKEN ||
   process.env.SENTRY_UPLOAD_DRY_RUN === '1'
 ) {
+  const removedMapCount = await removeMaps()
   console.log(
-    `Injected debug IDs into ${injectedMaps.length} TanStack sourcemaps for release ${release}; upload skipped.`,
+    `Injected debug IDs into ${injectedMaps.length} TanStack sourcemaps for release ${release}; removed ${removedMapCount} maps; upload skipped.`,
   )
   process.exit(0)
 }
@@ -98,3 +105,6 @@ await execa(
   ],
   { stdio: 'inherit' },
 )
+
+const removedMapCount = await removeMaps()
+console.log(`Uploaded TanStack sourcemaps for release ${release}; removed ${removedMapCount} maps.`)
