@@ -31,6 +31,7 @@ function LocalizedExplorePage() {
   const { contentHtml } = Route.useLoaderData()
   return (
     <Transition
+      role="main"
       className="prose w-full max-w-none grow dark:prose-invert"
       dangerouslySetInnerHTML={{ __html: contentHtml }}
     />

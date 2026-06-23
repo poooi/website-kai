@@ -22,7 +22,10 @@ function LocalizedHomePage() {
   const data = Route.useLoaderData()
   const { locale } = Route.useParams()
   return (
-    <Transition className="flex w-full grow items-center md:pl-[45px]">
+    <Transition
+      role="main"
+      className="flex w-full grow items-center md:pl-[45px]"
+    >
       <div className="w-full">
         <h1 className="text-9xl leading-loose">{data.name}</h1>
         <p className="text-2xl">{data.description}</p>

@@ -148,7 +148,9 @@ test('keeps background canvas stable during client navigation', async ({
 
   await page.getByRole('link', { name: 'Download', exact: true }).click()
   await expect(page).toHaveURL('http://127.0.0.1:3002/en/download')
-  await page.waitForTimeout(300)
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Download' }),
+  ).toBeVisible()
 
   await expect(
     page
@@ -159,6 +161,7 @@ test('keeps background canvas stable during client navigation', async ({
 
 test('matches Next page layout backgrounds and headings', async ({ page }) => {
   await page.goto('/en')
+  await expect(page.getByRole('main')).toBeVisible()
   await expect(page.locator('main.bg-background')).toHaveCount(0)
   await expect(
     page.getByRole('heading', { name: 'poi' }).evaluate((heading) => {
@@ -168,14 +171,13 @@ test('matches Next page layout backgrounds and headings', async ({ page }) => {
 
   await page.goto('/en/download')
   await expect(
-    page.getByRole('heading', { level: 2, name: 'Download' }),
-  ).toBeVisible()
-  await expect(
     page.getByRole('heading', { level: 1, name: 'Download' }),
-  ).toHaveCount(0)
+  ).toBeVisible()
+  await expect(page.getByRole('main')).toBeVisible()
 
   await page.goto('/en/explore')
   await expect(page.locator('main.prose')).toHaveCount(0)
+  await expect(page.getByRole('main')).toBeVisible()
   const exploreContent = page.getByRole('heading', {
     name: 'what is poi',
   })

@@ -23,8 +23,13 @@ export const Route = createFileRoute('/download')({
 function DownloadPage() {
   const data = Route.useLoaderData()
   return (
-    <Transition className="prose flex w-full max-w-none grow flex-col dark:prose-invert">
-      <h2>{data.download}</h2>
+    <Transition
+      role="main"
+      className="prose flex w-full max-w-none grow flex-col dark:prose-invert"
+    >
+      <h1 className="mb-[1em] mt-0 text-[1.5em] font-semibold leading-[1.3333333]">
+        {data.download}
+      </h1>
       {data.platform.isMobile ? (
         <p>{data.mobileHint}</p>
       ) : (
