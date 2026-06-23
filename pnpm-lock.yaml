@@ -12,8 +12,8 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0
       '@ibm/plex-sans-jp':
-        specifier: ^1.1.0
-        version: 1.1.0
+        specifier: ^3.0.0
+        version: 3.0.0
       '@ibm/plex-sans-kr':
         specifier: ^1.1.0
         version: 1.1.0
@@ -1027,8 +1027,8 @@ packages:
     resolution: {integrity: sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==}
     deprecated: Use @eslint/object-schema instead
 
-  '@ibm/plex-sans-jp@1.1.0':
-    resolution: {integrity: sha512-wJqZKrZfMhhf/vDEAKGKMSIFklfngQJNRgehUjw7yqKpa4SJ9OHroMBDm1/AnFaNI/dBfzWPm59iRB8F8j0gdQ==}
+  '@ibm/plex-sans-jp@3.0.0':
+    resolution: {integrity: sha512-/v46f2qWBwOg0U/At3R9yVIWrHZKYHM0ByCz2lnNk60VqTHATcCHUT9djTmYBlRwaepybLzDsvx2DtxpHpIPvA==}
 
   '@ibm/plex-sans-kr@1.1.0':
     resolution: {integrity: sha512-oGwlBC7BYvcvOvs7d8SoumXJwNO3rjbplteyeYI7zgQmEWI+4qLdRhI/zBUO4Ioo55YymSMiMtRPqAAPZBrJqA==}
@@ -7094,7 +7094,7 @@ snapshots:
 
   '@humanwhocodes/object-schema@2.0.3': {}
 
-  '@ibm/plex-sans-jp@1.1.0':
+  '@ibm/plex-sans-jp@3.0.0':
     dependencies:
       '@ibm/telemetry-js': 1.10.2
 
