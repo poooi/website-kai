@@ -54,7 +54,7 @@ export default defineConfig({
   },
   plugins: [
     cloudflare({
-      configPath: './wrangler.tanstack.jsonc',
+      configPath: './wrangler.toml',
       viteEnvironment: { name: 'ssr' },
     }),
     viteStaticCopy({

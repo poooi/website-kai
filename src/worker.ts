@@ -1,4 +1,3 @@
-import type { ExportedHandler } from '@cloudflare/workers-types'
 import { withSentry } from '@sentry/cloudflare'
 import startHandler from '@tanstack/react-start/server-entry'
 
@@ -37,6 +36,8 @@ type StartHandlerWithContext = (
     }
   },
 ) => Promise<Response>
+
+type SentryHandler = Parameters<typeof withSentry<WorkerEnv>>[1]
 
 const clientHintValues =
   'Sec-CH-UA-Platform, Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Mobile, Sec-CH-Prefers-Color-Scheme'
@@ -281,5 +282,5 @@ export default withSentry(
     release: sentryRelease,
     tracesSampleRate: 0.01,
   }),
-  worker as unknown as ExportedHandler<WorkerEnv>,
+  worker as unknown as SentryHandler,
 )

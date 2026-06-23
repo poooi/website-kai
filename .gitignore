@@ -47,6 +47,7 @@ yarn-error.log*
 .output
 .wrangler
 dist
+cloudflare-env.d.ts
 
 # typescript
 *.tsbuildinfo

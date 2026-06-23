@@ -28,7 +28,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'corepack pnpm dev',
+    command: 'corepack pnpm dev:next',
     url: 'http://127.0.0.1:3000',
     reuseExistingServer: false,
   },
