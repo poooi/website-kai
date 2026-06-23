@@ -1,13 +1,6 @@
 'use client'
 
-import {
-  atom,
-  Provider as JotaiProvider,
-  useAtom,
-  useAtomValue,
-  useSetAtom,
-} from 'jotai'
-import { useHydrateAtoms } from 'jotai/utils'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import {
   useEffect,
   useLayoutEffect,
@@ -15,6 +8,7 @@ import {
   type PropsWithChildren,
 } from 'react'
 
+import { resolvedThemeAtom, themeAtom } from '~/components/theme-atoms'
 import {
   getThemeCookie,
   isTheme,
@@ -32,9 +26,6 @@ interface ThemeProviderProps extends PropsWithChildren {
 const storageKey = themeCookieName
 const useIsomorphicLayoutEffect =
   typeof window === 'undefined' ? useEffect : useLayoutEffect
-
-const themeAtom = atom<Theme>('system')
-const resolvedThemeAtom = atom<'dark' | 'light'>('light')
 
 const getSystemTheme = () => {
   return window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -95,33 +86,12 @@ const applyTheme = (
 }
 
 export const ThemeProvider = ({
-  attribute = 'class',
+  attribute: _attribute = 'class',
   children,
   defaultTheme = 'system',
   disableTransitionOnChange = false,
   enableSystem = true,
 }: ThemeProviderProps) => {
-  return (
-    <JotaiProvider>
-      <ThemeHydrator
-        attribute={attribute}
-        defaultTheme={defaultTheme}
-        disableTransitionOnChange={disableTransitionOnChange}
-        enableSystem={enableSystem}
-      >
-        {children}
-      </ThemeHydrator>
-    </JotaiProvider>
-  )
-}
-
-const ThemeHydrator = ({
-  children,
-  defaultTheme = 'system',
-  disableTransitionOnChange = false,
-  enableSystem = true,
-}: ThemeProviderProps) => {
-  useHydrateAtoms([[themeAtom, defaultTheme]])
   const [theme, setTheme] = useAtom(themeAtom)
   const setResolvedTheme = useSetAtom(resolvedThemeAtom)
   const skipThemeEffect = useRef(true)

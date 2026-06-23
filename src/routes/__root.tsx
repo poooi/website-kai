@@ -9,13 +9,13 @@ import {
 import { createServerOnlyFn } from '@tanstack/react-start'
 import { getRequestHeaders } from '@tanstack/react-start/server'
 import type { Resource } from 'i18next'
-import { Provider as JotaiProvider } from 'jotai'
 
 import '~/styles/globals.css'
 import { DesktopBackground } from '~/components/desktop-background'
 import { FooterClient } from '~/components/footer-client'
 import { Header } from '~/components/header'
 import { I18nProvider } from '~/components/i18n-provider'
+import { JotaiRootProvider } from '~/components/jotai-provider'
 import { ThemeProvider } from '~/components/theme-provider'
 import { defaultLocale, isSupportedLocale } from '~/lib/i18n-routing'
 import { isMobileDevice } from '~/lib/target'
@@ -162,25 +162,30 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme={themePreference}
-          enableSystem
-          disableTransitionOnChange
+        <JotaiRootProvider
+          initialResolvedTheme={theme ?? 'light'}
+          initialTheme={themePreference}
         >
-          <DesktopBackground initialEnabled={!isMobile} />
-          <I18nProvider
-            locale={locale}
-            namespaces={['common']}
-            resources={resources}
+          <ThemeProvider
+            attribute="class"
+            defaultTheme={themePreference}
+            enableSystem
+            disableTransitionOnChange
           >
-            <div className="relative z-0 mx-auto flex min-h-screen max-w-[960px] flex-col items-center justify-center px-4 md:px-8">
-              <Header />
-              <JotaiProvider>{children}</JotaiProvider>
-              <FooterClient />
-            </div>
-          </I18nProvider>
-        </ThemeProvider>
+            <DesktopBackground initialEnabled={!isMobile} />
+            <I18nProvider
+              locale={locale}
+              namespaces={['common']}
+              resources={resources}
+            >
+              <div className="relative z-0 mx-auto flex min-h-screen max-w-[960px] flex-col items-center justify-center px-4 md:px-8">
+                <Header />
+                {children}
+                <FooterClient />
+              </div>
+            </I18nProvider>
+          </ThemeProvider>
+        </JotaiRootProvider>
         <Scripts />
       </body>
     </html>

@@ -9,6 +9,7 @@ import { DesktopBackground } from '~/components/desktop-background'
 import { Footer } from '~/components/footer'
 import { Header } from '~/components/header'
 import { I18nProvider } from '~/components/i18n-provider'
+import { JotaiRootProvider } from '~/components/jotai-provider'
 import { ThemeProvider } from '~/components/theme-provider'
 import { initTranslations } from '~/i18n'
 import { i18nConfig } from '~/i18n-config'
@@ -113,25 +114,30 @@ export default async function RootLayout(
         )}
       </head>
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme={themePreference}
-          enableSystem
-          disableTransitionOnChange
+        <JotaiRootProvider
+          initialResolvedTheme={theme ?? 'light'}
+          initialTheme={themePreference}
         >
-          <DesktopBackground initialEnabled={!isMobile} />
-          <I18nProvider
-            locale={locale}
-            namespaces={['common']}
-            resources={resources}
+          <ThemeProvider
+            attribute="class"
+            defaultTheme={themePreference}
+            enableSystem
+            disableTransitionOnChange
           >
-            <main className="relative z-0 mx-auto flex min-h-screen max-w-[960px] flex-col items-center justify-center px-4 md:px-8">
-              <Header />
-              {children}
-              <Footer t={t} i18n={i18n} />
-            </main>
-          </I18nProvider>
-        </ThemeProvider>
+            <DesktopBackground initialEnabled={!isMobile} />
+            <I18nProvider
+              locale={locale}
+              namespaces={['common']}
+              resources={resources}
+            >
+              <main className="relative z-0 mx-auto flex min-h-screen max-w-[960px] flex-col items-center justify-center px-4 md:px-8">
+                <Header />
+                {children}
+                <Footer t={t} i18n={i18n} />
+              </main>
+            </I18nProvider>
+          </ThemeProvider>
+        </JotaiRootProvider>
       </body>
     </html>
   )
