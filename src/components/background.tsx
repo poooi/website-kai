@@ -6,7 +6,7 @@ import { rgba } from 'polished'
 import random from 'random'
 import { useEffect, useRef } from 'react'
 
-import { useTheme } from '~/components/theme-provider'
+import { useTheme } from '~/components/theme-runtime'
 
 /**
  * Draws an hexagone

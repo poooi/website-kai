@@ -3,7 +3,7 @@
 import { MoonIcon, SunIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { useTheme } from '~/components/theme-provider'
+import { useTheme } from '~/components/theme-runtime'
 import { Button } from '~/components/ui/button'
 import {
   DropdownMenu,

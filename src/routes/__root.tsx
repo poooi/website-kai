@@ -16,7 +16,7 @@ import { FooterClient } from '~/components/footer-client'
 import { Header } from '~/components/header'
 import { I18nProvider } from '~/components/i18n-provider'
 import { JotaiRootProvider } from '~/components/jotai-provider'
-import { ThemeProvider } from '~/components/theme-provider'
+import { ThemeRuntime } from '~/components/theme-runtime'
 import { defaultLocale, isSupportedLocale } from '~/lib/i18n-routing'
 import { isMobileDevice } from '~/lib/target'
 import { getServerThemePreference, resolveServerTheme } from '~/lib/theme'
@@ -166,25 +166,23 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           initialResolvedTheme={theme ?? 'light'}
           initialTheme={themePreference}
         >
-          <ThemeProvider
-            attribute="class"
+          <ThemeRuntime
             defaultTheme={themePreference}
             enableSystem
             disableTransitionOnChange
+          />
+          <DesktopBackground initialEnabled={!isMobile} />
+          <I18nProvider
+            locale={locale}
+            namespaces={['common']}
+            resources={resources}
           >
-            <DesktopBackground initialEnabled={!isMobile} />
-            <I18nProvider
-              locale={locale}
-              namespaces={['common']}
-              resources={resources}
-            >
-              <div className="relative z-0 mx-auto flex min-h-screen max-w-[960px] flex-col items-center justify-center px-4 md:px-8">
-                <Header />
-                {children}
-                <FooterClient />
-              </div>
-            </I18nProvider>
-          </ThemeProvider>
+            <div className="relative z-0 mx-auto flex min-h-screen max-w-[960px] flex-col items-center justify-center px-4 md:px-8">
+              <Header />
+              {children}
+              <FooterClient />
+            </div>
+          </I18nProvider>
         </JotaiRootProvider>
         <Scripts />
       </body>

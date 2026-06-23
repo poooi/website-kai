@@ -10,7 +10,7 @@ import { Footer } from '~/components/footer'
 import { Header } from '~/components/header'
 import { I18nProvider } from '~/components/i18n-provider'
 import { JotaiRootProvider } from '~/components/jotai-provider'
-import { ThemeProvider } from '~/components/theme-provider'
+import { ThemeRuntime } from '~/components/theme-runtime'
 import { initTranslations } from '~/i18n'
 import { i18nConfig } from '~/i18n-config'
 import { isMobileDevice } from '~/lib/target'
@@ -118,25 +118,23 @@ export default async function RootLayout(
           initialResolvedTheme={theme ?? 'light'}
           initialTheme={themePreference}
         >
-          <ThemeProvider
-            attribute="class"
+          <ThemeRuntime
             defaultTheme={themePreference}
             enableSystem
             disableTransitionOnChange
+          />
+          <DesktopBackground initialEnabled={!isMobile} />
+          <I18nProvider
+            locale={locale}
+            namespaces={['common']}
+            resources={resources}
           >
-            <DesktopBackground initialEnabled={!isMobile} />
-            <I18nProvider
-              locale={locale}
-              namespaces={['common']}
-              resources={resources}
-            >
-              <main className="relative z-0 mx-auto flex min-h-screen max-w-[960px] flex-col items-center justify-center px-4 md:px-8">
-                <Header />
-                {children}
-                <Footer t={t} i18n={i18n} />
-              </main>
-            </I18nProvider>
-          </ThemeProvider>
+            <main className="relative z-0 mx-auto flex min-h-screen max-w-[960px] flex-col items-center justify-center px-4 md:px-8">
+              <Header />
+              {children}
+              <Footer t={t} i18n={i18n} />
+            </main>
+          </I18nProvider>
         </JotaiRootProvider>
       </body>
     </html>

@@ -1,12 +1,7 @@
 'use client'
 
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
-import {
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  type PropsWithChildren,
-} from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 
 import { resolvedThemeAtom, themeAtom } from '~/components/theme-atoms'
 import {
@@ -16,8 +11,7 @@ import {
   type Theme,
 } from '~/lib/theme'
 
-interface ThemeProviderProps extends PropsWithChildren {
-  attribute?: 'class'
+interface ThemeRuntimeOptions {
   defaultTheme?: Theme
   disableTransitionOnChange?: boolean
   enableSystem?: boolean
@@ -85,13 +79,11 @@ const applyTheme = (
   return resolvedTheme
 }
 
-export const ThemeProvider = ({
-  attribute: _attribute = 'class',
-  children,
+export const useThemeRuntime = ({
   defaultTheme = 'system',
   disableTransitionOnChange = false,
   enableSystem = true,
-}: ThemeProviderProps) => {
+}: ThemeRuntimeOptions = {}) => {
   const [theme, setTheme] = useAtom(themeAtom)
   const setResolvedTheme = useSetAtom(resolvedThemeAtom)
   const skipThemeEffect = useRef(true)
@@ -136,8 +128,11 @@ export const ThemeProvider = ({
       return () => media.removeEventListener('change', handleChange)
     }
   }, [disableTransitionOnChange, enableSystem, setResolvedTheme, theme])
+}
 
-  return <>{children}</>
+export const ThemeRuntime = (options: ThemeRuntimeOptions) => {
+  useThemeRuntime(options)
+  return null
 }
 
 export const useTheme = () => {
