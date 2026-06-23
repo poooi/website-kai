@@ -24,26 +24,6 @@ const shouldLocalize = (pathname: string): boolean => {
   return true
 }
 
-// FIXME: CF Pages does not always honor next.config.js headers config
-// Check if this is required when miragted to worker
-const clientHintHeaders = [
-  {
-    key: 'Accept-CH',
-    value:
-      'Sec-CH-UA-Platform, Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Mobile',
-  },
-  {
-    key: 'Critical-CH',
-    value:
-      'Sec-CH-UA-Platform, Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Mobile',
-  },
-  {
-    key: 'Vary',
-    value:
-      'Sec-CH-UA-Platform, Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Mobile',
-  },
-]
-
 const poiHeaders = [
   {
     key: 'X-Poi-Codename',
@@ -64,7 +44,29 @@ const poiHeaders = [
 ]
 
 const clientHintValues =
-  'Sec-CH-UA-Platform, Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Mobile'
+  'Sec-CH-UA-Platform, Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Mobile, Sec-CH-Prefers-Color-Scheme'
+
+const appendVary = (headers: Headers, value: string) => {
+  const current = headers.get('Vary')
+  if (!current) {
+    headers.set('Vary', value)
+    return
+  }
+  if (current.trim() === '*') {
+    return
+  }
+
+  const values = new Set(
+    current
+      .split(',')
+      .map((entry) => entry.trim())
+      .filter(Boolean),
+  )
+  value.split(',').forEach((entry) => {
+    values.add(entry.trim())
+  })
+  headers.set('Vary', [...values].join(', '))
+}
 
 export function middleware(request: NextRequest) {
   const localize = shouldLocalize(request.nextUrl.pathname)
@@ -82,7 +84,7 @@ export function middleware(request: NextRequest) {
   if (localize) {
     resp.headers.set('Accept-CH', clientHintValues)
     resp.headers.set('Critical-CH', clientHintValues)
-    resp.headers.set('Vary', clientHintValues)
+    appendVary(resp.headers, clientHintValues)
   }
 
   return resp

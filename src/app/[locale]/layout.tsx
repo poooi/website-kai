@@ -5,14 +5,16 @@ import '~/styles/globals.css'
 import type { Metadata } from 'next'
 import { headers } from 'next/headers'
 
-import { Background } from '~/components/background'
+import { DesktopBackground } from '~/components/desktop-background'
 import { Footer } from '~/components/footer'
-import { Header } from '~/components/header'
+import { HeaderNext } from '~/components/header-next'
 import { I18nProvider } from '~/components/i18n-provider'
-import { ThemeProvider } from '~/components/theme-provider'
+import { JotaiRootProvider } from '~/components/jotai-provider'
+import { ThemeRuntime } from '~/components/theme-runtime'
 import { initTranslations } from '~/i18n'
 import { i18nConfig } from '~/i18n-config'
 import { isMobileDevice } from '~/lib/target'
+import { getServerThemePreference, resolveServerTheme } from '~/lib/theme'
 import { cn } from '~/lib/utils'
 
 export const generateStaticParams = async () => {
@@ -64,13 +66,17 @@ export default async function RootLayout(
 
   const { resources, t, i18n } = await initTranslations(locale, ['common'])
 
-  const isMobile = await isMobileDevice(await headers())
+  const requestHeaders = await headers()
+  const isMobile = await isMobileDevice(requestHeaders)
+  const theme = resolveServerTheme(requestHeaders)
+  const themePreference = getServerThemePreference(requestHeaders)
 
   return (
     <html
       lang={locale}
       className={cn({
         'font-ja': locale === 'ja',
+        dark: theme === 'dark',
         'font-zh-hant': locale === 'zh-Hant',
         'font-zh-hans': locale === 'zh-Hans',
         'font-ko': locale === 'ko',
@@ -108,25 +114,28 @@ export default async function RootLayout(
         )}
       </head>
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
+        <JotaiRootProvider
+          initialResolvedTheme={theme ?? 'light'}
+          initialTheme={themePreference}
         >
-          {!isMobile && <Background />}
+          <ThemeRuntime
+            defaultTheme={themePreference}
+            enableSystem
+            disableTransitionOnChange
+          />
+          <DesktopBackground initialEnabled={!isMobile} />
           <I18nProvider
             locale={locale}
             namespaces={['common']}
             resources={resources}
           >
             <main className="relative z-0 mx-auto flex min-h-screen max-w-[960px] flex-col items-center justify-center px-4 md:px-8">
-              <Header />
+              <HeaderNext />
               {children}
               <Footer t={t} i18n={i18n} />
             </main>
           </I18nProvider>
-        </ThemeProvider>
+        </JotaiRootProvider>
       </body>
     </html>
   )

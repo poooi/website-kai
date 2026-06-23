@@ -115,6 +115,210 @@ test('serves localized download and explore pages', async ({ page }) => {
   await expect(page.locator('main')).toContainText('poi')
 })
 
+test('serves framework-neutral header navigation controls', async ({
+  page,
+}) => {
+  await page.goto('/en')
+
+  await expect(page.getByRole('link', { name: 'poi' })).toHaveAttribute(
+    'href',
+    '/en',
+  )
+  await expect(page.getByAltText('poi')).toHaveAttribute('src', /poi-.*\.png/)
+  await expect(page.getByRole('link', { name: 'Explore' })).toHaveAttribute(
+    'href',
+    '/en/explore',
+  )
+  await expect(
+    page.getByRole('link', { name: 'Download', exact: true }),
+  ).toHaveAttribute('href', '/en/download')
+})
+
+test('keeps header pathname current after client history changes', async ({
+  page,
+}) => {
+  await page.goto('/en')
+  await page.evaluate(() => {
+    window.history.pushState({}, '', '/en/download')
+  })
+
+  await expect(page.getByRole('link', { name: 'poi' })).not.toHaveClass(
+    /opacity-0/,
+  )
+  await page.getByRole('button', { name: 'English' }).click()
+  await page.getByRole('menuitemradio', { name: 'français' }).click()
+  await expect(page).toHaveURL('http://127.0.0.1:3002/fr/download')
+})
+
+test('switches language with NEXT_LOCALE and canonical URL', async ({
+  page,
+}) => {
+  await page.goto('/en')
+
+  await page.getByRole('button', { name: 'English' }).click()
+  await page.getByRole('menuitemradio', { name: 'français' }).click()
+
+  await expect(page).toHaveURL('http://127.0.0.1:3002/fr')
+  await expect(page.locator('html')).toHaveAttribute('lang', 'fr')
+  const cookies = await page.context().cookies('http://127.0.0.1:3002')
+  expect(cookies.find((cookie) => cookie.name === 'NEXT_LOCALE')?.value).toBe(
+    'fr',
+  )
+})
+
+test('switches theme without next-themes', async ({ page }) => {
+  await page.goto('/en')
+
+  await page.getByRole('button', { name: 'Theme' }).click()
+  await page.getByRole('menuitemradio', { name: 'Chibaheit' }).click()
+  await expect(page.locator('html')).toHaveClass(/dark/)
+  await expect(
+    page.evaluate(() => localStorage.getItem('theme')),
+  ).resolves.toBe('dark')
+  const darkCookies = await page.context().cookies('http://127.0.0.1:3002')
+  expect(darkCookies.find((cookie) => cookie.name === 'theme')?.value).toBe(
+    'dark',
+  )
+
+  await page.getByRole('button', { name: 'Theme' }).click()
+  await page.getByRole('menuitemradio', { name: 'Lilywhite' }).click()
+  await expect(page.locator('html')).not.toHaveClass(/dark/)
+})
+
+test('uses theme cookie for server-rendered explicit dark theme', async ({
+  page,
+  request,
+}) => {
+  const response = await request.get('/en', {
+    headers: {
+      Cookie: 'theme=dark',
+    },
+  })
+
+  expect(await response.text()).toContain("classList.add('dark')")
+  await page.context().addCookies([
+    {
+      name: 'theme',
+      url: 'http://127.0.0.1:3002',
+      value: 'dark',
+    },
+  ])
+  await page.goto('/en')
+  await expect(page.locator('html')).toHaveClass(/dark/)
+})
+
+test('uses Sec-CH-Prefers-Color-Scheme for server-rendered system theme', async ({
+  browser,
+  request,
+}) => {
+  const response = await request.get('/en', {
+    headers: {
+      'Sec-CH-Prefers-Color-Scheme': '"dark"',
+    },
+  })
+
+  expect(await response.text()).toContain("classList.add('dark')")
+  const context = await browser.newContext({
+    baseURL: 'http://127.0.0.1:3002',
+    colorScheme: 'dark',
+    extraHTTPHeaders: {
+      'Sec-CH-Prefers-Color-Scheme': '"dark"',
+    },
+  })
+  const page = await context.newPage()
+  await page.setExtraHTTPHeaders({
+    'Sec-CH-Prefers-Color-Scheme': '"dark"',
+  })
+  await page.goto('/en')
+  await expect(page.locator('html')).toHaveClass(/dark/)
+  await context.close()
+})
+
+test('keeps system theme selected after client-hint dark SSR', async ({
+  browser,
+}) => {
+  const context = await browser.newContext({
+    baseURL: 'http://127.0.0.1:3002',
+    colorScheme: 'dark',
+    extraHTTPHeaders: {
+      'Sec-CH-Prefers-Color-Scheme': '"dark"',
+    },
+  })
+  const page = await context.newPage()
+
+  await page.goto('/en')
+  await expect(page.locator('html')).toHaveClass(/dark/)
+  await page.getByRole('button', { name: 'Theme' }).click()
+  await expect(
+    page.getByRole('menuitemradio', { name: 'System' }),
+  ).toHaveAttribute('aria-checked', 'true')
+
+  await page.emulateMedia({ colorScheme: 'light' })
+  await expect(page.locator('html')).not.toHaveClass(/dark/)
+  await expect(
+    page
+      .locator('canvas')
+      .evaluate((canvas: HTMLCanvasElement) =>
+        canvas.getContext('2d')?.getImageData(0, 0, 1, 1).data.join(','),
+      ),
+  ).resolves.toBeDefined()
+
+  await context.close()
+})
+
+test('ignores malformed theme cookies during SSR', async ({ request }) => {
+  const response = await request.get('/en', {
+    headers: {
+      Cookie: 'theme=%',
+    },
+  })
+
+  expect(response.status()).toBe(200)
+})
+
+test('ignores invalid stored theme values', async ({ page }) => {
+  await page.goto('/en')
+  await page.evaluate(() => localStorage.setItem('theme', 'invalid'))
+  await page.reload()
+
+  await page.getByRole('button', { name: 'Theme' }).click()
+  await page.getByRole('menuitemradio', { name: 'Chibaheit' }).click()
+  await expect(page.locator('html')).toHaveClass(/dark/)
+})
+
+test('theme switching works when localStorage is unavailable', async ({
+  browser,
+}) => {
+  const context = await browser.newContext({
+    baseURL: 'http://127.0.0.1:3002',
+  })
+  await context.addInitScript(() => {
+    Storage.prototype.getItem = () => {
+      throw new Error('localStorage disabled')
+    }
+    Storage.prototype.setItem = () => {
+      throw new Error('localStorage disabled')
+    }
+  })
+  const page = await context.newPage()
+
+  await page.goto('/en')
+  await page.getByRole('button', { name: 'Theme' }).click()
+  await page.getByRole('menuitemradio', { name: 'Chibaheit' }).click()
+  await expect(page.locator('html')).toHaveClass(/dark/)
+  const cookies = await page.context().cookies('http://127.0.0.1:3002')
+  expect(cookies.find((cookie) => cookie.name === 'theme')?.value).toBe('dark')
+
+  await context.close()
+})
+
+test('does not mount background canvas on small screens', async ({ page }) => {
+  await page.setViewportSize({ width: 500, height: 800 })
+  await page.goto('/en')
+
+  await expect(page.locator('canvas')).toHaveCount(0)
+})
+
 test('renders desktop request-aware download links', async ({ browser }) => {
   const context = await browser.newContext({
     baseURL: 'http://127.0.0.1:3002',
@@ -147,7 +351,10 @@ test('renders desktop request-aware download links', async ({ browser }) => {
     page.getByRole('link', { name: /Download v10\.9\.2/ }),
   ).toHaveAttribute('href', '/dist/poi-setup-10.9.2.exe')
   await expect(page.getByText('Operating system')).toBeVisible()
-  const platformButtons = page.getByRole('button')
+  const platformControls = page
+    .locator('section')
+    .filter({ hasText: 'Operating system' })
+  const platformButtons = platformControls.getByRole('button')
   await expect(platformButtons).toHaveCount(2)
   await platformButtons.first().click()
   const linuxItem = page.getByRole('menuitem', { name: 'Linux' })

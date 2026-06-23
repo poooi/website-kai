@@ -2,10 +2,11 @@
 
 import debounce from 'lodash/debounce'
 import times from 'lodash/times'
-import { useTheme } from 'next-themes'
 import { rgba } from 'polished'
 import random from 'random'
 import { useEffect, useRef } from 'react'
+
+import { useTheme } from '~/components/theme-runtime'
 
 /**
  * Draws an hexagone
@@ -58,7 +59,7 @@ const getRandomXY = (w: number, h: number) => {
 
 export const Background = () => {
   const canvas = useRef<HTMLCanvasElement>(null)
-  const { theme } = useTheme()
+  const { resolvedTheme } = useTheme()
 
   useEffect(() => {
     const drawCanvas = () => {
@@ -102,7 +103,7 @@ export const Background = () => {
     return () => {
       window.removeEventListener('resize', debouncedDrawCanvas)
     }
-  }, [theme])
+  }, [resolvedTheme])
 
   return (
     <canvas

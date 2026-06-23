@@ -1,7 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 'use client'
 
-import Link from 'next/link'
+import {
+  forwardRef,
+  type ComponentType,
+  type ComponentPropsWithoutRef,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 
 import poiLogo from '~/assets/poi.png'
@@ -9,10 +13,32 @@ import { LanguageChooser } from '~/components/language-chooser'
 import { ThemeChooser } from '~/components/theme-chooser'
 import { Button } from '~/components/ui/button'
 import { useI18nPathname } from '~/hooks/use-i18n-pathname'
+import { localizePath } from '~/lib/i18n-routing'
 import { cn } from '~/lib/utils'
 
-export const Header = () => {
-  const { t } = useTranslation()
+const poiLogoSrc = typeof poiLogo === 'string' ? poiLogo : poiLogo.src
+
+export interface HeaderLinkProps extends ComponentPropsWithoutRef<'a'> {
+  href: string
+}
+
+const AnchorLink = forwardRef<HTMLAnchorElement, HeaderLinkProps>(
+  ({ children, ...props }, ref) => {
+    return (
+      <a ref={ref} {...props}>
+        {children}
+      </a>
+    )
+  },
+)
+AnchorLink.displayName = 'AnchorLink'
+
+interface HeaderProps {
+  LinkComponent?: ComponentType<HeaderLinkProps>
+}
+
+export const Header = ({ LinkComponent = AnchorLink }: HeaderProps) => {
+  const { i18n, t } = useTranslation()
   const pathname = useI18nPathname()
 
   const onIndexPage = pathname === '/'
@@ -21,17 +47,22 @@ export const Header = () => {
     <div className="flex h-16 w-full items-center">
       <nav className="flex grow items-center">
         <Button variant="ghost" size="icon" asChild>
-          <Link className={cn(onIndexPage && 'cursor-auto opacity-0')} href="/">
-            <img src={poiLogo.src} alt="poi" className="h-8 w-8" />
-          </Link>
+          <LinkComponent
+            className={cn(onIndexPage && 'cursor-auto opacity-0')}
+            href={localizePath('/', i18n.language)}
+          >
+            <img src={poiLogoSrc} alt="poi" className="h-8 w-8" />
+          </LinkComponent>
         </Button>
         <Button variant="ghost" asChild>
-          <Link href="/explore">{t('Explore')}</Link>
+          <LinkComponent href={localizePath('/explore', i18n.language)}>
+            {t('Explore')}
+          </LinkComponent>
         </Button>
         <Button variant="ghost" asChild>
-          <Link href="/download" passHref>
+          <LinkComponent href={localizePath('/download', i18n.language)}>
             {t('Download')}
-          </Link>
+          </LinkComponent>
         </Button>
       </nav>
       <div className="flex shrink-0 gap-4">
