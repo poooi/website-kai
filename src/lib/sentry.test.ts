@@ -83,4 +83,33 @@ describe('handleSentryTunnel', () => {
     expect(call!.init?.method).toBe('POST')
     expect(call!.init?.headers).toEqual({ 'Content-Type': 'text/plain' })
   })
+
+  it('forwards binary envelopes without re-encoding the body', async () => {
+    const header = new TextEncoder().encode(`${JSON.stringify({ dsn: sentryDsn })}\n`)
+    const binaryPayload = new Uint8Array([0x00, 0xff, 0x80, 0x0a])
+    const envelope = new Uint8Array(header.length + binaryPayload.length)
+    envelope.set(header)
+    envelope.set(binaryPayload, header.length)
+    const calls: Array<{ init?: RequestInit }> = []
+
+    const response = await handleSentryTunnel(
+      new Request('https://poi.moe/api/monitoring', {
+        body: envelope,
+        method: 'POST',
+      }),
+      {
+        fetcher: (async (_input, init) => {
+          calls.push({ init })
+          return new Response('', { status: 202 })
+        }) satisfies typeof fetch,
+      },
+    )
+
+    expect(response.status).toBe(200)
+    const [call] = calls
+    expect(call?.init?.body).toBeInstanceOf(ArrayBuffer)
+    expect(Array.from(new Uint8Array(call!.init!.body as ArrayBuffer))).toEqual(
+      Array.from(envelope),
+    )
+  })
 })

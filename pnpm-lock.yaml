@@ -174,9 +174,6 @@ importers:
       '@sentry/cli':
         specifier: 2.39.1
         version: 2.39.1
-      '@sentry/vite-plugin':
-        specifier: 2.22.7
-        version: 2.22.7
       '@tailwindcss/typography':
         specifier: ^0.5.20
         version: 0.5.20(tailwindcss@3.4.19(yaml@2.9.0))
@@ -2277,10 +2274,6 @@ packages:
   '@sentry/vercel-edge@8.55.2':
     resolution: {integrity: sha512-obrDDBeIFIhWOARAuXg7nRQS1fYQHvscNTBRHzMT0fRU0nPtZssN4cUZYtMVZst3jFfakfe9BSyhEBRmrbWQ/w==}
     engines: {node: '>=14.18'}
-
-  '@sentry/vite-plugin@2.22.7':
-    resolution: {integrity: sha512-sYRNiNm4toQGq2BfZSJPdw36em3eQaLu+3NTFpA7Hl4g3Sp2Rt3CYObnW5bxlFEruRhxzvdyB383N9OefVZ6KA==}
-    engines: {node: '>= 14'}
 
   '@sentry/webpack-plugin@2.22.7':
     resolution: {integrity: sha512-j5h5LZHWDlm/FQCCmEghQ9FzYXwfZdlOf3FE/X6rK6lrtx0JCAkq+uhMSasoyP4XYKL4P4vRS6WFSos4jxf/UA==}
@@ -8380,14 +8373,6 @@ snapshots:
     dependencies:
       '@opentelemetry/api': 1.9.1
       '@sentry/core': 8.55.2
-
-  '@sentry/vite-plugin@2.22.7':
-    dependencies:
-      '@sentry/bundler-plugin-core': 2.22.7
-      unplugin: 1.0.1
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
 
   '@sentry/webpack-plugin@2.22.7(webpack@5.107.2(esbuild@0.28.1)(postcss@8.5.15))':
     dependencies:

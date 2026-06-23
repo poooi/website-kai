@@ -22,8 +22,25 @@ const createNoStoreHeaders = (headers?: Record<string, string>) => {
 const emptyResponse = (status: number, headers = createNoStoreHeaders()) =>
   new Response('', { headers, status })
 
-const isValidEnvelope = (body: string) => {
-  const [headerLine] = body.split(/\r?\n/, 1)
+const textDecoder = new TextDecoder()
+
+const getEnvelopeHeaderLine = (body: ArrayBuffer) => {
+  const bytes = new Uint8Array(body)
+  let lineEnd = bytes.indexOf(0x0a)
+  if (lineEnd === -1) {
+    lineEnd = bytes.length
+  }
+  if (lineEnd > 0 && bytes[lineEnd - 1] === 0x0d) {
+    lineEnd -= 1
+  }
+  if (lineEnd === 0) {
+    return undefined
+  }
+  return textDecoder.decode(bytes.subarray(0, lineEnd))
+}
+
+const isValidEnvelope = (body: ArrayBuffer) => {
+  const headerLine = getEnvelopeHeaderLine(body)
   if (!headerLine) {
     return false
   }
@@ -60,7 +77,7 @@ export const handleSentryTunnel = async (
     return emptyResponse(405, createNoStoreHeaders({ Allow: 'POST' }))
   }
 
-  const body = await request.text()
+  const body = await request.arrayBuffer()
   if (!isValidEnvelope(body)) {
     return emptyResponse(400)
   }

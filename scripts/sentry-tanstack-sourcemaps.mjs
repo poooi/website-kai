@@ -39,9 +39,9 @@ const collectMaps = async (dir) => {
   return nested.flat()
 }
 
-const mapsHaveDebugIds = async (maps) => {
+const countMapsWithDebugIds = async (maps) => {
   const contents = await Promise.all(maps.map((map) => readFile(map, 'utf8')))
-  return contents.some((content) => content.includes('"debug_id"'))
+  return contents.filter((content) => content.includes('"debug_id"')).length
 }
 
 const maps = await collectMaps(distDir)
@@ -66,8 +66,11 @@ await execa(
 )
 
 const injectedMaps = await collectMaps(distDir)
-if (!(await mapsHaveDebugIds(injectedMaps))) {
-  throw new Error('Sentry debug IDs were not injected into TanStack sourcemaps.')
+const injectedMapCount = await countMapsWithDebugIds(injectedMaps)
+if (injectedMapCount !== injectedMaps.length) {
+  throw new Error(
+    `Sentry debug IDs were injected into ${injectedMapCount}/${injectedMaps.length} TanStack sourcemaps.`,
+  )
 }
 
 if (

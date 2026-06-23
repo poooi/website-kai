@@ -1,7 +1,6 @@
 import { fileURLToPath } from 'node:url'
 
 import { cloudflare } from '@cloudflare/vite-plugin'
-import { sentryVitePlugin } from '@sentry/vite-plugin'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'
 import { execa } from 'execa'
@@ -20,7 +19,8 @@ const getCommitHash = async () => {
 const commitHash = await getCommitHash()
 const buildDate = new Date().toISOString()
 const sentryRelease = process.env.SENTRY_RELEASE ?? commitHash
-const sentryUploadEnabled = !!process.env.SENTRY_AUTH_TOKEN
+const sentrySourcemapsEnabled =
+  !!process.env.SENTRY_AUTH_TOKEN || process.env.SENTRY_UPLOAD_DRY_RUN === '1'
 
 const ibmFontPackages = [
   'plex-sans',
@@ -32,7 +32,7 @@ const ibmFontPackages = [
 
 export default defineConfig({
   build: {
-    sourcemap: true,
+    sourcemap: sentrySourcemapsEnabled,
   },
   server: {
     host: '127.0.0.1',
@@ -69,19 +69,5 @@ export default defineConfig({
     }),
     tanstackStart(),
     viteReact(),
-    sentryUploadEnabled &&
-      sentryVitePlugin({
-        authToken: process.env.SENTRY_AUTH_TOKEN,
-        org: process.env.SENTRY_ORG ?? 'poi',
-        project: process.env.SENTRY_PROJECT ?? 'poi-web-kai',
-        release: { name: sentryRelease },
-        sourcemaps: {
-          assets: ['./dist/client/**', './dist/server/**'],
-          filesToDeleteAfterUpload: [
-            './dist/client/**/*.map',
-            './dist/server/**/*.map',
-          ],
-        },
-      }),
-  ].filter(Boolean),
+  ],
 })
