@@ -16,6 +16,7 @@ import { FooterClient } from '~/components/footer-client'
 import { Header } from '~/components/header'
 import { I18nProvider } from '~/components/i18n-provider'
 import { JotaiRootProvider } from '~/components/jotai-provider'
+import { SentryClient } from '~/components/sentry-client'
 import { ThemeRuntime } from '~/components/theme-runtime'
 import { defaultLocale, isSupportedLocale } from '~/lib/i18n-routing'
 import { isMobileDevice } from '~/lib/target'
@@ -166,6 +167,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           initialResolvedTheme={theme ?? 'light'}
           initialTheme={themePreference}
         >
+          <SentryClient />
           <ThemeRuntime
             defaultTheme={themePreference}
             enableSystem

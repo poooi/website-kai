@@ -1,3 +1,5 @@
+import type { ExportedHandler } from '@cloudflare/workers-types'
+import { withSentry } from '@sentry/cloudflare'
 import startHandler from '@tanstack/react-start/server-entry'
 
 import {
@@ -9,6 +11,7 @@ import {
   resolvePreferredLocale,
   stripLocalePrefix,
 } from '~/lib/i18n-routing'
+import { handleSentryTunnel, sentryDsn, sentryRelease } from '~/lib/sentry'
 
 interface AssetsBinding {
   fetch(request: Request): Promise<Response>
@@ -228,18 +231,6 @@ const withAssetHeaders = (response: Response, request: Request) => {
   })
 }
 
-const handleMonitoringStub = (request: Request) => {
-  if (request.method === 'POST') {
-    return new Response('', { status: 501 })
-  }
-  return new Response('', {
-    status: 405,
-    headers: {
-      Allow: 'POST',
-    },
-  })
-}
-
 const handleAsset = async (request: Request, env: WorkerEnv) => {
   if (!env.ASSETS || !isFileRequest(new URL(request.url).pathname)) {
     return undefined
@@ -263,7 +254,7 @@ const worker = {
 
     let response: Response | undefined
     if (isMonitoringPath(pathname)) {
-      response = handleMonitoringStub(request)
+      response = await handleSentryTunnel(request)
     }
 
     if (isProxyRootPath(pathname)) {
@@ -283,4 +274,11 @@ const worker = {
   },
 }
 
-export default worker
+export default withSentry(
+  () => ({
+    dsn: sentryDsn,
+    release: sentryRelease,
+    tracesSampleRate: 0.01,
+  }),
+  worker as unknown as ExportedHandler<WorkerEnv>,
+)

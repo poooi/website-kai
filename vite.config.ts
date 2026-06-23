@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'node:url'
 
 import { cloudflare } from '@cloudflare/vite-plugin'
+import { sentryVitePlugin } from '@sentry/vite-plugin'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'
 import { execa } from 'execa'
@@ -18,6 +19,8 @@ const getCommitHash = async () => {
 
 const commitHash = await getCommitHash()
 const buildDate = new Date().toISOString()
+const sentryRelease = process.env.SENTRY_RELEASE ?? commitHash
+const sentryUploadEnabled = !!process.env.SENTRY_AUTH_TOKEN
 
 const ibmFontPackages = [
   'plex-sans',
@@ -28,6 +31,9 @@ const ibmFontPackages = [
 ]
 
 export default defineConfig({
+  build: {
+    sourcemap: true,
+  },
   server: {
     host: '127.0.0.1',
     port: 3002,
@@ -44,6 +50,7 @@ export default defineConfig({
   define: {
     'process.env.BUILD_DATE': JSON.stringify(buildDate),
     'process.env.COMMIT_HASH': JSON.stringify(commitHash),
+    'process.env.SENTRY_RELEASE': JSON.stringify(sentryRelease),
     'process.env.TANSTACK_TEST_POI_VERSIONS': JSON.stringify(
       process.env.TANSTACK_TEST_POI_VERSIONS ?? '',
     ),
@@ -62,5 +69,19 @@ export default defineConfig({
     }),
     tanstackStart(),
     viteReact(),
-  ],
+    sentryUploadEnabled &&
+      sentryVitePlugin({
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+        org: process.env.SENTRY_ORG ?? 'poi',
+        project: process.env.SENTRY_PROJECT ?? 'poi-web-kai',
+        release: { name: sentryRelease },
+        sourcemaps: {
+          assets: ['./dist/client/**', './dist/server/**'],
+          filesToDeleteAfterUpload: [
+            './dist/client/**/*.map',
+            './dist/server/**/*.map',
+          ],
+        },
+      }),
+  ].filter(Boolean),
 })
