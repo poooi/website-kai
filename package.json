@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@ibm/plex-sans": "^1.1.0",
-    "@ibm/plex-sans-jp": "^1.1.0",
+    "@ibm/plex-sans-jp": "^3.0.0",
     "@ibm/plex-sans-kr": "^1.1.0",
     "@ibm/plex-sans-sc": "^1.1.0",
     "@ibm/plex-sans-tc": "^1.1.1",
