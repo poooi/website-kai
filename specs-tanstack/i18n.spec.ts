@@ -112,7 +112,7 @@ test('serves localized download and explore pages', async ({ page }) => {
   await expect(page.getByRole('link', { name: 'Source code' })).toBeVisible()
 
   await page.goto('/en/explore')
-  await expect(page.locator('main')).toContainText('poi')
+  await expect(page.getByRole('heading', { name: 'what is poi' })).toBeVisible()
 })
 
 test('serves framework-neutral header navigation controls', async ({
@@ -173,6 +173,16 @@ test('matches Next page layout backgrounds and headings', async ({ page }) => {
   await expect(
     page.getByRole('heading', { level: 1, name: 'Download' }),
   ).toHaveCount(0)
+
+  await page.goto('/en/explore')
+  await expect(page.locator('main.prose')).toHaveCount(0)
+  const exploreContent = page.getByRole('heading', {
+    name: 'what is poi',
+  })
+  await expect(exploreContent).toBeVisible()
+  await expect(
+    exploreContent.locator('xpath=ancestor::div[contains(@class, "prose")]'),
+  ).toHaveClass(/grow/)
 })
 
 test('keeps header pathname current after client history changes', async ({
