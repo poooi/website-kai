@@ -1,7 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 'use client'
 
-import { type ComponentType, type PropsWithChildren } from 'react'
+import {
+  forwardRef,
+  type ComponentType,
+  type ComponentPropsWithoutRef,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 
 import poiLogo from '~/assets/poi.png'
@@ -14,14 +18,20 @@ import { cn } from '~/lib/utils'
 
 const poiLogoSrc = typeof poiLogo === 'string' ? poiLogo : poiLogo.src
 
-export interface HeaderLinkProps extends PropsWithChildren {
-  className?: string
+export interface HeaderLinkProps extends ComponentPropsWithoutRef<'a'> {
   href: string
 }
 
-const AnchorLink = ({ children, ...props }: HeaderLinkProps) => {
-  return <a {...props}>{children}</a>
-}
+const AnchorLink = forwardRef<HTMLAnchorElement, HeaderLinkProps>(
+  ({ children, ...props }, ref) => {
+    return (
+      <a ref={ref} {...props}>
+        {children}
+      </a>
+    )
+  },
+)
+AnchorLink.displayName = 'AnchorLink'
 
 interface HeaderProps {
   LinkComponent?: ComponentType<HeaderLinkProps>

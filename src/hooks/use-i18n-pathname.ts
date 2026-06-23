@@ -45,7 +45,11 @@ const restoreHistory = () => {
 const subscribe = (onStoreChange: () => void) => {
   patchHistory()
   subscribers += 1
+  let active = true
   queueMicrotask(() => {
+    if (!active) {
+      return
+    }
     hydrated = true
     onStoreChange()
   })
@@ -54,6 +58,7 @@ const subscribe = (onStoreChange: () => void) => {
   return () => {
     window.removeEventListener('popstate', onStoreChange)
     window.removeEventListener(locationChangeEvent, onStoreChange)
+    active = false
     subscribers -= 1
     restoreHistory()
   }
