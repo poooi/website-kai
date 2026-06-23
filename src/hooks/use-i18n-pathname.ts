@@ -2,6 +2,7 @@ import { useSyncExternalStore } from 'react'
 import { useTranslation } from 'react-i18next'
 
 const locationChangeEvent = 'locationchange'
+let hydrated = false
 
 const patchHistory = () => {
   const historyWithPatchState = window.history as History & {
@@ -33,6 +34,10 @@ const patchHistory = () => {
 
 const subscribe = (onStoreChange: () => void) => {
   patchHistory()
+  queueMicrotask(() => {
+    hydrated = true
+    onStoreChange()
+  })
   window.addEventListener('popstate', onStoreChange)
   window.addEventListener(locationChangeEvent, onStoreChange)
   return () => {
@@ -41,7 +46,7 @@ const subscribe = (onStoreChange: () => void) => {
   }
 }
 
-const getPathname = () => window.location.pathname
+const getPathname = () => (hydrated ? window.location.pathname : undefined)
 
 const getServerSnapshot = () => undefined
 

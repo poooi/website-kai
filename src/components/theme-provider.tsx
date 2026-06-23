@@ -30,6 +30,8 @@ interface ThemeProviderProps extends PropsWithChildren {
 }
 
 const storageKey = themeCookieName
+const useIsomorphicLayoutEffect =
+  typeof window === 'undefined' ? useEffect : useLayoutEffect
 
 const themeAtom = atom<Theme>('system')
 const resolvedThemeAtom = atom<'dark' | 'light'>('light')
@@ -51,7 +53,7 @@ const disableTransitions = () => {
 }
 
 const setThemeCookie = (theme: Theme) => {
-  document.cookie = `${themeCookieName}=${theme};max-age=31536000;path=/;sameSite=lax`
+  document.cookie = `${themeCookieName}=${theme};max-age=31536000;path=/;SameSite=Lax`
 }
 
 const getStoredTheme = () => {
@@ -124,7 +126,7 @@ const ThemeHydrator = ({
   const setResolvedTheme = useSetAtom(resolvedThemeAtom)
   const skipThemeEffect = useRef(true)
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const cookieTheme = getThemeCookie(document.cookie)
     const initialTheme = cookieTheme ?? getStoredTheme() ?? defaultTheme
     setTheme(initialTheme)
