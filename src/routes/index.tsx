@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-html-link-for-pages */
-import { createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 
 import { Transition } from '~/components/transition'
 import { Badge } from '~/components/ui/badge'
@@ -17,9 +17,9 @@ export const Route = createFileRoute('/')({
 function HomePage() {
   const data = Route.useLoaderData()
   return (
-    <main className="mx-auto flex min-h-screen max-w-[960px] flex-col items-start justify-center gap-6 bg-background p-4 text-foreground">
-      <Transition className="w-full">
-        <h1 className="text-7xl leading-loose">{data.name}</h1>
+    <Transition className="flex w-full grow items-center md:pl-[45px]">
+      <div className="w-full">
+        <h1 className="text-9xl leading-loose">{data.name}</h1>
         <p className="text-2xl">{data.description}</p>
         {data.platform.isMobile ? (
           <p className="mt-4">{data.mobileHint}</p>
@@ -65,12 +65,12 @@ function HomePage() {
                 {data.platformLabels.spec[data.platform.spec]}
               </Badge>
               <Button variant="link" asChild>
-                <a href="/download">{data.downloadOptions}</a>
+                <Link to="/download">{data.downloadOptions}</Link>
               </Button>
             </div>
           </>
         )}
-      </Transition>
-    </main>
+      </div>
+    </Transition>
   )
 }

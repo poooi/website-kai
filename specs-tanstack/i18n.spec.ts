@@ -134,6 +134,47 @@ test('serves framework-neutral header navigation controls', async ({
   ).toHaveAttribute('href', '/en/download')
 })
 
+test('keeps background canvas stable during client navigation', async ({
+  page,
+}) => {
+  await page.goto('/en')
+  await page.waitForFunction(() => {
+    const canvas = document.querySelector('canvas')
+    return canvas instanceof HTMLCanvasElement && canvas.width > 0
+  })
+  const before = await page
+    .locator('canvas')
+    .evaluate((canvas: HTMLCanvasElement) => canvas.toDataURL())
+
+  await page.getByRole('link', { name: 'Download', exact: true }).click()
+  await expect(page).toHaveURL('http://127.0.0.1:3002/en/download')
+  await page.waitForTimeout(300)
+
+  await expect(
+    page
+      .locator('canvas')
+      .evaluate((canvas: HTMLCanvasElement) => canvas.toDataURL()),
+  ).resolves.toBe(before)
+})
+
+test('matches Next page layout backgrounds and headings', async ({ page }) => {
+  await page.goto('/en')
+  await expect(page.locator('main.bg-background')).toHaveCount(0)
+  await expect(
+    page.getByRole('heading', { name: 'poi' }).evaluate((heading) => {
+      return getComputedStyle(heading.parentElement!).backgroundColor
+    }),
+  ).resolves.toBe('rgba(0, 0, 0, 0)')
+
+  await page.goto('/en/download')
+  await expect(
+    page.getByRole('heading', { level: 2, name: 'Download' }),
+  ).toBeVisible()
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Download' }),
+  ).toHaveCount(0)
+})
+
 test('keeps header pathname current after client history changes', async ({
   page,
 }) => {

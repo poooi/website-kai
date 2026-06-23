@@ -4,16 +4,18 @@ import {
   HeadContent,
   Scripts,
   createRootRouteWithContext,
+  useNavigate,
   useRouterState,
 } from '@tanstack/react-router'
 import { createServerOnlyFn } from '@tanstack/react-start'
 import { getRequestHeaders } from '@tanstack/react-start/server'
 import type { Resource } from 'i18next'
+import { forwardRef, type MouseEvent } from 'react'
 
 import '~/styles/globals.css'
 import { DesktopBackground } from '~/components/desktop-background'
 import { FooterClient } from '~/components/footer-client'
-import { Header } from '~/components/header'
+import { Header, type HeaderLinkProps } from '~/components/header'
 import { I18nProvider } from '~/components/i18n-provider'
 import { JotaiRootProvider } from '~/components/jotai-provider'
 import { SentryClient } from '~/components/sentry-client'
@@ -42,12 +44,43 @@ const getCurrentRequestHeaders = createServerOnlyFn(
   () => new Headers(getRequestHeaders()),
 )
 
+const HeaderLink = forwardRef<HTMLAnchorElement, HeaderLinkProps>(
+  ({ href, children, onClick, target, ...props }, ref) => {
+    const navigate = useNavigate()
+    const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
+      onClick?.(event)
+      if (
+        event.defaultPrevented ||
+        event.button !== 0 ||
+        target === '_blank' ||
+        event.metaKey ||
+        event.altKey ||
+        event.ctrlKey ||
+        event.shiftKey
+      ) {
+        return
+      }
+
+      event.preventDefault()
+      void navigate({ to: href })
+    }
+
+    return (
+      <a ref={ref} href={href} target={target} onClick={handleClick} {...props}>
+        {children}
+      </a>
+    )
+  },
+)
+HeaderLink.displayName = 'HeaderLink'
+
 const getCurrentRequestHeadersForRoot = (context: TanStackRouterContext) => {
   const requestHeaders =
     context.serverContext?.requestHeaders ?? context.requestHeaders
   if (requestHeaders) {
     return new Headers(requestHeaders)
   }
+
   return typeof document === 'undefined'
     ? getCurrentRequestHeaders()
     : new Headers()
@@ -180,7 +213,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             resources={resources}
           >
             <div className="relative z-0 mx-auto flex min-h-screen max-w-[960px] flex-col items-center justify-center px-4 md:px-8">
-              <Header />
+              <Header LinkComponent={HeaderLink} />
               {children}
               <FooterClient />
             </div>
