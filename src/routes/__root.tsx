@@ -115,7 +115,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     <html
       lang={locale}
       className={cn({
-        dark: theme === 'dark',
         'font-ja': locale === 'ja',
         'font-zh-hant': locale === 'zh-Hant',
         'font-zh-hans': locale === 'zh-Hans',
@@ -124,6 +123,14 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       suppressHydrationWarning
     >
       <head>
+        {theme === 'dark' && (
+          <script
+            dangerouslySetInnerHTML={{
+              __html:
+                "document.documentElement.classList.add('dark');document.currentScript.remove();",
+            }}
+          />
+        )}
         <link
           href="/fonts/plex-sans/IBMPlexSans-Regular.css"
           rel="stylesheet"

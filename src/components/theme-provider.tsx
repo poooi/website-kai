@@ -128,6 +128,8 @@ const ThemeHydrator = ({
     const cookieTheme = getThemeCookie(document.cookie)
     const initialTheme = cookieTheme ?? getStoredTheme() ?? defaultTheme
     setTheme(initialTheme)
+    setStoredTheme(initialTheme)
+    setThemeCookie(initialTheme)
     setResolvedTheme(
       applyTheme(initialTheme, enableSystem, disableTransitionOnChange),
     )

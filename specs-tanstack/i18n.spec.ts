@@ -186,6 +186,7 @@ test('switches theme without next-themes', async ({ page }) => {
 })
 
 test('uses theme cookie for server-rendered explicit dark theme', async ({
+  page,
   request,
 }) => {
   const response = await request.get('/en', {
@@ -194,10 +195,20 @@ test('uses theme cookie for server-rendered explicit dark theme', async ({
     },
   })
 
-  expect(await response.text()).toContain('<html lang="en" class="dark')
+  expect(await response.text()).toContain("classList.add('dark')")
+  await page.context().addCookies([
+    {
+      name: 'theme',
+      url: 'http://127.0.0.1:3002',
+      value: 'dark',
+    },
+  ])
+  await page.goto('/en')
+  await expect(page.locator('html')).toHaveClass(/dark/)
 })
 
 test('uses Sec-CH-Prefers-Color-Scheme for server-rendered system theme', async ({
+  browser,
   request,
 }) => {
   const response = await request.get('/en', {
@@ -206,7 +217,21 @@ test('uses Sec-CH-Prefers-Color-Scheme for server-rendered system theme', async 
     },
   })
 
-  expect(await response.text()).toContain('<html lang="en" class="dark')
+  expect(await response.text()).toContain("classList.add('dark')")
+  const context = await browser.newContext({
+    baseURL: 'http://127.0.0.1:3002',
+    colorScheme: 'dark',
+    extraHTTPHeaders: {
+      'Sec-CH-Prefers-Color-Scheme': '"dark"',
+    },
+  })
+  const page = await context.newPage()
+  await page.setExtraHTTPHeaders({
+    'Sec-CH-Prefers-Color-Scheme': '"dark"',
+  })
+  await page.goto('/en')
+  await expect(page.locator('html')).toHaveClass(/dark/)
+  await context.close()
 })
 
 test('keeps system theme selected after client-hint dark SSR', async ({
