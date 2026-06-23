@@ -11,7 +11,7 @@ import {
   resolvePreferredLocale,
   stripLocalePrefix,
 } from '~/lib/i18n-routing'
-import { handleSentryTunnel, sentryDsn, sentryRelease } from '~/lib/sentry'
+import { sentryDsn, sentryRelease } from '~/lib/sentry'
 
 interface AssetsBinding {
   fetch(request: Request): Promise<Response>
@@ -62,6 +62,15 @@ const isProxyRootPath = (pathname: string) => {
   return (
     normalized === '/dist' || normalized === '/fcd' || normalized === '/update'
   )
+}
+
+const normalizeMonitoringRequest = (request: Request) => {
+  const url = new URL(request.url)
+  if (url.pathname !== '/api/monitoring/') {
+    return request
+  }
+  url.pathname = '/api/monitoring'
+  return new Request(url, request)
 }
 
 const isPageRequest = (request: Request) => {
@@ -244,19 +253,11 @@ const handleAsset = async (request: Request, env: WorkerEnv) => {
   return withAssetHeaders(response, request)
 }
 
-const isMonitoringPath = (pathname: string) => {
-  return pathname === '/api/monitoring' || pathname === '/api/monitoring/'
-}
-
 const worker = {
   async fetch(request: Request, env: WorkerEnv, ctx: ExecutionContextLike) {
     const { pathname } = new URL(request.url)
 
     let response: Response | undefined
-    if (isMonitoringPath(pathname)) {
-      response = await handleSentryTunnel(request)
-    }
-
     if (isProxyRootPath(pathname)) {
       response = new Response('', { status: 404 })
     }
@@ -264,7 +265,7 @@ const worker = {
     response ??= handleLocaleRedirects(request)
     response ??= await handleAsset(request, env)
     response ??= await (startHandler.fetch as StartHandlerWithContext)(
-      request,
+      normalizeMonitoringRequest(request),
       {
         context: { env, ctx, requestHeaders: [...request.headers] },
       },
