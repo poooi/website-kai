@@ -19,8 +19,6 @@ const getCommitHash = async () => {
 const commitHash = await getCommitHash()
 const buildDate = new Date().toISOString()
 const sentryRelease = process.env.SENTRY_RELEASE ?? commitHash
-const sentrySourcemapsEnabled =
-  !!process.env.SENTRY_AUTH_TOKEN || process.env.SENTRY_UPLOAD_DRY_RUN === '1'
 
 const ibmFontPackages = [
   'plex-sans',
@@ -32,7 +30,7 @@ const ibmFontPackages = [
 
 export default defineConfig({
   build: {
-    sourcemap: sentrySourcemapsEnabled,
+    sourcemap: true,
   },
   server: {
     host: '127.0.0.1',

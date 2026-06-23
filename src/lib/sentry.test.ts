@@ -85,7 +85,9 @@ describe('handleSentryTunnel', () => {
   })
 
   it('forwards binary envelopes without re-encoding the body', async () => {
-    const header = new TextEncoder().encode(`${JSON.stringify({ dsn: sentryDsn })}\n`)
+    const header = new TextEncoder().encode(
+      `${JSON.stringify({ dsn: sentryDsn })}\n`,
+    )
     const binaryPayload = new Uint8Array([0x00, 0xff, 0x80, 0x0a])
     const envelope = new Uint8Array(header.length + binaryPayload.length)
     envelope.set(header)
