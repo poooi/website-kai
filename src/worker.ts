@@ -37,7 +37,7 @@ type StartHandlerWithContext = (
   },
 ) => Promise<Response>
 
-type SentryHandler = Parameters<typeof withSentry<WorkerEnv>>[1]
+type SentryHandler = Parameters<typeof withSentry>[1]
 
 const clientHintValues =
   'Sec-CH-UA-Platform, Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Mobile, Sec-CH-Prefers-Color-Scheme'
