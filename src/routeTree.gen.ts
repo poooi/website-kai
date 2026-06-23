@@ -19,6 +19,7 @@ import { Route as LocaleIndexRouteImport } from './routes/$locale.index'
 import { Route as UpdateFilenameRouteImport } from './routes/update.$filename'
 import { Route as FcdFilenameRouteImport } from './routes/fcd.$filename'
 import { Route as DistFilenameRouteImport } from './routes/dist.$filename'
+import { Route as ApiMonitoringRouteImport } from './routes/api.monitoring'
 import { Route as LocaleExploreRouteImport } from './routes/$locale.explore'
 import { Route as LocaleDownloadRouteImport } from './routes/$locale.download'
 
@@ -72,6 +73,11 @@ const DistFilenameRoute = DistFilenameRouteImport.update({
   path: '/dist/$filename',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiMonitoringRoute = ApiMonitoringRouteImport.update({
+  id: '/api/monitoring',
+  path: '/api/monitoring',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LocaleExploreRoute = LocaleExploreRouteImport.update({
   id: '/$locale/explore',
   path: '/$locale/explore',
@@ -92,6 +98,7 @@ export interface FileRoutesByFullPath {
   '/twitter-image': typeof TwitterImageRoute
   '/$locale/download': typeof LocaleDownloadRoute
   '/$locale/explore': typeof LocaleExploreRoute
+  '/api/monitoring': typeof ApiMonitoringRoute
   '/dist/$filename': typeof DistFilenameRoute
   '/fcd/$filename': typeof FcdFilenameRoute
   '/update/$filename': typeof UpdateFilenameRoute
@@ -106,6 +113,7 @@ export interface FileRoutesByTo {
   '/twitter-image': typeof TwitterImageRoute
   '/$locale/download': typeof LocaleDownloadRoute
   '/$locale/explore': typeof LocaleExploreRoute
+  '/api/monitoring': typeof ApiMonitoringRoute
   '/dist/$filename': typeof DistFilenameRoute
   '/fcd/$filename': typeof FcdFilenameRoute
   '/update/$filename': typeof UpdateFilenameRoute
@@ -121,6 +129,7 @@ export interface FileRoutesById {
   '/twitter-image': typeof TwitterImageRoute
   '/$locale/download': typeof LocaleDownloadRoute
   '/$locale/explore': typeof LocaleExploreRoute
+  '/api/monitoring': typeof ApiMonitoringRoute
   '/dist/$filename': typeof DistFilenameRoute
   '/fcd/$filename': typeof FcdFilenameRoute
   '/update/$filename': typeof UpdateFilenameRoute
@@ -137,6 +146,7 @@ export interface FileRouteTypes {
     | '/twitter-image'
     | '/$locale/download'
     | '/$locale/explore'
+    | '/api/monitoring'
     | '/dist/$filename'
     | '/fcd/$filename'
     | '/update/$filename'
@@ -151,6 +161,7 @@ export interface FileRouteTypes {
     | '/twitter-image'
     | '/$locale/download'
     | '/$locale/explore'
+    | '/api/monitoring'
     | '/dist/$filename'
     | '/fcd/$filename'
     | '/update/$filename'
@@ -165,6 +176,7 @@ export interface FileRouteTypes {
     | '/twitter-image'
     | '/$locale/download'
     | '/$locale/explore'
+    | '/api/monitoring'
     | '/dist/$filename'
     | '/fcd/$filename'
     | '/update/$filename'
@@ -180,6 +192,7 @@ export interface RootRouteChildren {
   TwitterImageRoute: typeof TwitterImageRoute
   LocaleDownloadRoute: typeof LocaleDownloadRoute
   LocaleExploreRoute: typeof LocaleExploreRoute
+  ApiMonitoringRoute: typeof ApiMonitoringRoute
   DistFilenameRoute: typeof DistFilenameRoute
   FcdFilenameRoute: typeof FcdFilenameRoute
   UpdateFilenameRoute: typeof UpdateFilenameRoute
@@ -258,6 +271,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DistFilenameRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/monitoring': {
+      id: '/api/monitoring'
+      path: '/api/monitoring'
+      fullPath: '/api/monitoring'
+      preLoaderRoute: typeof ApiMonitoringRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/$locale/explore': {
       id: '/$locale/explore'
       path: '/$locale/explore'
@@ -284,6 +304,7 @@ const rootRouteChildren: RootRouteChildren = {
   TwitterImageRoute: TwitterImageRoute,
   LocaleDownloadRoute: LocaleDownloadRoute,
   LocaleExploreRoute: LocaleExploreRoute,
+  ApiMonitoringRoute: ApiMonitoringRoute,
   DistFilenameRoute: DistFilenameRoute,
   FcdFilenameRoute: FcdFilenameRoute,
   UpdateFilenameRoute: UpdateFilenameRoute,

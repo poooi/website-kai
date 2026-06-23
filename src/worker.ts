@@ -1,3 +1,5 @@
+import type { ExportedHandler } from '@cloudflare/workers-types'
+import { withSentry } from '@sentry/cloudflare'
 import startHandler from '@tanstack/react-start/server-entry'
 
 import {
@@ -9,6 +11,7 @@ import {
   resolvePreferredLocale,
   stripLocalePrefix,
 } from '~/lib/i18n-routing'
+import { sentryDsn, sentryRelease } from '~/lib/sentry'
 
 interface AssetsBinding {
   fetch(request: Request): Promise<Response>
@@ -59,6 +62,15 @@ const isProxyRootPath = (pathname: string) => {
   return (
     normalized === '/dist' || normalized === '/fcd' || normalized === '/update'
   )
+}
+
+const normalizeMonitoringRequest = (request: Request) => {
+  const url = new URL(request.url)
+  if (url.pathname !== '/api/monitoring/') {
+    return request
+  }
+  url.pathname = '/api/monitoring'
+  return new Request(url, request)
 }
 
 const isPageRequest = (request: Request) => {
@@ -228,18 +240,6 @@ const withAssetHeaders = (response: Response, request: Request) => {
   })
 }
 
-const handleMonitoringStub = (request: Request) => {
-  if (request.method === 'POST') {
-    return new Response('', { status: 501 })
-  }
-  return new Response('', {
-    status: 405,
-    headers: {
-      Allow: 'POST',
-    },
-  })
-}
-
 const handleAsset = async (request: Request, env: WorkerEnv) => {
   if (!env.ASSETS || !isFileRequest(new URL(request.url).pathname)) {
     return undefined
@@ -253,19 +253,11 @@ const handleAsset = async (request: Request, env: WorkerEnv) => {
   return withAssetHeaders(response, request)
 }
 
-const isMonitoringPath = (pathname: string) => {
-  return pathname === '/api/monitoring' || pathname === '/api/monitoring/'
-}
-
 const worker = {
   async fetch(request: Request, env: WorkerEnv, ctx: ExecutionContextLike) {
     const { pathname } = new URL(request.url)
 
     let response: Response | undefined
-    if (isMonitoringPath(pathname)) {
-      response = handleMonitoringStub(request)
-    }
-
     if (isProxyRootPath(pathname)) {
       response = new Response('', { status: 404 })
     }
@@ -273,7 +265,7 @@ const worker = {
     response ??= handleLocaleRedirects(request)
     response ??= await handleAsset(request, env)
     response ??= await (startHandler.fetch as StartHandlerWithContext)(
-      request,
+      normalizeMonitoringRequest(request),
       {
         context: { env, ctx, requestHeaders: [...request.headers] },
       },
@@ -283,4 +275,11 @@ const worker = {
   },
 }
 
-export default worker
+export default withSentry(
+  () => ({
+    dsn: sentryDsn,
+    release: sentryRelease,
+    tracesSampleRate: 0.01,
+  }),
+  worker as unknown as ExportedHandler<WorkerEnv>,
+)
