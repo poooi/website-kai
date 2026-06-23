@@ -24,6 +24,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+      # OpenCode posts its PR summary/session link via issues.createComment.
       issues: write
     steps:
       - name: Checkout repository
@@ -32,9 +33,9 @@ jobs:
           persist-credentials: false
 
       - name: Run OpenCode review
-        uses: anomalyco/opencode/github@latest
+        uses: anomalyco/opencode/github@ed75ce9eccb6d97a4ee0f79d3db8cb33b47b0661
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
         with:
           model: opencode-go/deepseek-v4-pro
