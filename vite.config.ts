@@ -30,7 +30,7 @@ const ibmFontPackages = [
 
 export default defineConfig({
   build: {
-    sourcemap: true,
+    sourcemap: 'hidden',
   },
   server: {
     host: '127.0.0.1',

@@ -55,7 +55,10 @@ describe('handleSentryTunnel', () => {
     const response = await handleSentryTunnel(
       new Request('https://poi.moe/api/monitoring', {
         body: makeEnvelope(),
-        headers: { 'Content-Type': 'text/plain' },
+        headers: {
+          'Content-Encoding': 'gzip',
+          'Content-Type': 'text/plain',
+        },
         method: 'POST',
       }),
       {
@@ -81,7 +84,27 @@ describe('handleSentryTunnel', () => {
       'https://o171991.ingest.us.sentry.io/api/4508112237101056/envelope/?sentry_key=cada89d337c4fa8d92e1e1b2ddc1fdfc',
     )
     expect(call!.init?.method).toBe('POST')
-    expect(call!.init?.headers).toEqual({ 'Content-Type': 'text/plain' })
+    expect(call!.init?.headers).toEqual({
+      'Content-Encoding': 'gzip',
+      'Content-Type': 'text/plain',
+    })
+  })
+
+  it('returns 502 when Sentry ingest fails before returning a response', async () => {
+    const response = await handleSentryTunnel(
+      new Request('https://poi.moe/api/monitoring', {
+        body: makeEnvelope(),
+        method: 'POST',
+      }),
+      {
+        fetcher: (() => {
+          throw new Error('upstream unavailable')
+        }) satisfies typeof fetch,
+      },
+    )
+
+    expect(response.status).toBe(502)
+    expect(response.headers.get('Cache-Control')).toBe('no-store')
   })
 
   it('forwards binary envelopes without re-encoding the body', async () => {

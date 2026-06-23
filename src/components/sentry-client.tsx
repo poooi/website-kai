@@ -13,17 +13,22 @@ export const SentryClient = () => {
     }
 
     initialized = true
-    void import('@sentry/react').then((Sentry) => {
-      Sentry.init({
-        dsn: sentryDsn,
-        integrations: [Sentry.replayIntegration()],
-        release: sentryRelease,
-        replaysOnErrorSampleRate: 1.0,
-        replaysSessionSampleRate: 0.001,
-        tracesSampleRate: 0.01,
-        tunnel: '/api/monitoring',
+    initialized = true
+    void import('@sentry/react')
+      .then((Sentry) => {
+        Sentry.init({
+          dsn: sentryDsn,
+          integrations: [Sentry.replayIntegration()],
+          release: sentryRelease,
+          replaysOnErrorSampleRate: 1.0,
+          replaysSessionSampleRate: 0.001,
+          tracesSampleRate: 0.01,
+          tunnel: '/api/monitoring',
+        })
       })
-    })
+      .catch(() => {
+        initialized = false
+      })
   }, [])
 
   return null

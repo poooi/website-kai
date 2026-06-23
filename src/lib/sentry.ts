@@ -82,14 +82,25 @@ export const handleSentryTunnel = async (
     return emptyResponse(400)
   }
 
-  const upstream = await fetcher(sentryEnvelopeUrl, {
-    body,
-    headers: {
-      'Content-Type':
-        request.headers.get('Content-Type') ?? 'application/x-sentry-envelope',
-    },
-    method: 'POST',
-  })
+  const upstreamHeaders: Record<string, string> = {
+    'Content-Type':
+      request.headers.get('Content-Type') ?? 'application/x-sentry-envelope',
+  }
+  const contentEncoding = request.headers.get('Content-Encoding')
+  if (contentEncoding) {
+    upstreamHeaders['Content-Encoding'] = contentEncoding
+  }
+
+  let upstream: Response
+  try {
+    upstream = await fetcher(sentryEnvelopeUrl, {
+      body,
+      headers: upstreamHeaders,
+      method: 'POST',
+    })
+  } catch {
+    return emptyResponse(502)
+  }
 
   return emptyResponse(upstream.ok ? 200 : 502)
 }
