@@ -14,13 +14,13 @@ export interface SentryTunnelOptions {
 
 const createNoStoreHeaders = (headers?: Record<string, string>) => {
   return {
-    'Cache-Control': 'no-store',
     ...headers,
+    'Cache-Control': 'no-store',
   }
 }
 
 const emptyResponse = (status: number, headers = createNoStoreHeaders()) =>
-  new Response('', { headers, status })
+  new Response(null, { headers, status })
 
 const textDecoder = new TextDecoder()
 
@@ -102,5 +102,5 @@ export const handleSentryTunnel = async (
     return emptyResponse(502)
   }
 
-  return emptyResponse(upstream.ok ? 200 : 502)
+  return emptyResponse(upstream.status >= 500 ? 502 : upstream.status)
 }

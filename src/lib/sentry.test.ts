@@ -70,12 +70,15 @@ describe('handleSentryTunnel', () => {
                 ? input.toString()
                 : input.url
           calls.push({ input: inputUrl, init })
-          return new Response('', { status: 202 })
+          return new Response('', {
+            headers: { 'Cache-Control': 'public, max-age=31536000' },
+            status: 202,
+          })
         }) satisfies typeof fetch,
       },
     )
 
-    expect(response.status).toBe(200)
+    expect(response.status).toBe(202)
     expect(response.headers.get('Cache-Control')).toBe('no-store')
     expect(calls).toHaveLength(1)
     const [call] = calls
@@ -107,6 +110,38 @@ describe('handleSentryTunnel', () => {
     expect(response.headers.get('Cache-Control')).toBe('no-store')
   })
 
+  it('preserves non-5xx upstream statuses so SDK rate limiting still works', async () => {
+    const response = await handleSentryTunnel(
+      new Request('https://poi.moe/api/monitoring', {
+        body: makeEnvelope(),
+        method: 'POST',
+      }),
+      {
+        fetcher: (async () =>
+          new Response('', { status: 429 })) satisfies typeof fetch,
+      },
+    )
+
+    expect(response.status).toBe(429)
+    expect(response.headers.get('Cache-Control')).toBe('no-store')
+  })
+
+  it('maps upstream 5xx responses to 502', async () => {
+    const response = await handleSentryTunnel(
+      new Request('https://poi.moe/api/monitoring', {
+        body: makeEnvelope(),
+        method: 'POST',
+      }),
+      {
+        fetcher: (async () =>
+          new Response('', { status: 503 })) satisfies typeof fetch,
+      },
+    )
+
+    expect(response.status).toBe(502)
+    expect(response.headers.get('Cache-Control')).toBe('no-store')
+  })
+
   it('forwards binary envelopes without re-encoding the body', async () => {
     const header = new TextEncoder().encode(
       `${JSON.stringify({ dsn: sentryDsn })}\n`,
@@ -130,7 +165,7 @@ describe('handleSentryTunnel', () => {
       },
     )
 
-    expect(response.status).toBe(200)
+    expect(response.status).toBe(202)
     const [call] = calls
     expect(call?.init?.body).toBeInstanceOf(ArrayBuffer)
     expect(Array.from(new Uint8Array(call!.init!.body as ArrayBuffer))).toEqual(
