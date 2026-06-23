@@ -7,7 +7,7 @@ import { headers } from 'next/headers'
 
 import { DesktopBackground } from '~/components/desktop-background'
 import { Footer } from '~/components/footer'
-import { Header } from '~/components/header'
+import { HeaderNext } from '~/components/header-next'
 import { I18nProvider } from '~/components/i18n-provider'
 import { JotaiRootProvider } from '~/components/jotai-provider'
 import { ThemeRuntime } from '~/components/theme-runtime'
@@ -130,7 +130,7 @@ export default async function RootLayout(
             resources={resources}
           >
             <main className="relative z-0 mx-auto flex min-h-screen max-w-[960px] flex-col items-center justify-center px-4 md:px-8">
-              <Header />
+              <HeaderNext />
               {children}
               <Footer t={t} i18n={i18n} />
             </main>

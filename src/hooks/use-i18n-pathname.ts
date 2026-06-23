@@ -3,37 +3,48 @@ import { useTranslation } from 'react-i18next'
 
 const locationChangeEvent = 'locationchange'
 let hydrated = false
+let subscribers = 0
+let originalPushState: History['pushState'] | undefined
+let originalReplaceState: History['replaceState'] | undefined
 
 const patchHistory = () => {
-  const historyWithPatchState = window.history as History & {
-    __poiLocationPatched?: boolean
-  }
-  if (historyWithPatchState.__poiLocationPatched) {
+  if (originalPushState || originalReplaceState) {
     return
   }
 
   const dispatchLocationChange = () => {
     window.dispatchEvent(new Event(locationChangeEvent))
   }
-  const pushState = window.history.pushState.bind(window.history)
-  const replaceState = window.history.replaceState.bind(window.history)
+  originalPushState = window.history.pushState.bind(window.history)
+  originalReplaceState = window.history.replaceState.bind(window.history)
   window.history.pushState = function pushStateWithLocationChange(...args) {
-    const result = pushState.apply(this, args)
+    const result = originalPushState!(...args)
     dispatchLocationChange()
     return result
   }
   window.history.replaceState = function replaceStateWithLocationChange(
     ...args
   ) {
-    const result = replaceState.apply(this, args)
+    const result = originalReplaceState!(...args)
     dispatchLocationChange()
     return result
   }
-  historyWithPatchState.__poiLocationPatched = true
+}
+
+const restoreHistory = () => {
+  if (subscribers > 0 || !originalPushState || !originalReplaceState) {
+    return
+  }
+
+  window.history.pushState = originalPushState
+  window.history.replaceState = originalReplaceState
+  originalPushState = undefined
+  originalReplaceState = undefined
 }
 
 const subscribe = (onStoreChange: () => void) => {
   patchHistory()
+  subscribers += 1
   queueMicrotask(() => {
     hydrated = true
     onStoreChange()
@@ -43,6 +54,8 @@ const subscribe = (onStoreChange: () => void) => {
   return () => {
     window.removeEventListener('popstate', onStoreChange)
     window.removeEventListener(locationChangeEvent, onStoreChange)
+    subscribers -= 1
+    restoreHistory()
   }
 }
 

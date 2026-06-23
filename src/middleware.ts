@@ -24,26 +24,6 @@ const shouldLocalize = (pathname: string): boolean => {
   return true
 }
 
-// FIXME: CF Pages does not always honor next.config.js headers config
-// Check if this is required when miragted to worker
-const clientHintHeaders = [
-  {
-    key: 'Accept-CH',
-    value:
-      'Sec-CH-UA-Platform, Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Mobile, Sec-CH-Prefers-Color-Scheme',
-  },
-  {
-    key: 'Critical-CH',
-    value:
-      'Sec-CH-UA-Platform, Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Mobile, Sec-CH-Prefers-Color-Scheme',
-  },
-  {
-    key: 'Vary',
-    value:
-      'Sec-CH-UA-Platform, Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Mobile, Sec-CH-Prefers-Color-Scheme',
-  },
-]
-
 const poiHeaders = [
   {
     key: 'X-Poi-Codename',

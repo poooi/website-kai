@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
-/* eslint-disable @next/next/no-html-link-for-pages */
 'use client'
 
+import { type ComponentType, type PropsWithChildren } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import poiLogo from '~/assets/poi.png'
@@ -14,7 +14,20 @@ import { cn } from '~/lib/utils'
 
 const poiLogoSrc = typeof poiLogo === 'string' ? poiLogo : poiLogo.src
 
-export const Header = () => {
+export interface HeaderLinkProps extends PropsWithChildren {
+  className?: string
+  href: string
+}
+
+const AnchorLink = ({ children, ...props }: HeaderLinkProps) => {
+  return <a {...props}>{children}</a>
+}
+
+interface HeaderProps {
+  LinkComponent?: ComponentType<HeaderLinkProps>
+}
+
+export const Header = ({ LinkComponent = AnchorLink }: HeaderProps) => {
   const { i18n, t } = useTranslation()
   const pathname = useI18nPathname()
 
@@ -24,18 +37,22 @@ export const Header = () => {
     <div className="flex h-16 w-full items-center">
       <nav className="flex grow items-center">
         <Button variant="ghost" size="icon" asChild>
-          <a
+          <LinkComponent
             className={cn(onIndexPage && 'cursor-auto opacity-0')}
             href={localizePath('/', i18n.language)}
           >
             <img src={poiLogoSrc} alt="poi" className="h-8 w-8" />
-          </a>
+          </LinkComponent>
         </Button>
         <Button variant="ghost" asChild>
-          <a href={localizePath('/explore', i18n.language)}>{t('Explore')}</a>
+          <LinkComponent href={localizePath('/explore', i18n.language)}>
+            {t('Explore')}
+          </LinkComponent>
         </Button>
         <Button variant="ghost" asChild>
-          <a href={localizePath('/download', i18n.language)}>{t('Download')}</a>
+          <LinkComponent href={localizePath('/download', i18n.language)}>
+            {t('Download')}
+          </LinkComponent>
         </Button>
       </nav>
       <div className="flex shrink-0 gap-4">
