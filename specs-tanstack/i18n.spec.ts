@@ -336,19 +336,23 @@ test('ignores invalid stored theme values', async ({ browser }) => {
   await context.addInitScript(() => {
     localStorage.setItem('theme', 'invalid')
   })
-  const page = await context.newPage()
+  try {
+    const page = await context.newPage()
 
-  await page.goto('/en')
+    await page.goto('/en')
 
-  const themeButton = page.getByRole('button', { name: 'Theme' })
-  const darkThemeItem = page.getByRole('menuitemradio', { name: 'Chibaheit' })
-  await expect(themeButton).toBeVisible()
-  await themeButton.click()
-  await expect(darkThemeItem).toBeVisible()
-  await darkThemeItem.click()
-  await expect(page.locator('html')).toHaveClass(/dark/)
-
-  await context.close()
+    const themeButton = page.getByRole('button', { name: 'Theme' })
+    const darkThemeItem = page.getByRole('menuitemradio', {
+      name: 'Chibaheit',
+    })
+    await expect(themeButton).toBeVisible()
+    await themeButton.click()
+    await expect(darkThemeItem).toBeVisible()
+    await darkThemeItem.click()
+    await expect(page.locator('html')).toHaveClass(/dark/)
+  } finally {
+    await context.close()
+  }
 })
 
 test('theme switching works when localStorage is unavailable', async ({
@@ -365,20 +369,26 @@ test('theme switching works when localStorage is unavailable', async ({
       throw new Error('localStorage disabled')
     }
   })
-  const page = await context.newPage()
+  try {
+    const page = await context.newPage()
 
-  await page.goto('/en')
-  const themeButton = page.getByRole('button', { name: 'Theme' })
-  const darkThemeItem = page.getByRole('menuitemradio', { name: 'Chibaheit' })
-  await expect(themeButton).toBeVisible()
-  await themeButton.click()
-  await expect(darkThemeItem).toBeVisible()
-  await darkThemeItem.click()
-  await expect(page.locator('html')).toHaveClass(/dark/)
-  const cookies = await page.context().cookies('http://127.0.0.1:3002')
-  expect(cookies.find((cookie) => cookie.name === 'theme')?.value).toBe('dark')
-
-  await context.close()
+    await page.goto('/en')
+    const themeButton = page.getByRole('button', { name: 'Theme' })
+    const darkThemeItem = page.getByRole('menuitemradio', {
+      name: 'Chibaheit',
+    })
+    await expect(themeButton).toBeVisible()
+    await themeButton.click()
+    await expect(darkThemeItem).toBeVisible()
+    await darkThemeItem.click()
+    await expect(page.locator('html')).toHaveClass(/dark/)
+    const cookies = await page.context().cookies('http://127.0.0.1:3002')
+    expect(cookies.find((cookie) => cookie.name === 'theme')?.value).toBe(
+      'dark',
+    )
+  } finally {
+    await context.close()
+  }
 })
 
 test('does not mount background canvas on small screens', async ({ page }) => {
