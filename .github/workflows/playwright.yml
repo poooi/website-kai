@@ -29,6 +29,8 @@ jobs:
         run: corepack pnpm run test:unit
       - name: Check TanStack imports
         run: corepack pnpm run check:tanstack-imports
+      - name: Check TanStack build output
+        run: corepack pnpm run check:tanstack-output
       - name: Run Playwright tests
         run: corepack pnpm run test:e2e:next
       - name: Run TanStack Playwright tests

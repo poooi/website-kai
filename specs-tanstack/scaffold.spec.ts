@@ -41,6 +41,37 @@ test('marks HEAD page responses as no-store', async ({ request }) => {
   expect(response.headers()['cache-control']).toBe('no-store')
 })
 
+test('keeps request-personalized pages uncacheable and varied by request hints', async ({
+  request,
+}) => {
+  for (const path of ['/', '/en', '/en/download']) {
+    const response = await request.get(path, {
+      headers: {
+        'Sec-CH-Prefers-Color-Scheme': 'dark',
+        'Sec-CH-UA-Arch': '"arm"',
+        'Sec-CH-UA-Bitness': '"64"',
+        'Sec-CH-UA-Mobile': '?0',
+        'Sec-CH-UA-Platform': '"macOS"',
+      },
+    })
+    const headers = response.headers()
+
+    expect(response.status()).toBe(200)
+    expect(headers['cache-control']).toBe('no-store')
+    expect(headers['accept-ch']).toContain('Sec-CH-UA-Platform')
+    expect(headers['accept-ch']).toContain('Sec-CH-Prefers-Color-Scheme')
+    for (const value of [
+      'Sec-CH-UA-Platform',
+      'Sec-CH-UA-Arch',
+      'Sec-CH-UA-Bitness',
+      'Sec-CH-UA-Mobile',
+      'Sec-CH-Prefers-Color-Scheme',
+    ]) {
+      expect(headers.vary).toContain(value)
+    }
+  }
+})
+
 test('serves static assets before SSR with cache headers', async ({
   request,
 }) => {
