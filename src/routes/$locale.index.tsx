@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-html-link-for-pages */
 import { Link, createFileRoute } from '@tanstack/react-router'
 
 import { Transition } from '~/components/transition'

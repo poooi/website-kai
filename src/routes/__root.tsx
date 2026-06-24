@@ -1,5 +1,3 @@
-/* eslint-disable @next/next/no-css-tags */
-/* eslint-disable @next/next/no-head-element */
 import {
   HeadContent,
   Scripts,

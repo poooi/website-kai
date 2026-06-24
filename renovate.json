@@ -1,14 +1,5 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended",
-    ":automergeAll"
-  ],
-  "packageRules": [
-    {
-      "matchPackageNames": ["next"],
-      "followTag": "next-14"
-    }
-  ],
-  "ignoreDeps": ["eslint", "@types/eslint", "@sentry/nextjs"]
+  "extends": ["config:recommended", ":automergeAll"],
+  "ignoreDeps": ["eslint", "@types/eslint"]
 }
