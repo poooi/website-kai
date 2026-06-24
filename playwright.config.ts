@@ -1,1 +1,1 @@
-export { default } from './playwright.next.config'
+export { default } from './playwright.tanstack.config'

@@ -219,7 +219,7 @@ test('switches language with NEXT_LOCALE and canonical URL', async ({
   )
 })
 
-test('switches theme without next-themes', async ({ page }) => {
+test('switches theme with the TanStack runtime', async ({ page }) => {
   await page.goto('/en')
 
   await page.getByRole('button', { name: 'Theme' }).click()

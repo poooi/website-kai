@@ -6,7 +6,6 @@ const config = {
   },
   plugins: ['@typescript-eslint'],
   extends: [
-    'next/core-web-vitals',
     'plugin:@typescript-eslint/recommended-type-checked',
     'plugin:@typescript-eslint/stylistic-type-checked',
     'plugin:prettier/recommended',
@@ -34,13 +33,6 @@ const config = {
         checksVoidReturn: {
           attributes: false,
         },
-      },
-    ],
-    'import/order': [
-      'error',
-      {
-        'newlines-between': 'always',
-        alphabetize: { order: 'asc', caseInsensitive: true },
       },
     ],
   },

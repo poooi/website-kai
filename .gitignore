@@ -13,11 +13,6 @@
 /prisma/db.sqlite-journal
 db.sqlite
 
-# next.js
-/.next/
-/out/
-next-env.d.ts
-
 # production
 /build
 
@@ -40,9 +35,6 @@ yarn-error.log*
 # vercel
 .vercel
 
-# open-next
-.open-next
-
 # TanStack Start / Vite
 .output
 .wrangler
@@ -56,7 +48,6 @@ cloudflare-env.d.ts
 .idea
 node_modules/
 /test-results/
-/playwright-report/
 /playwright-report-tanstack/
 /blob-report/
 /playwright/.cache/
