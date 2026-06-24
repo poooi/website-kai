@@ -1,13 +1,16 @@
 name = "poi-web-kai"
-compatibility_date = "2025-01-01"
-compatibility_flags = ["nodejs_compat_v2"]
-main = ".open-next/worker.js"
-
-[assets]
-directory = ".open-next/assets"
-binding = "ASSETS"
+compatibility_date = "2026-06-21"
+compatibility_flags = ["nodejs_compat"]
+main = "src/worker.ts"
 
 routes = [
   { pattern = "poi.moe", custom_domain = true },
   { pattern = "update.poi.moe", custom_domain = true },
 ]
+
+[assets]
+directory = "dist/client"
+binding = "ASSETS"
+
+[observability]
+enabled = true

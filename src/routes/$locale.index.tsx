@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-html-link-for-pages */
-import { createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 
 import { Transition } from '~/components/transition'
 import { Badge } from '~/components/ui/badge'
@@ -22,9 +22,12 @@ function LocalizedHomePage() {
   const data = Route.useLoaderData()
   const { locale } = Route.useParams()
   return (
-    <main className="mx-auto flex min-h-screen max-w-[960px] flex-col items-start justify-center gap-6 bg-background p-4 text-foreground">
-      <Transition className="w-full">
-        <h1 className="text-7xl leading-loose">{data.name}</h1>
+    <Transition
+      role="main"
+      className="flex w-full grow items-center md:pl-[45px]"
+    >
+      <div className="w-full">
+        <h1 className="text-9xl leading-loose">{data.name}</h1>
         <p className="text-2xl">{data.description}</p>
         {data.platform.isMobile ? (
           <p className="mt-4">{data.mobileHint}</p>
@@ -70,12 +73,14 @@ function LocalizedHomePage() {
                 {data.platformLabels.spec[data.platform.spec]}
               </Badge>
               <Button variant="link" asChild>
-                <a href={`/${locale}/download`}>{data.downloadOptions}</a>
+                <Link to="/$locale/download" params={{ locale }}>
+                  {data.downloadOptions}
+                </Link>
               </Button>
             </div>
           </>
         )}
-      </Transition>
-    </main>
+      </div>
+    </Transition>
   )
 }

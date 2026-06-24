@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+import { Transition } from '~/components/transition'
 import {
   loadCommonTranslations,
   loadExploreHtml,
@@ -29,8 +30,9 @@ export const Route = createFileRoute('/$locale/explore')({
 function LocalizedExplorePage() {
   const { contentHtml } = Route.useLoaderData()
   return (
-    <main
-      className="prose mx-auto min-h-screen max-w-[960px] p-4 dark:prose-invert"
+    <Transition
+      role="main"
+      className="prose w-full max-w-none grow dark:prose-invert"
       dangerouslySetInnerHTML={{ __html: contentHtml }}
     />
   )
