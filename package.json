@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "vite build --config vite.config.ts",
-    "build:next": "opennextjs-cloudflare build --config wrangler.next.toml",
+    "build:next": "opennextjs-cloudflare build --config wrangler.next.toml --openNextConfigPath open-next.next.config.ts",
     "dev": "vite dev --config vite.config.ts --host 127.0.0.1 --port 3002",
     "dev:next": "next dev",
     "lint": "eslint src specs specs-tanstack next.config.js vite.config.ts vitest.config.ts playwright.config.ts playwright.next.config.ts playwright.tanstack.config.ts tailwind.config.ts --ext .js,.cjs,.ts,.tsx --ignore-pattern next-env.d.ts",
@@ -22,11 +22,11 @@
     "start": "vite preview --config vite.config.ts --host 127.0.0.1 --port 3002",
     "start:next": "next start",
     "preview": "vite build --config vite.config.ts && vite preview --config vite.config.ts --host 127.0.0.1 --port 3002",
-    "preview:next": "opennextjs-cloudflare build --config wrangler.next.toml && opennextjs-cloudflare preview --config wrangler.next.toml",
+    "preview:next": "opennextjs-cloudflare build --config wrangler.next.toml --openNextConfigPath open-next.next.config.ts && opennextjs-cloudflare preview --config wrangler.next.toml",
     "deploy": "vite build --config vite.config.ts && wrangler deploy --config dist/server/wrangler.json",
-    "deploy:next": "opennextjs-cloudflare build --config wrangler.next.toml && opennextjs-cloudflare deploy --config wrangler.next.toml",
+    "deploy:next": "opennextjs-cloudflare build --config wrangler.next.toml --openNextConfigPath open-next.next.config.ts && opennextjs-cloudflare deploy --config wrangler.next.toml",
     "upload": "vite build --config vite.config.ts && wrangler versions upload --config dist/server/wrangler.json",
-    "upload:next": "opennextjs-cloudflare build --config wrangler.next.toml && opennextjs-cloudflare upload --config wrangler.next.toml",
+    "upload:next": "opennextjs-cloudflare build --config wrangler.next.toml --openNextConfigPath open-next.next.config.ts && opennextjs-cloudflare upload --config wrangler.next.toml",
     "cf-typegen": "wrangler types --config wrangler.toml --env-interface CloudflareEnv cloudflare-env.d.ts",
     "cf-typegen:next": "wrangler types --config wrangler.next.toml --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
