@@ -15,7 +15,7 @@
     "build:tanstack": "vite build --config vite.config.ts",
     "preview:tanstack": "vite preview --config vite.config.ts --host 127.0.0.1 --port 3002",
     "test:e2e:tanstack": "node scripts/test-tanstack-e2e.mjs",
-    "start": "vite preview --config vite.config.ts --host 127.0.0.1 --port 3002",
+    "start": "vite build --config vite.config.ts && vite preview --config vite.config.ts --host 127.0.0.1 --port 3002",
     "preview": "vite build --config vite.config.ts && vite preview --config vite.config.ts --host 127.0.0.1 --port 3002",
     "deploy": "vite build --config vite.config.ts && wrangler deploy --config dist/server/wrangler.json",
     "upload": "vite build --config vite.config.ts && wrangler versions upload --config dist/server/wrangler.json",

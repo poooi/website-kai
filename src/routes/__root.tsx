@@ -38,6 +38,8 @@ const resources = {
   'zh-Hant': { common: zhHantCommon },
 } satisfies Resource
 
+const commonNamespaces = ['common']
+
 const getCurrentRequestHeaders = createServerOnlyFn(
   () => new Headers(getRequestHeaders()),
 )
@@ -207,7 +209,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <DesktopBackground initialEnabled={!isMobile} />
           <I18nProvider
             locale={locale}
-            namespaces={['common']}
+            namespaces={commonNamespaces}
             resources={resources}
           >
             <div className="relative z-0 mx-auto flex min-h-screen max-w-[960px] flex-col items-center justify-center px-4 md:px-8">

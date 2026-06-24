@@ -69,7 +69,7 @@ const reverseFetch = async (
   }
 
   if (!resp.ok) {
-    return notFound()
+    return mapUpstreamError(new UpstreamResponseError(resp.status))
   }
 
   const fulfilled = new Response(resp.body, resp)

@@ -31,6 +31,7 @@ export const initTranslations = async (
     defaultNS: namespaces[0],
     fallbackNS: namespaces[0],
     ns: namespaces,
+    initAsync: !resources,
     preload: resources ? [] : i18nConfig.locales,
     // debug: process.env.NODE_ENV === 'development',
   })

@@ -1,7 +1,7 @@
 'use client'
 
 import { type Resource, createInstance } from 'i18next'
-import { type FC, type PropsWithChildren } from 'react'
+import { type FC, type PropsWithChildren, useMemo } from 'react'
 import { I18nextProvider } from 'react-i18next'
 
 import { initTranslations } from '~/i18n'
@@ -18,9 +18,11 @@ export const I18nProvider: FC<I18nProviderProps> = ({
   namespaces,
   resources,
 }) => {
-  const i18n = createInstance()
-
-  void initTranslations(locale, namespaces, i18n, resources)
+  const i18n = useMemo(() => {
+    const instance = createInstance()
+    void initTranslations(locale, namespaces, instance, resources)
+    return instance
+  }, [locale, namespaces, resources])
 
   return <I18nextProvider i18n={i18n}>{children}</I18nextProvider>
 }
