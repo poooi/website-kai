@@ -85,7 +85,7 @@ describe('handleFcd', () => {
     )
 
     expect(response.status).toBe(200)
-    expect(response.body).not.toBeNull()
+    expect(response.body).toBe(body)
     await expect(response.json()).resolves.toEqual({ items: ['large'] })
   })
 
