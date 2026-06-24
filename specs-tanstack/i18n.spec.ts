@@ -203,6 +203,18 @@ test('keeps header pathname current after client history changes', async ({
   await expect(page).toHaveURL('http://127.0.0.1:3002/fr/download')
 })
 
+test('loads localized download pages with hash fragments', async ({ page }) => {
+  await page.goto('/en/download#download')
+
+  await expect(page).toHaveURL('http://127.0.0.1:3002/en/download#download')
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Download' }),
+  ).toBeVisible()
+  await expect(
+    page.getByRole('link', { name: /Download v\d+\.\d+\.\d+/ }).first(),
+  ).toHaveAttribute('href', /\/dist\/poi-setup-\d+\.\d+\.\d+\.exe/)
+})
+
 test('switches language with NEXT_LOCALE and canonical URL', async ({
   page,
 }) => {
