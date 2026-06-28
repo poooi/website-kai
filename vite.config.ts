@@ -1,6 +1,8 @@
+import { readFile, writeFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 
 import { cloudflare } from '@cloudflare/vite-plugin'
+import { paraglideVitePlugin } from '@inlang/paraglide-js'
 import { sentryTanstackStart } from '@sentry/tanstackstart-react/vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'
@@ -21,6 +23,9 @@ const commitHash = await getCommitHash()
 const buildDate = new Date().toISOString()
 const sentryRelease = process.env.SENTRY_RELEASE ?? commitHash
 const sentryUploadEnabled = !!process.env.SENTRY_AUTH_TOKEN
+const paraglideServerPath = fileURLToPath(
+  new URL('./src/paraglide/server.js', import.meta.url),
+)
 
 const ibmFontPackages = [
   'plex-sans',
@@ -29,6 +34,27 @@ const ibmFontPackages = [
   'plex-sans-sc',
   'plex-sans-tc',
 ]
+const locales = ['en', 'fr', 'ja', 'ko', 'zh-Hans', 'zh-Hant'] as const
+type Locale = (typeof locales)[number]
+const localizedRootPaths = locales.map((locale): [Locale, string] => [
+  locale,
+  locale === 'ja' ? '/' : `/${locale}`,
+])
+const localizedCatchAllPaths = locales.map((locale): [Locale, string] => [
+  locale,
+  locale === 'ja' ? '/:path(.*)?' : `/${locale}/:path(.*)?`,
+])
+
+const paraglideCloudflareTypecheckPlugin = () => ({
+  name: 'paraglide-cloudflare-typecheck',
+  enforce: 'post' as const,
+  async buildStart() {
+    const source = await readFile(paraglideServerPath, 'utf8')
+    if (!source.startsWith('// @ts-nocheck')) {
+      await writeFile(paraglideServerPath, `// @ts-nocheck\n${source}`)
+    }
+  },
+})
 
 export default defineConfig({
   server: {
@@ -53,6 +79,36 @@ export default defineConfig({
     ),
   },
   plugins: [
+    paraglideVitePlugin({
+      project: './project.inlang',
+      outdir: './src/paraglide',
+      outputStructure: 'message-modules',
+      emitGitIgnore: false,
+      emitPrettierIgnore: false,
+      emitReadme: false,
+      cookieName: 'NEXT_LOCALE',
+      strategy: ['url', 'cookie', 'preferredLanguage', 'baseLocale'],
+      urlPatterns: [
+        {
+          pattern: '/',
+          localized: localizedRootPaths,
+        },
+        {
+          pattern: '/:path(.*)?',
+          localized: localizedCatchAllPaths,
+        },
+      ],
+      routeStrategies: [
+        { match: '/api/:path(.*)?', exclude: true },
+        { match: '/status', exclude: true },
+        { match: '/dist/:path(.*)?', exclude: true },
+        { match: '/fcd/:path(.*)?', exclude: true },
+        { match: '/update/:path(.*)?', exclude: true },
+        { match: '/opengraph-image', exclude: true },
+        { match: '/twitter-image', exclude: true },
+      ],
+    }),
+    paraglideCloudflareTypecheckPlugin(),
     cloudflare({
       configPath: './wrangler.toml',
       viteEnvironment: { name: 'ssr' },

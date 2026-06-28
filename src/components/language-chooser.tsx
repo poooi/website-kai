@@ -2,7 +2,6 @@
 
 import { GlobeIcon } from '@radix-ui/react-icons'
 import { useCallback } from 'react'
-import { useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/ui/button'
 import {
@@ -12,36 +11,23 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
-import { useI18nPathname } from '~/hooks/use-i18n-pathname'
-import { i18nConfig } from '~/i18n-config'
-import { localizeHref } from '~/lib/i18n-routing'
+import { m } from '~/paraglide/messages'
+import {
+  getLocale,
+  isLocale,
+  locales,
+  setLocale,
+  type Locale,
+} from '~/paraglide/runtime'
 
 export const LanguageChooser = () => {
-  const { t, i18n } = useTranslation()
-  const currentLocale = i18n.language
-  const currentPathname = useI18nPathname()
+  const currentLocale = getLocale()
 
-  const handleChange = useCallback(
-    (newLocale: string) => {
-      // Keep the existing locale cookie name for migration compatibility.
-      const days = 30
-      const date = new Date()
-      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000)
-      const expires = date.toUTCString()
-      document.cookie = `NEXT_LOCALE=${newLocale};expires=${expires};path=/;SameSite=Lax`
-
-      const pathname = currentPathname ?? window.location.pathname
-      window.location.assign(
-        localizeHref(
-          pathname,
-          newLocale,
-          window.location.search,
-          window.location.hash,
-        ),
-      )
-    },
-    [currentPathname],
-  )
+  const handleChange = useCallback((newLocale: string) => {
+    if (isLocale(newLocale)) {
+      void setLocale(newLocale)
+    }
+  }, [])
 
   return (
     <DropdownMenu>
@@ -49,11 +35,11 @@ export const LanguageChooser = () => {
         <Button
           variant="outline"
           size="icon"
-          title={t('language')}
-          aria-label={t('language')}
+          title={m.language()}
+          aria-label={m.language()}
         >
           <GlobeIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />
-          <span className="sr-only">{t('language')}</span>
+          <span className="sr-only">{m.language()}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -61,9 +47,9 @@ export const LanguageChooser = () => {
           value={currentLocale}
           onValueChange={handleChange}
         >
-          {i18nConfig.locales.map((locale) => (
+          {locales.map((locale: Locale) => (
             <DropdownMenuRadioItem key={locale} value={locale}>
-              {t('language', { lng: locale })}
+              {m.language({}, { locale })}
             </DropdownMenuRadioItem>
           ))}
         </DropdownMenuRadioGroup>

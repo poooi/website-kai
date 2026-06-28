@@ -5,15 +5,15 @@ import {
   type ComponentType,
   type ComponentPropsWithoutRef,
 } from 'react'
-import { useTranslation } from 'react-i18next'
 
 import poiLogo from '~/assets/poi.png'
 import { LanguageChooser } from '~/components/language-chooser'
 import { ThemeChooser } from '~/components/theme-chooser'
 import { Button } from '~/components/ui/button'
 import { useI18nPathname } from '~/hooks/use-i18n-pathname'
-import { localizePath } from '~/lib/i18n-routing'
 import { cn } from '~/lib/utils'
+import { getLocale, localizeHref } from '~/paraglide/runtime'
+import { m } from '~/paraglide/messages'
 
 const poiLogoSrc = typeof poiLogo === 'string' ? poiLogo : poiLogo.src
 
@@ -37,8 +37,8 @@ interface HeaderProps {
 }
 
 export const Header = ({ LinkComponent = AnchorLink }: HeaderProps) => {
-  const { i18n, t } = useTranslation()
   const pathname = useI18nPathname()
+  const locale = getLocale()
 
   const onIndexPage = pathname === '/'
 
@@ -48,19 +48,19 @@ export const Header = ({ LinkComponent = AnchorLink }: HeaderProps) => {
         <Button variant="ghost" size="icon" asChild>
           <LinkComponent
             className={cn(onIndexPage && 'cursor-auto opacity-0')}
-            href={localizePath('/', i18n.language)}
+            href={localizeHref('/', { locale })}
           >
             <img src={poiLogoSrc} alt="poi" className="h-8 w-8" />
           </LinkComponent>
         </Button>
         <Button variant="ghost" asChild>
-          <LinkComponent href={localizePath('/explore', i18n.language)}>
-            {t('Explore')}
+          <LinkComponent href={localizeHref('/explore', { locale })}>
+            {m.explore()}
           </LinkComponent>
         </Button>
         <Button variant="ghost" asChild>
-          <LinkComponent href={localizePath('/download', i18n.language)}>
-            {t('Download')}
+          <LinkComponent href={localizeHref('/download', { locale })}>
+            {m.download()}
           </LinkComponent>
         </Button>
       </nav>

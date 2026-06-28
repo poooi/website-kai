@@ -3,42 +3,22 @@ import {
   Scripts,
   createRootRouteWithContext,
   useNavigate,
-  useRouterState,
 } from '@tanstack/react-router'
 import { createServerOnlyFn } from '@tanstack/react-start'
 import { getRequestHeaders } from '@tanstack/react-start/server'
-import type { Resource } from 'i18next'
 import { forwardRef, type MouseEvent } from 'react'
 
 import '~/styles/globals.css'
 import { DesktopBackground } from '~/components/desktop-background'
-import { FooterClient } from '~/components/footer-client'
+import { Footer } from '~/components/footer'
 import { Header, type HeaderLinkProps } from '~/components/header'
-import { I18nProvider } from '~/components/i18n-provider'
 import { JotaiRootProvider } from '~/components/jotai-provider'
 import { SentryClient } from '~/components/sentry-client'
 import { ThemeRuntime } from '~/components/theme-runtime'
-import { defaultLocale, isSupportedLocale } from '~/lib/i18n-routing'
 import { isMobileDevice } from '~/lib/target'
 import { getServerThemePreference, resolveServerTheme } from '~/lib/theme'
 import { cn } from '~/lib/utils'
-import enCommon from '~/locales/en/common.json'
-import frCommon from '~/locales/fr/common.json'
-import jaCommon from '~/locales/ja/common.json'
-import koCommon from '~/locales/ko/common.json'
-import zhHansCommon from '~/locales/zh-Hans/common.json'
-import zhHantCommon from '~/locales/zh-Hant/common.json'
-
-const resources = {
-  en: { common: enCommon },
-  fr: { common: frCommon },
-  ja: { common: jaCommon },
-  ko: { common: koCommon },
-  'zh-Hans': { common: zhHansCommon },
-  'zh-Hant': { common: zhHantCommon },
-} satisfies Resource
-
-const commonNamespaces = ['common']
+import { getLocale } from '~/paraglide/runtime'
 
 const getCurrentRequestHeaders = createServerOnlyFn(
   () => new Headers(getRequestHeaders()),
@@ -131,19 +111,7 @@ export const Route = createRootRouteWithContext<TanStackRouterContext>()({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   const { isMobile, theme, themePreference } = Route.useLoaderData()
-  const locale = useRouterState({
-    select: (state) => {
-      const routeLocale = state.matches
-        .map((match) => {
-          return 'locale' in match.params ? match.params.locale : undefined
-        })
-        .find(
-          (param): param is string =>
-            typeof param === 'string' && isSupportedLocale(param),
-        )
-      return routeLocale ?? defaultLocale
-    },
-  })
+  const locale = getLocale()
 
   return (
     <html
@@ -207,17 +175,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             disableTransitionOnChange
           />
           <DesktopBackground initialEnabled={!isMobile} />
-          <I18nProvider
-            locale={locale}
-            namespaces={commonNamespaces}
-            resources={resources}
-          >
-            <div className="relative z-0 mx-auto flex min-h-screen max-w-[960px] flex-col items-center justify-center px-4 md:px-8">
-              <Header LinkComponent={HeaderLink} />
-              {children}
-              <FooterClient />
-            </div>
-          </I18nProvider>
+          <div className="relative z-0 mx-auto flex min-h-screen max-w-[960px] flex-col items-center justify-center px-4 md:px-8">
+            <Header LinkComponent={HeaderLink} />
+            {children}
+            <Footer />
+          </div>
         </JotaiRootProvider>
         <Scripts />
       </body>

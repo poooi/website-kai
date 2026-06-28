@@ -1,5 +1,6 @@
 /** @type {import("eslint").Linter.Config} */
 const config = {
+  ignorePatterns: ['src/paraglide/**'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: true,

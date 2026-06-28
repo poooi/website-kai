@@ -1,15 +1,22 @@
-import { i18nConfig } from '~/i18n-config'
+import {
+  baseLocale,
+  deLocalizeHref,
+  isLocale,
+  locales,
+  localizeHref as paraglideLocalizeHref,
+  type Locale,
+} from '~/paraglide/runtime'
 
-export const defaultLocale = i18nConfig.defaultLocale
+export const defaultLocale = baseLocale
 
-export const supportedLocales = i18nConfig.locales
+export const supportedLocales = locales
 
-export type SupportedLocale = (typeof supportedLocales)[number]
+export type SupportedLocale = Locale
 
 export const isSupportedLocale = (
   locale: string,
 ): locale is SupportedLocale => {
-  return (supportedLocales as readonly string[]).includes(locale)
+  return isLocale(locale)
 }
 
 export const isDefaultLocale = (locale: string) => locale === defaultLocale
@@ -22,7 +29,7 @@ export const getPathLocale = (pathname: string) => {
 export const stripLocalePrefix = (pathname: string) => {
   const locale = getPathLocale(pathname)
   if (!locale) {
-    return pathname
+    return deLocalizeHref(pathname)
   }
 
   const stripped = pathname.replace(new RegExp(`^/${locale}`), '')
@@ -30,12 +37,10 @@ export const stripLocalePrefix = (pathname: string) => {
 }
 
 export const localizePath = (pathname: string, locale: string) => {
-  const stripped = stripLocalePrefix(pathname)
-  if (isDefaultLocale(locale)) {
-    return stripped
-  }
-
-  return stripped === '/' ? `/${locale}` : `/${locale}${stripped}`
+  const localized = paraglideLocalizeHref(stripLocalePrefix(pathname), {
+    locale: isSupportedLocale(locale) ? locale : defaultLocale,
+  })
+  return localized !== '/' ? localized.replace(/\/+$/, '') : localized
 }
 
 export const localizeHref = (
