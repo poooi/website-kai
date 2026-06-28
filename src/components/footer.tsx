@@ -79,7 +79,7 @@ export const Footer = () => {
                 className="inline-flex gap-1"
                 href={url}
                 target="_blank"
-                rel="noopener"
+                rel="noopener noreferrer"
               >
                 <Icon className="h-4 w-4" />
                 <span>{text()}</span>

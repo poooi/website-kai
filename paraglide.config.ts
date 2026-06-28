@@ -16,6 +16,7 @@ export const paraglideOptions = {
   project: './project.inlang',
   outdir: './src/paraglide',
   outputStructure: 'message-modules',
+  emitTsDeclarations: true,
   emitGitIgnore: false,
   emitPrettierIgnore: false,
   emitReadme: false,
