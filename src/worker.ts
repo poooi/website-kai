@@ -272,9 +272,8 @@ const worker = {
       if (isPageRequest(routedRequest)) {
         const middlewareHeaders = new Headers(routedRequest.headers)
         middlewareHeaders.delete('Sec-Fetch-Dest')
-        const middlewareRequest = new Request(routedRequest.url, {
+        const middlewareRequest = new Request(routedRequest, {
           headers: middlewareHeaders,
-          method: routedRequest.method,
         })
         response = await paraglideMiddleware(middlewareRequest, () =>
           (startHandler.fetch as StartHandlerWithContext)(routedRequest, {
