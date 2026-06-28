@@ -5,15 +5,14 @@ import { PlatformSelect } from '~/components/download/platform-select'
 import { Transition } from '~/components/transition'
 import { Button } from '~/components/ui/button'
 import { loadRequestAwarePageData } from '~/lib/tanstack-page-data'
+import { m } from '~/paraglide/messages'
 
 export const Route = createFileRoute('/download')({
-  loader: ({ context }) => loadRequestAwarePageData(undefined, context),
-  head: ({ loaderData }) => ({
+  loader: ({ context }) => loadRequestAwarePageData(context),
+  head: () => ({
     meta: [
       {
-        title: `poi | ${loaderData?.title ?? 'KanColle Browser'} | ${
-          loaderData?.download ?? 'Download'
-        }`,
+        title: `poi | ${m.kanColleBrowser()} | ${m.download()}`,
       },
     ],
   }),
@@ -28,34 +27,20 @@ function DownloadPage() {
       className="prose flex w-full max-w-none grow flex-col dark:prose-invert"
     >
       <h1 className="mb-[1em] mt-0 text-[1.5em] font-semibold leading-[1.3333333]">
-        {data.download}
+        {m.download()}
       </h1>
       {data.platform.isMobile ? (
-        <p>{data.mobileHint}</p>
+        <p>{m.mobileHint()}</p>
       ) : (
         <section>
           <PlatformSelect
             initialOS={data.platform.os}
             initialSpec={data.platform.spec}
-            labels={{
-              operatingSystem: data.operatingSystem,
-              os: data.platformLabels.os,
-              platform: data.platformLabel,
-              spec: data.platformLabels.spec,
-            }}
           />
-          <DownloadLinks
-            labels={{
-              beta: data.betaDownloadLabel,
-              betaHint: data.betaHint,
-              stable: data.stableDownloadLabel,
-              stableHint: data.stableHint,
-            }}
-            poiVersions={data.poiVersions}
-          />
+          <DownloadLinks poiVersions={data.poiVersions} />
         </section>
       )}
-      <h2>{data.others}</h2>
+      <h2>{m.others()}</h2>
       <section className="flex w-fit flex-col items-center">
         <div>
           <Button variant="link" asChild>
@@ -65,7 +50,7 @@ function DownloadPage() {
               target="_blank"
               data-testid="old-versions"
             >
-              {data.oldVersions}
+              {m.oldVersions()}
             </a>
           </Button>
           <Button variant="link" asChild>
@@ -74,7 +59,7 @@ function DownloadPage() {
               rel="noopener noreferrer"
               target="_blank"
             >
-              {data.nightlyBuilds}
+              {m.nightlyBuilds()}
             </a>
           </Button>
           <Button variant="link" asChild>
@@ -83,7 +68,7 @@ function DownloadPage() {
               rel="noopener noreferrer"
               target="_blank"
             >
-              {data.sourceCode}
+              {m.sourceCode()}
             </a>
           </Button>
         </div>

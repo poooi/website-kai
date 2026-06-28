@@ -10,7 +10,7 @@
     "lint:tanstack": "eslint src specs-tanstack vite.config.ts vitest.config.ts playwright.config.ts playwright.tanstack.config.ts tailwind.config.ts --ext .js,.cjs,.ts,.tsx",
     "check:tanstack-imports": "node scripts/check-tanstack-imports.mjs",
     "check:tanstack-output": "node scripts/check-tanstack-output.mjs",
-    "typecheck": "wrangler types --config wrangler.toml --env-interface CloudflareEnv cloudflare-env.d.ts && tsc --noEmit",
+    "typecheck": "node -e \"require('node:fs').rmSync('src/paraglide',{recursive:true,force:true})\" && wrangler types --config wrangler.toml --env-interface CloudflareEnv cloudflare-env.d.ts && tsc --noEmit",
     "test:unit": "vitest run --config vitest.config.ts",
     "build:tanstack": "vite build --config vite.config.ts",
     "preview:tanstack": "vite preview --config vite.config.ts --host 127.0.0.1 --port 3002",

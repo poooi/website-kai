@@ -1,22 +1,17 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Transition } from '~/components/transition'
-import {
-  loadCommonTranslations,
-  loadExploreHtml,
-} from '~/lib/tanstack-page-data'
+import { loadExploreHtml } from '~/lib/tanstack-page-data'
+import { m } from '~/paraglide/messages'
 
 export const Route = createFileRoute('/explore')({
   loader: async () => ({
-    ...(await loadCommonTranslations()),
     contentHtml: await loadExploreHtml(),
   }),
-  head: ({ loaderData }) => ({
+  head: () => ({
     meta: [
       {
-        title: `poi | ${loaderData?.title ?? 'KanColle Browser'} | ${
-          loaderData?.explore ?? 'Explore'
-        }`,
+        title: `poi | ${m.kanColleBrowser()} | ${m.explore()}`,
       },
     ],
   }),

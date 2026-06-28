@@ -3,7 +3,6 @@
 import { useAtom } from 'jotai'
 import { useHydrateAtoms } from 'jotai/utils'
 import { ChevronsUpDown } from 'lucide-react'
-import { useMemo } from 'react'
 
 import { osAtom, specAtom } from './store'
 
@@ -14,23 +13,18 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
+import { getPlatformLabels } from '~/lib/platform-labels'
 import { OS, type PlatformSpec, platformToTarget } from '~/lib/target'
+import { m } from '~/paraglide/messages'
 
 interface PlatformSelectProps {
   initialOS?: OS
   initialSpec?: PlatformSpec
-  labels: {
-    operatingSystem: string
-    os: Record<OS, string>
-    platform: string
-    spec: Record<PlatformSpec, string>
-  }
 }
 
 export const PlatformSelect = ({
   initialOS,
   initialSpec,
-  labels,
 }: PlatformSelectProps) => {
   useHydrateAtoms([
     [osAtom, initialOS],
@@ -39,24 +33,24 @@ export const PlatformSelect = ({
 
   const [os, setOS] = useAtom(osAtom)
   const [spec, setSpec] = useAtom(specAtom)
+  const platformLabels = getPlatformLabels()
 
-  const osOptions = useMemo(() => {
-    return Object.values(OS).map((os) => ({ label: labels.os[os], value: os }))
-  }, [labels.os])
+  const osOptions = Object.values(OS).map((os) => ({
+    label: platformLabels.os[os],
+    value: os,
+  }))
 
-  const specOptions = useMemo(() => {
-    return Object.keys(platformToTarget[os!] ?? {}).map((spec) => ({
-      label: labels.spec[spec as PlatformSpec],
-      value: spec,
-    }))
-  }, [labels.spec, os])
+  const specOptions = Object.keys(platformToTarget[os!] ?? {}).map((spec) => ({
+    label: platformLabels.spec[spec as PlatformSpec],
+    value: spec,
+  }))
 
   return (
     <div className="grid w-fit grid-cols-2 gap-4">
-      <div>{labels.operatingSystem}</div>
+      <div>{m.operatingSystem()}</div>
       <div>
         <ComboBox
-          placeholder={labels.operatingSystem}
+          placeholder={m.operatingSystem()}
           value={os as string}
           options={osOptions}
           onChange={(value) => {
@@ -65,10 +59,10 @@ export const PlatformSelect = ({
           }}
         />
       </div>
-      <div>{labels.platform}</div>
+      <div>{m.platform()}</div>
       <div>
         <ComboBox
-          placeholder={labels.platform}
+          placeholder={m.platform()}
           value={spec as string}
           options={specOptions}
           onChange={(value) => {

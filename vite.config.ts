@@ -1,4 +1,3 @@
-import { readFile, writeFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 
 import { cloudflare } from '@cloudflare/vite-plugin'
@@ -25,10 +24,6 @@ const commitHash = await getCommitHash()
 const buildDate = new Date().toISOString()
 const sentryRelease = process.env.SENTRY_RELEASE ?? commitHash
 const sentryUploadEnabled = !!process.env.SENTRY_AUTH_TOKEN
-const paraglideServerPath = fileURLToPath(
-  new URL('./src/paraglide/server.js', import.meta.url),
-)
-
 const ibmFontPackages = [
   'plex-sans',
   'plex-sans-jp',
@@ -36,17 +31,6 @@ const ibmFontPackages = [
   'plex-sans-sc',
   'plex-sans-tc',
 ]
-
-const paraglideCloudflareTypecheckPlugin = () => ({
-  name: 'paraglide-cloudflare-typecheck',
-  enforce: 'post' as const,
-  async buildStart() {
-    const source = await readFile(paraglideServerPath, 'utf8')
-    if (!source.startsWith('// @ts-nocheck')) {
-      await writeFile(paraglideServerPath, `// @ts-nocheck\n${source}`)
-    }
-  },
-})
 
 export default defineConfig({
   server: {
@@ -72,7 +56,6 @@ export default defineConfig({
   },
   plugins: [
     paraglideVitePlugin(paraglideOptions),
-    paraglideCloudflareTypecheckPlugin(),
     cloudflare({
       configPath: './wrangler.toml',
       viteEnvironment: { name: 'ssr' },
