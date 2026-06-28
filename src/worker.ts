@@ -268,6 +268,11 @@ const worker = {
     response ??= await handleAsset(request, env)
 
     const routedRequest = normalizeMonitoringRequest(request)
+    const fetchStartHandler = (handlerRequest: Request) =>
+      (startHandler.fetch as StartHandlerWithContext)(handlerRequest, {
+        context: { env, ctx, requestHeaders: [...request.headers] },
+      })
+
     if (!response) {
       if (isPageRequest(routedRequest)) {
         const middlewareHeaders = new Headers(routedRequest.headers)
@@ -276,17 +281,10 @@ const worker = {
           headers: middlewareHeaders,
         })
         response = await paraglideMiddleware(middlewareRequest, () =>
-          (startHandler.fetch as StartHandlerWithContext)(routedRequest, {
-            context: { env, ctx, requestHeaders: [...request.headers] },
-          }),
+          fetchStartHandler(routedRequest),
         )
       } else {
-        response = await (startHandler.fetch as StartHandlerWithContext)(
-          routedRequest,
-          {
-            context: { env, ctx, requestHeaders: [...request.headers] },
-          },
-        )
+        response = await fetchStartHandler(routedRequest)
       }
     }
 
