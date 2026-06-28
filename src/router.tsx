@@ -1,7 +1,7 @@
 import { createRouter } from '@tanstack/react-router'
 
 import { routeTree } from './routeTree.gen'
-import { deLocalizeUrl, localizeUrl } from './paraglide/runtime'
+import { deLocalizeUrl, localizeUrl } from '~/paraglide/runtime'
 
 export function getRouter() {
   return createRouter({

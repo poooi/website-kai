@@ -41,6 +41,9 @@ yarn-error.log*
 dist
 cloudflare-env.d.ts
 
+# generated i18n output
+src/paraglide/
+
 # typescript
 *.tsbuildinfo
 
