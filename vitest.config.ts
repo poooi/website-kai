@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url'
 import { paraglideVitePlugin } from '@inlang/paraglide-js'
 import { defineConfig } from 'vitest/config'
 
-import { paraglideOptions } from './paraglide.config'
+import { paraglideOptions } from './paraglide.config.js'
 
 export default defineConfig({
   plugins: [paraglideVitePlugin(paraglideOptions)],

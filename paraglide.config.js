@@ -1,17 +1,29 @@
-import type { CompilerOptions } from '@inlang/paraglide-js'
+// @ts-check
 
-const locales = ['en', 'fr', 'ja', 'ko', 'zh-Hans', 'zh-Hant'] as const
-type Locale = (typeof locales)[number]
+/** @typedef {import('@inlang/paraglide-js').CompilerOptions} CompilerOptions */
 
-const localizedRootPaths = locales.map((locale): [Locale, string] => [
-  locale,
-  locale === 'ja' ? '/' : `/${locale}`,
+const locales = /** @type {const} */ ([
+  'en',
+  'fr',
+  'ja',
+  'ko',
+  'zh-Hans',
+  'zh-Hant',
 ])
-const localizedCatchAllPaths = locales.map((locale): [Locale, string] => [
-  locale,
-  locale === 'ja' ? '/:path(.*)?' : `/${locale}/:path(.*)?`,
-])
 
+const localizedRootPaths =
+  /** @type {NonNullable<CompilerOptions['urlPatterns']>[number]['localized']} */ (
+    locales.map((locale) => [locale, locale === 'ja' ? '/' : `/${locale}`])
+  )
+const localizedCatchAllPaths =
+  /** @type {NonNullable<CompilerOptions['urlPatterns']>[number]['localized']} */ (
+    locales.map((locale) => [
+      locale,
+      locale === 'ja' ? '/:path(.*)?' : `/${locale}/:path(.*)?`,
+    ])
+  )
+
+/** @type {CompilerOptions} */
 export const paraglideOptions = {
   project: './project.inlang',
   outdir: './src/paraglide',
@@ -41,4 +53,4 @@ export const paraglideOptions = {
     { match: '/opengraph-image', exclude: true },
     { match: '/twitter-image', exclude: true },
   ],
-} satisfies CompilerOptions
+}

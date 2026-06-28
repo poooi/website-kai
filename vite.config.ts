@@ -9,7 +9,7 @@ import { execa } from 'execa'
 import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 
-import { paraglideOptions } from './paraglide.config'
+import { paraglideOptions } from './paraglide.config.js'
 
 const getCommitHash = async () => {
   try {
