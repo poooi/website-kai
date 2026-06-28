@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest'
 
-import { parseCookieHeader, resolvePreferredLocale } from './i18n-routing'
+import {
+  localizeHref,
+  parseCookieHeader,
+  resolvePreferredLocale,
+} from './i18n-routing'
 
 describe('parseCookieHeader', () => {
   it('uses a null-prototype cookie map for untrusted cookie names', () => {
@@ -10,6 +14,17 @@ describe('parseCookieHeader', () => {
     expect(cookies.__proto__).toBe('polluted')
     expect(cookies.constructor).toBe('value')
     expect(Object.prototype).not.toHaveProperty('polluted')
+  })
+})
+
+describe('localizeHref', () => {
+  it('preserves search params and hash fragments while changing locale', () => {
+    expect(
+      localizeHref('/download', 'fr', '?channel=stable', '#download'),
+    ).toBe('/fr/download?channel=stable#download')
+    expect(
+      localizeHref('/en/download', 'ja', '?channel=stable', '#download'),
+    ).toBe('/download?channel=stable#download')
   })
 })
 

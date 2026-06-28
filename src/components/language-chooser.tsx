@@ -14,7 +14,7 @@ import {
 } from '~/components/ui/dropdown-menu'
 import { useI18nPathname } from '~/hooks/use-i18n-pathname'
 import { i18nConfig } from '~/i18n-config'
-import { localizePath } from '~/lib/i18n-routing'
+import { localizeHref } from '~/lib/i18n-routing'
 
 export const LanguageChooser = () => {
   const { t, i18n } = useTranslation()
@@ -28,10 +28,17 @@ export const LanguageChooser = () => {
       const date = new Date()
       date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000)
       const expires = date.toUTCString()
-      document.cookie = `NEXT_LOCALE=${newLocale};expires=${expires};path=/`
+      document.cookie = `NEXT_LOCALE=${newLocale};expires=${expires};path=/;SameSite=Lax`
 
       const pathname = currentPathname ?? window.location.pathname
-      window.location.assign(localizePath(pathname, newLocale))
+      window.location.assign(
+        localizeHref(
+          pathname,
+          newLocale,
+          window.location.search,
+          window.location.hash,
+        ),
+      )
     },
     [currentPathname],
   )

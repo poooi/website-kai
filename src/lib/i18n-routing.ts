@@ -38,6 +38,13 @@ export const localizePath = (pathname: string, locale: string) => {
   return stripped === '/' ? `/${locale}` : `/${locale}${stripped}`
 }
 
+export const localizeHref = (
+  pathname: string,
+  locale: string,
+  search = '',
+  hash = '',
+) => `${localizePath(pathname, locale)}${search}${hash}`
+
 export const parseCookieHeader = (cookieHeader: string | null) => {
   const cookies = Object.create(null) as Record<string, string>
   for (const entry of (cookieHeader ?? '').split(';')) {

@@ -107,6 +107,18 @@ describe('handleFcd', () => {
     expect(response.status).toBe(404)
   })
 
+  it('maps upstream server errors to 502', async () => {
+    const target =
+      'https://raw.githubusercontent.com/poooi/poi/master/assets/data/fcd/meta.json'
+    const response = await handleFcd(
+      makeRequest('/fcd/meta.json'),
+      { filename: 'meta.json' },
+      { fetcher: mockFetch({ [target]: new Response('', { status: 500 }) }) },
+    )
+
+    expect(response.status).toBe(502)
+  })
+
   it('maps final proxy network failure to 504', async () => {
     const target =
       'https://raw.githubusercontent.com/poooi/poi/master/assets/data/fcd/meta.json'
