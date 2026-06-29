@@ -40,12 +40,6 @@ vi.mock('~/paraglide/server', () => ({
 
 vi.mock('~/lib/social-image', () => ({
   createSocialImageResponse: mocks.createSocialImageResponse,
-  withSocialImageHeaders: (headers = new Headers()) => {
-    const socialImageHeaders = new Headers(headers)
-    socialImageHeaders.set('Cache-Control', 'public,max-age=3600')
-    socialImageHeaders.set('Content-Type', 'image/png')
-    return socialImageHeaders
-  },
 }))
 
 import { handleWorkerRequest } from './worker'
@@ -214,6 +208,9 @@ describe('handleWorkerRequest', () => {
     async (path) => {
       const assetFetch = vi.fn(async (request: Request) => {
         const { pathname } = new URL(request.url)
+        expect(request.method).toBe('GET')
+        expect(request.headers.get('If-None-Match')).toBeNull()
+        expect(request.headers.get('If-Modified-Since')).toBeNull()
         if (pathname === '/social/poi.png') {
           return new Response(new Uint8Array([0x89, 0x50, 0x4e, 0x47]), {
             headers: {
@@ -224,7 +221,12 @@ describe('handleWorkerRequest', () => {
         return new Response(new ArrayBuffer(8))
       })
       const response = await handleWorkerRequest(
-        makeRequest(path),
+        makeRequest(path, {
+          headers: {
+            'If-Modified-Since': 'Tue, 30 Jun 2026 00:00:00 GMT',
+            'If-None-Match': '*',
+          },
+        }),
         makeEnv(assetFetch),
         makeCtx(),
       )

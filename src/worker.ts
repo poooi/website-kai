@@ -264,7 +264,7 @@ const handleAsset = async (request: Request, env: WorkerEnv) => {
 const fetchAssetPath = (request: Request, env: WorkerEnv, pathname: string) => {
   const url = new URL(request.url)
   url.pathname = pathname
-  return env.ASSETS!.fetch(new Request(url, request))
+  return env.ASSETS!.fetch(new Request(url, { method: 'GET' }))
 }
 
 const handleSocialImage = async (request: Request, env: WorkerEnv) => {
