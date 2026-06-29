@@ -262,8 +262,7 @@ const handleAsset = async (request: Request, env: WorkerEnv) => {
 }
 
 const fetchAssetPath = (request: Request, env: WorkerEnv, pathname: string) => {
-  const url = new URL(request.url)
-  url.pathname = pathname
+  const url = new URL(pathname, request.url)
   return env.ASSETS!.fetch(new Request(url, { method: 'GET' }))
 }
 

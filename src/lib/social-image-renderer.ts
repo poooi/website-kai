@@ -37,11 +37,14 @@ const readAsset = async (fetchAsset: FetchAsset, pathname: string) => {
 
 const arrayBufferToBase64 = (buffer: ArrayBuffer) => {
   const bytes = new Uint8Array(buffer)
-  let binary = ''
-  for (const byte of bytes) {
-    binary += String.fromCharCode(byte)
+  const chunks: string[] = []
+  const chunkSize = 0x8000
+  for (let offset = 0; offset < bytes.length; offset += chunkSize) {
+    chunks.push(
+      String.fromCharCode(...bytes.subarray(offset, offset + chunkSize)),
+    )
   }
-  return btoa(binary)
+  return btoa(chunks.join(''))
 }
 
 const loadSocialImageInputs = (fetchAsset: FetchAsset) => {

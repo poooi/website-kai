@@ -207,8 +207,10 @@ describe('handleWorkerRequest', () => {
     'generates social image route %s before TanStack',
     async (path) => {
       const assetFetch = vi.fn(async (request: Request) => {
-        const { pathname } = new URL(request.url)
+        const { hash, pathname, search } = new URL(request.url)
         expect(request.method).toBe('GET')
+        expect(search).toBe('')
+        expect(hash).toBe('')
         expect(request.headers.get('If-None-Match')).toBeNull()
         expect(request.headers.get('If-Modified-Since')).toBeNull()
         if (pathname === '/social/poi.png') {
@@ -221,7 +223,7 @@ describe('handleWorkerRequest', () => {
         return new Response(new ArrayBuffer(8))
       })
       const response = await handleWorkerRequest(
-        makeRequest(path, {
+        makeRequest(`${path}?from=unit#social`, {
           headers: {
             'If-Modified-Since': 'Tue, 30 Jun 2026 00:00:00 GMT',
             'If-None-Match': '*',
