@@ -61,11 +61,23 @@ export default defineConfig({
       viteEnvironment: { name: 'ssr' },
     }),
     viteStaticCopy({
-      targets: ibmFontPackages.map((fontPackage) => ({
-        src: `node_modules/@ibm/${fontPackage}/fonts/split/woff2/**/*.{css,woff2}`,
-        dest: `fonts/${fontPackage}`,
-        rename: { stripBase: true },
-      })),
+      targets: [
+        ...ibmFontPackages.map((fontPackage) => ({
+          src: `node_modules/@ibm/${fontPackage}/fonts/split/woff2/**/*.{css,woff2}`,
+          dest: `fonts/${fontPackage}`,
+          rename: { stripBase: true as const },
+        })),
+        {
+          src: 'src/assets/poi.png',
+          dest: 'social',
+          rename: { stripBase: true as const },
+        },
+        {
+          src: 'node_modules/@ibm/plex-sans/fonts/complete/woff/IBMPlexSans-SemiBold.woff',
+          dest: 'social',
+          rename: { stripBase: true as const },
+        },
+      ],
     }),
     tanstackStart(),
     viteReact(),

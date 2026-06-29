@@ -15,6 +15,10 @@ const mocks = vi.hoisted(() => ({
         options: { context: { requestHeaders: [string, string][] } },
       ) => Promise<Response>
     >(),
+  createSocialImageResponse:
+    vi.fn<
+      (fetchAsset: (pathname: string) => Promise<Response>) => Promise<Response>
+    >(),
   withSentry: vi.fn<(_options: unknown, handler: unknown) => unknown>(
     (_options, handler) => handler,
   ),
@@ -32,6 +36,10 @@ vi.mock('@tanstack/react-start/server-entry', () => ({
 
 vi.mock('~/paraglide/server', () => ({
   paraglideMiddleware: mocks.paraglideMiddleware,
+}))
+
+vi.mock('~/lib/social-image', () => ({
+  createSocialImageResponse: mocks.createSocialImageResponse,
 }))
 
 import { handleWorkerRequest } from './worker'
@@ -62,6 +70,18 @@ beforeEach(() => {
     return new Response(`start:${new URL(request.url).pathname}`, {
       headers: {
         'Content-Type': 'text/html; charset=utf-8',
+      },
+    })
+  })
+  mocks.createSocialImageResponse.mockReset()
+  mocks.createSocialImageResponse.mockImplementation(async (fetchAsset) => {
+    await Promise.all(
+      ['/social/IBMPlexSans-SemiBold.woff', '/social/poi.png'].map(fetchAsset),
+    )
+    return new Response(new Uint8Array([0x89, 0x50, 0x4e, 0x47]), {
+      headers: {
+        'Cache-Control': 'public,max-age=3600',
+        'Content-Type': 'image/png',
       },
     })
   })
@@ -165,6 +185,62 @@ describe('handleWorkerRequest', () => {
     await expect(response.text()).resolves.toBe('start:/favicon.ico')
     expect(mocks.startFetch).toHaveBeenCalledOnce()
   })
+
+  it('serves social image HEAD requests before TanStack', async () => {
+    const response = await handleWorkerRequest(
+      makeRequest('/opengraph-image', { method: 'HEAD' }),
+      makeEnv(vi.fn()),
+      makeCtx(),
+    )
+
+    expect(response.status).toBe(200)
+    expect(response.headers.get('Cache-Control')).toBe('public,max-age=3600')
+    expect(response.headers.get('Content-Type')).toBe('image/png')
+    await expect(response.arrayBuffer()).resolves.toHaveProperty(
+      'byteLength',
+      0,
+    )
+    expect(mocks.startFetch).not.toHaveBeenCalled()
+  })
+
+  it.each(['/opengraph-image', '/opengraph-image/', '/twitter-image'])(
+    'generates social image route %s before TanStack',
+    async (path) => {
+      const assetFetch = vi.fn(async (request: Request) => {
+        const { hash, pathname, search } = new URL(request.url)
+        expect(request.method).toBe('GET')
+        expect(search).toBe('')
+        expect(hash).toBe('')
+        expect(request.headers.get('If-None-Match')).toBeNull()
+        expect(request.headers.get('If-Modified-Since')).toBeNull()
+        if (pathname === '/social/poi.png') {
+          return new Response(new Uint8Array([0x89, 0x50, 0x4e, 0x47]), {
+            headers: {
+              'Content-Type': 'image/png',
+            },
+          })
+        }
+        return new Response(new ArrayBuffer(8))
+      })
+      const response = await handleWorkerRequest(
+        makeRequest(`${path}?from=unit#social`, {
+          headers: {
+            'If-Modified-Since': 'Tue, 30 Jun 2026 00:00:00 GMT',
+            'If-None-Match': '*',
+          },
+        }),
+        makeEnv(assetFetch),
+        makeCtx(),
+      )
+
+      expect(response.status).toBe(200)
+      expect(response.headers.get('Cache-Control')).toBe('public,max-age=3600')
+      expect(response.headers.get('Content-Type')).toBe('image/png')
+      expect(assetFetch).toHaveBeenCalledTimes(2)
+      expect(mocks.createSocialImageResponse).toHaveBeenCalledOnce()
+      expect(mocks.startFetch).not.toHaveBeenCalled()
+    },
+  )
 
   it('normalizes monitoring slash routes before calling TanStack', async () => {
     await handleWorkerRequest(

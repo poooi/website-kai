@@ -1,5 +1,8 @@
 import { expect, test } from '@playwright/test'
 
+const pngSignature = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]
+const socialImageSnapshot = 'social-image.png'
+
 test('renders the isolated TanStack preview route', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'light' })
   await page.context().addCookies([
@@ -31,6 +34,14 @@ test('renders the isolated TanStack preview route', async ({ page }) => {
   expect(headers.vary).toContain('Sec-CH-UA-Platform')
   expect(headers.vary).toContain('Sec-CH-Prefers-Color-Scheme')
   expect(headers['cache-control']).toBe('no-store')
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+    'content',
+    'https://poi.moe/opengraph-image',
+  )
+  await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute(
+    'content',
+    'https://poi.moe/twitter-image',
+  )
 })
 
 test('marks HEAD page responses as no-store', async ({ request }) => {
@@ -121,7 +132,9 @@ test('serves hashed Vite assets with immutable cache headers', async ({
   )
 })
 
-test('serves static social image routes', async ({ request }) => {
+test('serves generated social image routes', async ({ request }) => {
+  let expectedImage: Buffer | undefined
+
   for (const path of [
     '/opengraph-image',
     '/opengraph-image/',
@@ -135,6 +148,22 @@ test('serves static social image routes', async ({ request }) => {
     expect(response.headers()['cache-control']).toBe('public,max-age=3600')
     expect(response.headers()['accept-ch']).toBeUndefined()
     expect(response.headers().vary).not.toContain('Sec-CH-UA-Platform')
+
+    const image = await response.body()
+    expect([...image.subarray(0, pngSignature.length)]).toEqual(pngSignature)
+    const dataView = new DataView(image.buffer, image.byteOffset)
+    expect(dataView.getUint32(16)).toBe(1200)
+    expect(dataView.getUint32(20)).toBe(630)
+    expect(image.byteLength).toBeGreaterThan(10_000)
+
+    if (expectedImage) {
+      expect(image).toEqual(expectedImage)
+    } else {
+      expectedImage = image
+      expect(image).toMatchSnapshot(socialImageSnapshot, {
+        maxDiffPixelRatio: 0.001,
+      })
+    }
   }
 })
 

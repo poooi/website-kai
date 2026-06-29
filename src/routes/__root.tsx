@@ -15,6 +15,11 @@ import { Header, type HeaderLinkProps } from '~/components/header'
 import { JotaiRootProvider } from '~/components/jotai-provider'
 import { SentryClient } from '~/components/sentry-client'
 import { ThemeRuntime } from '~/components/theme-runtime'
+import {
+  socialImageContentType,
+  socialImageHeight,
+  socialImageWidth,
+} from '~/lib/social-image-constants'
 import { isMobileDevice } from '~/lib/target'
 import { getServerThemePreference, resolveServerTheme } from '~/lib/theme'
 import { cn } from '~/lib/utils'
@@ -23,6 +28,9 @@ import { getLocale } from '~/paraglide/runtime'
 const getCurrentRequestHeaders = createServerOnlyFn(
   () => new Headers(getRequestHeaders()),
 )
+const siteUrl = 'https://poi.moe'
+const openGraphImageUrl = `${siteUrl}/opengraph-image`
+const twitterImageUrl = `${siteUrl}/twitter-image`
 
 const HeaderLink = forwardRef<HTMLAnchorElement, HeaderLinkProps>(
   ({ href, children, onClick, target, ...props }, ref) => {
@@ -102,6 +110,34 @@ export const Route = createRootRouteWithContext<TanStackRouterContext>()({
         name: 'description',
         content:
           'Scalable KanColle browser and tool, for Windows, macOS and Linux. 一个可扩展的舰队Collectionブラウザ。拡張可能な艦隊これくしょんブラウザ。',
+      },
+      {
+        property: 'og:image',
+        content: openGraphImageUrl,
+      },
+      {
+        property: 'og:image:type',
+        content: socialImageContentType,
+      },
+      {
+        property: 'og:image:width',
+        content: String(socialImageWidth),
+      },
+      {
+        property: 'og:image:height',
+        content: String(socialImageHeight),
+      },
+      {
+        name: 'twitter:card',
+        content: 'summary_large_image',
+      },
+      {
+        name: 'twitter:image',
+        content: twitterImageUrl,
+      },
+      {
+        name: 'twitter:image:type',
+        content: socialImageContentType,
       },
     ],
     links: [{ rel: 'icon', href: '/favicon.ico' }],
