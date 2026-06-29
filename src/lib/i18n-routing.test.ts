@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
+import { deLocalizeHref } from '~/paraglide/runtime'
+
 import {
   localizeHref,
   parseCookieHeader,
@@ -25,6 +27,11 @@ describe('localizeHref', () => {
     expect(
       localizeHref('/en/download', 'ja', '?channel=stable', '#download'),
     ).toBe('/download?channel=stable#download')
+  })
+
+  it('delocalizes script-cased Chinese locale paths', () => {
+    expect(deLocalizeHref('/zh-Hans/download')).toBe('/download')
+    expect(deLocalizeHref('/zh-Hant/download')).toBe('/download')
   })
 })
 
