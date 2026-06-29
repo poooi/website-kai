@@ -12,6 +12,7 @@ const socialImageLogoPath = '/social/poi.png'
 const socialImageFontPath = '/social/IBMPlexSans-SemiBold.woff'
 
 type FetchAsset = (pathname: string) => Promise<Response>
+type RenderedSocialImage = ReturnType<InstanceType<typeof Resvg>['render']>
 
 let activeWasmInput: InitInput | undefined
 let activeYogaWasmInput: Parameters<typeof initSatori>[0] | undefined
@@ -94,6 +95,20 @@ const ensureSatori = (yogaWasmInput: Parameters<typeof initSatori>[0]) => {
   return satoriReady
 }
 
+const createPngResponseBody = (png: Uint8Array) => {
+  if (
+    png.buffer instanceof ArrayBuffer &&
+    png.byteOffset === 0 &&
+    png.byteLength === png.buffer.byteLength
+  ) {
+    return png.buffer
+  }
+
+  const body = new ArrayBuffer(png.byteLength)
+  new Uint8Array(body).set(png)
+  return body
+}
+
 export const createSocialImageResponseWithWasm = async (
   fetchAsset: FetchAsset,
   wasmInput: InitInput,
@@ -147,14 +162,14 @@ export const createSocialImageResponseWithWasm = async (
       mode: 'original',
     },
   })
-  const image = resvg.render()
-  const png = image.asPng()
-  const body = new ArrayBuffer(png.byteLength)
-  new Uint8Array(body).set(png)
-  image.free()
-  resvg.free()
-
-  return new Response(body, {
-    headers: withSocialImageHeaders(),
-  })
+  let image: RenderedSocialImage | undefined
+  try {
+    image = resvg.render()
+    return new Response(createPngResponseBody(image.asPng()), {
+      headers: withSocialImageHeaders(),
+    })
+  } finally {
+    image?.free()
+    resvg.free()
+  }
 }
