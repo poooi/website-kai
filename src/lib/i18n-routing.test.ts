@@ -28,7 +28,9 @@ describe('localizeHref', () => {
       localizeHref('/en/download', 'ja', '?channel=stable', '#download'),
     ).toBe('/download?channel=stable#download')
   })
+})
 
+describe('deLocalizeHref', () => {
   it('delocalizes script-cased Chinese locale paths', () => {
     expect(deLocalizeHref('/zh-Hans/download')).toBe('/download')
     expect(deLocalizeHref('/zh-Hant/download')).toBe('/download')
