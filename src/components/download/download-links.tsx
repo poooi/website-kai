@@ -9,18 +9,13 @@ import { Button } from '~/components/ui/button'
 import { type PoiVersions } from '~/lib/fetch-poi-versions'
 import { getDownloadLink, platformToTarget, type Target } from '~/lib/target'
 import { cn } from '~/lib/utils'
+import { m } from '~/paraglide/messages'
 
 interface DownloadLinksProps {
-  labels: {
-    beta: string
-    betaHint: string
-    stable: string
-    stableHint: string
-  }
   poiVersions: PoiVersions
 }
 
-export const DownloadLinks = ({ labels, poiVersions }: DownloadLinksProps) => {
+export const DownloadLinks = ({ poiVersions }: DownloadLinksProps) => {
   const os = useAtomValue(osAtom)
   const spec = useAtomValue(specAtom)
   const target: Target | undefined = platformToTarget[os!]?.[spec!]
@@ -36,8 +31,8 @@ export const DownloadLinks = ({ labels, poiVersions }: DownloadLinksProps) => {
     <div className={cn('not-prose my-8 flex gap-8')}>
       <Button className="h-fit flex-col" asChild disabled={!stableURL}>
         <a href={stableURL}>
-          <span>{labels.stable}</span>
-          <span>{labels.stableHint}</span>
+          <span>{m.downloadWithVersion({ version: poiVersions.version })}</span>
+          <span>{m.stableHint()}</span>
         </a>
       </Button>
       {compare(poiVersions.version, poiVersions.betaVersion, '<') && (
@@ -48,8 +43,10 @@ export const DownloadLinks = ({ labels, poiVersions }: DownloadLinksProps) => {
           disabled={!betaURL}
         >
           <a href={betaURL}>
-            <span>{labels.beta}</span>
-            <span>{labels.betaHint}</span>
+            <span>
+              {m.downloadWithVersion({ version: poiVersions.betaVersion })}
+            </span>
+            <span>{m.betaHint()}</span>
           </a>
         </Button>
       )}

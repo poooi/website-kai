@@ -1,30 +1,23 @@
 import { createServerOnlyFn } from '@tanstack/react-start'
 import { getRequestHeaders } from '@tanstack/react-start/server'
 import { compare } from 'compare-versions'
-import type { TFunction } from 'i18next'
 import sanitize from 'rehype-sanitize'
 import stringify from 'rehype-stringify'
 import { remark } from 'remark'
 import rehype from 'remark-rehype'
 
-import { initTranslations } from '~/i18n'
 import {
   fetchPoiVersions,
   poiVersionsSchema,
   type PoiVersions,
 } from '~/lib/fetch-poi-versions'
-import {
-  defaultLocale,
-  isSupportedLocale,
-  type SupportedLocale,
-} from '~/lib/i18n-routing'
+import { isSupportedLocale, type SupportedLocale } from '~/lib/i18n-routing'
 import {
   detectRequestPlatform,
   getDownloadLink,
-  OS,
-  PlatformSpec,
   type RequestPlatformResult,
 } from '~/lib/target'
+import { getLocale } from '~/paraglide/runtime'
 import { type TanStackRouterContext } from '~/routes/__root'
 
 const exploreContentByLocale = import.meta.glob<string>(
@@ -69,51 +62,14 @@ const loadPoiVersions = async (env?: ServerContext['env']) => {
   return await fetchPoiVersions()
 }
 
-const buildCommonTranslations = (t: TFunction<'common'>) => ({
-  betaHint: t('beta-hint'),
-  description: t('description'),
-  download: t('Download'),
-  downloadOptions: t('Download options'),
-  explore: t('Explore'),
-  httpsUpdateSupported: t('HTTPS game update supported!'),
-  language: t('language'),
-  mobileHint: t('mobile-hint'),
-  name: t('name'),
-  newLabel: t('New'),
-  nightlyBuilds: t('Nightly builds'),
-  oldVersions: t('Old versions'),
-  operatingSystem: t('Operating system'),
-  options: t('Options'),
-  others: t('Others'),
-  platformLabel: t('Platform'),
-  sightedBySkilledLookouts: t('Sighted by skilled lookouts:'),
-  sourceCode: t('Source code'),
-  stableHint: t('stable-hint'),
-  title: t('KanColle Browser'),
-})
-
-const buildPlatformLabels = (t: TFunction<'common'>) => ({
-  os: Object.fromEntries(Object.values(OS).map((os) => [os, t(os)])) as Record<
-    OS,
-    string
-  >,
-  spec: Object.fromEntries(
-    Object.values(PlatformSpec).map((spec) => [spec, t(spec)]),
-  ) as Record<PlatformSpec, string>,
-})
-
 const buildDownloadData = (
-  t: TFunction<'common'>,
   poiVersions: PoiVersions,
   platform: RequestPlatformResult,
 ) => ({
-  betaDownloadLabel: t('download', { version: poiVersions.betaVersion }),
   betaUrl: getDownloadLink(poiVersions.betaVersion, platform.target),
   platform,
-  platformLabels: buildPlatformLabels(t),
   poiVersions,
   showBeta: compare(poiVersions.version, poiVersions.betaVersion, '<'),
-  stableDownloadLabel: t('download', { version: poiVersions.version }),
   stableUrl: getDownloadLink(poiVersions.version, platform.target),
 })
 
@@ -127,38 +83,24 @@ export const requireSupportedLocale = (locale: string): SupportedLocale => {
   return locale
 }
 
-export const loadCommonTranslations = async (
-  locale: string = defaultLocale,
-) => {
-  const supportedLocale = requireSupportedLocale(locale)
-  const { t } = await initTranslations(supportedLocale, ['common'])
-  return buildCommonTranslations(t)
-}
-
 export const loadRequestAwarePageData = async (
-  locale: string = defaultLocale,
   context?: RequestAwareContext,
 ) => {
-  const supportedLocale = requireSupportedLocale(locale)
   const serverContext = normalizeServerContext(context)
   const headers = serverContext?.requestHeaders
     ? new Headers(serverContext.requestHeaders)
     : typeof document === 'undefined'
       ? getCurrentRequestHeaders()
       : new Headers()
-  const [{ t }, poiVersions, platform] = await Promise.all([
-    initTranslations(supportedLocale, ['common']),
+  const [poiVersions, platform] = await Promise.all([
     loadPoiVersions(serverContext?.env),
     detectRequestPlatform(headers),
   ])
 
-  return {
-    ...buildCommonTranslations(t),
-    ...buildDownloadData(t, poiVersions, platform),
-  }
+  return buildDownloadData(poiVersions, platform)
 }
 
-export const loadExploreHtml = async (locale: string = defaultLocale) => {
+export const loadExploreHtml = async (locale: string = getLocale()) => {
   const supportedLocale = requireSupportedLocale(locale)
   const cachedHtml = exploreHtmlByLocale.get(supportedLocale)
   if (cachedHtml !== undefined) {

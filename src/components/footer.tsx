@@ -7,61 +7,58 @@ import {
   SiTelegram,
   SiX,
 } from '@icons-pack/react-simple-icons'
-import { type TFunction, type i18n, type CustomTypeOptions } from 'i18next'
 
 import { Button } from './ui/button'
 
-interface FooterProps {
-  i18n: i18n
-  t: TFunction
-}
+import { m } from '~/paraglide/messages'
+import { getLocale, type Locale } from '~/paraglide/runtime'
 
 interface FooterItem {
   url: string
   icon: IconType
-  text: keyof CustomTypeOptions['resources']['common']
-  skipLocales?: string[] // should be hidden for these locales
-  applyLocales?: string[] // should shown for these locales
+  text: () => string
+  skipLocales?: Locale[]
+  applyLocales?: Locale[]
 }
 
-const footerItems = [
+const footerItems: FooterItem[] = [
   {
     url: 'http://weibo.com/letspoi',
     icon: SiSinaweibo,
-    text: 'weibo',
+    text: m.weibo,
     applyLocales: ['zh-Hans', 'zh-Hant'],
   },
   {
     url: 'https://t.me/poiCN',
     icon: SiTelegram,
-    text: 'telegram',
+    text: m.telegram,
     applyLocales: ['zh-Hans', 'zh-Hant'],
   },
   {
     url: 'https://discord.gg/6u8rZ2P',
     icon: SiDiscord,
-    text: 'Discord sub-channel',
+    text: m.discordSubChannel,
     skipLocales: ['zh-Hans', 'zh-Hant'],
   },
   {
     url: 'https://github.com/poooi/poi',
     icon: SiGithub,
-    text: 'github',
+    text: m.github,
   },
   {
     url: 'https://opencollective.com/poi',
     icon: SiOpencollective,
-    text: 'opencollective',
+    text: m.opencollective,
   },
   {
     url: 'https://x.com/KochiyaOcean',
     icon: SiX,
-    text: 'X',
+    text: m.x,
   },
-] satisfies FooterItem[]
+]
 
-export const Footer = ({ i18n, t }: FooterProps) => {
-  const { language } = i18n
+export const Footer = () => {
+  const language = getLocale()
   return (
     <div className="inline-flex w-fit flex-wrap items-center gap-x-8 gap-y-2 text-nowrap py-4 md:flex md:flex-nowrap">
       <span className="px-4">{`© ${new Date().getFullYear()} poi Contributors`}</span>
@@ -82,10 +79,10 @@ export const Footer = ({ i18n, t }: FooterProps) => {
                 className="inline-flex gap-1"
                 href={url}
                 target="_blank"
-                rel="noopener"
+                rel="noopener noreferrer"
               >
                 <Icon className="h-4 w-4" />
-                <span>{t(text)}</span>
+                <span>{text()}</span>
               </a>
             </Button>
           ))}

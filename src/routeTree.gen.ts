@@ -15,13 +15,10 @@ import { Route as OpengraphImageRouteImport } from './routes/opengraph-image'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as DownloadRouteImport } from './routes/download'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as LocaleIndexRouteImport } from './routes/$locale.index'
 import { Route as UpdateFilenameRouteImport } from './routes/update.$filename'
 import { Route as FcdFilenameRouteImport } from './routes/fcd.$filename'
 import { Route as DistFilenameRouteImport } from './routes/dist.$filename'
 import { Route as ApiMonitoringRouteImport } from './routes/api.monitoring'
-import { Route as LocaleExploreRouteImport } from './routes/$locale.explore'
-import { Route as LocaleDownloadRouteImport } from './routes/$locale.download'
 
 const TwitterImageRoute = TwitterImageRouteImport.update({
   id: '/twitter-image',
@@ -53,11 +50,6 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LocaleIndexRoute = LocaleIndexRouteImport.update({
-  id: '/$locale/',
-  path: '/$locale/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const UpdateFilenameRoute = UpdateFilenameRouteImport.update({
   id: '/update/$filename',
   path: '/update/$filename',
@@ -78,16 +70,6 @@ const ApiMonitoringRoute = ApiMonitoringRouteImport.update({
   path: '/api/monitoring',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LocaleExploreRoute = LocaleExploreRouteImport.update({
-  id: '/$locale/explore',
-  path: '/$locale/explore',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LocaleDownloadRoute = LocaleDownloadRouteImport.update({
-  id: '/$locale/download',
-  path: '/$locale/download',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -96,13 +78,10 @@ export interface FileRoutesByFullPath {
   '/opengraph-image': typeof OpengraphImageRoute
   '/status': typeof StatusRoute
   '/twitter-image': typeof TwitterImageRoute
-  '/$locale/download': typeof LocaleDownloadRoute
-  '/$locale/explore': typeof LocaleExploreRoute
   '/api/monitoring': typeof ApiMonitoringRoute
   '/dist/$filename': typeof DistFilenameRoute
   '/fcd/$filename': typeof FcdFilenameRoute
   '/update/$filename': typeof UpdateFilenameRoute
-  '/$locale/': typeof LocaleIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -111,13 +90,10 @@ export interface FileRoutesByTo {
   '/opengraph-image': typeof OpengraphImageRoute
   '/status': typeof StatusRoute
   '/twitter-image': typeof TwitterImageRoute
-  '/$locale/download': typeof LocaleDownloadRoute
-  '/$locale/explore': typeof LocaleExploreRoute
   '/api/monitoring': typeof ApiMonitoringRoute
   '/dist/$filename': typeof DistFilenameRoute
   '/fcd/$filename': typeof FcdFilenameRoute
   '/update/$filename': typeof UpdateFilenameRoute
-  '/$locale': typeof LocaleIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -127,13 +103,10 @@ export interface FileRoutesById {
   '/opengraph-image': typeof OpengraphImageRoute
   '/status': typeof StatusRoute
   '/twitter-image': typeof TwitterImageRoute
-  '/$locale/download': typeof LocaleDownloadRoute
-  '/$locale/explore': typeof LocaleExploreRoute
   '/api/monitoring': typeof ApiMonitoringRoute
   '/dist/$filename': typeof DistFilenameRoute
   '/fcd/$filename': typeof FcdFilenameRoute
   '/update/$filename': typeof UpdateFilenameRoute
-  '/$locale/': typeof LocaleIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -144,13 +117,10 @@ export interface FileRouteTypes {
     | '/opengraph-image'
     | '/status'
     | '/twitter-image'
-    | '/$locale/download'
-    | '/$locale/explore'
     | '/api/monitoring'
     | '/dist/$filename'
     | '/fcd/$filename'
     | '/update/$filename'
-    | '/$locale/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -159,13 +129,10 @@ export interface FileRouteTypes {
     | '/opengraph-image'
     | '/status'
     | '/twitter-image'
-    | '/$locale/download'
-    | '/$locale/explore'
     | '/api/monitoring'
     | '/dist/$filename'
     | '/fcd/$filename'
     | '/update/$filename'
-    | '/$locale'
   id:
     | '__root__'
     | '/'
@@ -174,13 +141,10 @@ export interface FileRouteTypes {
     | '/opengraph-image'
     | '/status'
     | '/twitter-image'
-    | '/$locale/download'
-    | '/$locale/explore'
     | '/api/monitoring'
     | '/dist/$filename'
     | '/fcd/$filename'
     | '/update/$filename'
-    | '/$locale/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -190,13 +154,10 @@ export interface RootRouteChildren {
   OpengraphImageRoute: typeof OpengraphImageRoute
   StatusRoute: typeof StatusRoute
   TwitterImageRoute: typeof TwitterImageRoute
-  LocaleDownloadRoute: typeof LocaleDownloadRoute
-  LocaleExploreRoute: typeof LocaleExploreRoute
   ApiMonitoringRoute: typeof ApiMonitoringRoute
   DistFilenameRoute: typeof DistFilenameRoute
   FcdFilenameRoute: typeof FcdFilenameRoute
   UpdateFilenameRoute: typeof UpdateFilenameRoute
-  LocaleIndexRoute: typeof LocaleIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -243,13 +204,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/$locale/': {
-      id: '/$locale/'
-      path: '/$locale'
-      fullPath: '/$locale/'
-      preLoaderRoute: typeof LocaleIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/update/$filename': {
       id: '/update/$filename'
       path: '/update/$filename'
@@ -278,20 +232,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiMonitoringRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/$locale/explore': {
-      id: '/$locale/explore'
-      path: '/$locale/explore'
-      fullPath: '/$locale/explore'
-      preLoaderRoute: typeof LocaleExploreRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/$locale/download': {
-      id: '/$locale/download'
-      path: '/$locale/download'
-      fullPath: '/$locale/download'
-      preLoaderRoute: typeof LocaleDownloadRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -302,13 +242,10 @@ const rootRouteChildren: RootRouteChildren = {
   OpengraphImageRoute: OpengraphImageRoute,
   StatusRoute: StatusRoute,
   TwitterImageRoute: TwitterImageRoute,
-  LocaleDownloadRoute: LocaleDownloadRoute,
-  LocaleExploreRoute: LocaleExploreRoute,
   ApiMonitoringRoute: ApiMonitoringRoute,
   DistFilenameRoute: DistFilenameRoute,
   FcdFilenameRoute: FcdFilenameRoute,
   UpdateFilenameRoute: UpdateFilenameRoute,
-  LocaleIndexRoute: LocaleIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -11,6 +11,7 @@ import {
   stripLocalePrefix,
 } from '~/lib/i18n-routing'
 import { sentryDsn, sentryRelease } from '~/lib/sentry'
+import { paraglideMiddleware } from '~/paraglide/server'
 
 interface AssetsBinding {
   fetch(request: Request): Promise<Response>
@@ -265,12 +266,27 @@ const worker = {
 
     response ??= handleLocaleRedirects(request)
     response ??= await handleAsset(request, env)
-    response ??= await (startHandler.fetch as StartHandlerWithContext)(
-      normalizeMonitoringRequest(request),
-      {
+
+    const routedRequest = normalizeMonitoringRequest(request)
+    const fetchStartHandler = (handlerRequest: Request) =>
+      (startHandler.fetch as StartHandlerWithContext)(handlerRequest, {
         context: { env, ctx, requestHeaders: [...request.headers] },
-      },
-    )
+      })
+
+    if (!response) {
+      if (isPageRequest(routedRequest)) {
+        const middlewareHeaders = new Headers(routedRequest.headers)
+        middlewareHeaders.delete('Sec-Fetch-Dest')
+        const middlewareRequest = new Request(routedRequest, {
+          headers: middlewareHeaders,
+        })
+        response = await paraglideMiddleware(middlewareRequest, () =>
+          fetchStartHandler(routedRequest),
+        )
+      } else {
+        response = await fetchStartHandler(routedRequest)
+      }
+    }
 
     return withGlobalHeaders(response, request)
   },

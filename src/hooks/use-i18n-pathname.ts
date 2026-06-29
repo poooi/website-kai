@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from 'react'
-import { useTranslation } from 'react-i18next'
+
+import { deLocalizeHref } from '~/paraglide/runtime'
 
 const locationChangeEvent = 'locationchange'
 let hydrated = false
@@ -74,19 +75,10 @@ export const useI18nPathname = () => {
     getPathname,
     getServerSnapshot,
   )
-  const { i18n } = useTranslation()
 
   if (!pathname) {
     return undefined
   }
 
-  if (pathname === `/${i18n.language}`) {
-    return '/'
-  }
-
-  if (pathname.startsWith(`/${i18n.language}/`)) {
-    return pathname.replace(new RegExp(`^/${i18n.language}`), '')
-  }
-
-  return pathname
+  return deLocalizeHref(pathname)
 }

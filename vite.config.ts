@@ -1,12 +1,15 @@
 import { fileURLToPath } from 'node:url'
 
 import { cloudflare } from '@cloudflare/vite-plugin'
+import { paraglideVitePlugin } from '@inlang/paraglide-js'
 import { sentryTanstackStart } from '@sentry/tanstackstart-react/vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'
 import { execa } from 'execa'
 import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
+
+import { paraglideOptions } from './paraglide.config.js'
 
 const getCommitHash = async () => {
   try {
@@ -21,7 +24,6 @@ const commitHash = await getCommitHash()
 const buildDate = new Date().toISOString()
 const sentryRelease = process.env.SENTRY_RELEASE ?? commitHash
 const sentryUploadEnabled = !!process.env.SENTRY_AUTH_TOKEN
-
 const ibmFontPackages = [
   'plex-sans',
   'plex-sans-jp',
@@ -53,6 +55,7 @@ export default defineConfig({
     ),
   },
   plugins: [
+    paraglideVitePlugin(paraglideOptions),
     cloudflare({
       configPath: './wrangler.toml',
       viteEnvironment: { name: 'ssr' },

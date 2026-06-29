@@ -1,7 +1,6 @@
 'use client'
 
 import { MoonIcon, SunIcon } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
 
 import { useTheme } from '~/components/theme-runtime'
 import { Button } from '~/components/ui/button'
@@ -13,11 +12,11 @@ import {
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
 import { type Theme } from '~/lib/theme'
+import { m } from '~/paraglide/messages'
 
 export const ThemeChooser = () => {
   const { theme, setTheme } = useTheme()
 
-  const { t } = useTranslation()
   const handleThemeChange = (value: string) => {
     if (value === 'dark' || value === 'light' || value === 'system') {
       setTheme(value satisfies Theme)
@@ -30,24 +29,24 @@ export const ThemeChooser = () => {
         <Button
           variant="outline"
           size="icon"
-          title={t('Theme')}
-          aria-label={t('Theme')}
+          title={m.theme()}
+          aria-label={m.theme()}
         >
           <SunIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
           <MoonIcon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          <span className="sr-only">{t('Theme')}</span>
+          <span className="sr-only">{m.theme()}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuRadioGroup value={theme} onValueChange={handleThemeChange}>
           <DropdownMenuRadioItem value="light">
-            {t('Lilywhite')}
+            {m.lilywhite()}
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem value="dark">
-            {t('Chibaheit')}
+            {m.chibaheit()}
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem value="system">
-            {t('System')}
+            {m.system()}
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
