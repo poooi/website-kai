@@ -103,7 +103,11 @@ const normalizeMonitoringRequest = (request: Request) => {
 
 const isPageRequest = (request: Request) => {
   const { pathname } = new URL(request.url)
-  return isDocumentRequestMethod(request.method) && isDocumentPath(pathname)
+  return (
+    isDocumentRequestMethod(request.method) &&
+    isDocumentPath(pathname) &&
+    !isProxyRoutePath(pathname)
+  )
 }
 
 const shouldHandleLocaleRedirects = (request: Request, pathname: string) => {

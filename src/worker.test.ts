@@ -210,4 +210,22 @@ describe('handleWorkerRequest', () => {
       mocks.startFetch.mock.calls[0]![0].headers.get('Sec-Fetch-Dest'),
     ).toBe('document')
   })
+
+  it('does not wrap proxy subroutes with Paraglide', async () => {
+    const response = await handleWorkerRequest(
+      makeRequest('/dist/en', {
+        headers: {
+          Cookie: 'NEXT_LOCALE=fr',
+          'Sec-Fetch-Dest': 'document',
+        },
+      }),
+      makeEnv(),
+      makeCtx(),
+    )
+
+    expect(response.status).toBe(200)
+    await expect(response.text()).resolves.toBe('start:/dist/en')
+    expect(mocks.startFetch).toHaveBeenCalledOnce()
+    expect(mocks.paraglideMiddleware).not.toHaveBeenCalled()
+  })
 })

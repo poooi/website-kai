@@ -199,6 +199,25 @@ test('serves invalid proxy route inputs as 404 through TanStack', async ({
   }
 })
 
+test('keeps proxy subroutes out of page locale/header handling', async ({
+  request,
+}) => {
+  const response = await request.get('/dist/en', {
+    headers: {
+      Cookie: 'NEXT_LOCALE=fr',
+    },
+    maxRedirects: 0,
+  })
+
+  expect(response.status()).toBe(404)
+  expect(response.headers().location).toBeUndefined()
+  expect(response.headers()['x-poi-codename']).toBe('Shiratsuyu')
+  expect(response.headers()['accept-ch']).toBeUndefined()
+  expect(response.headers()['critical-ch']).toBeUndefined()
+  expect(response.headers()['cache-control']).not.toBe('no-store')
+  expect(response.headers().vary).not.toContain('Sec-CH-UA-Platform')
+})
+
 test('keeps proxy collection roots reserved before locale redirects', async ({
   request,
 }) => {
