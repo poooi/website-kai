@@ -115,6 +115,22 @@ test('serves localized download and explore pages', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'what is poi' })).toBeVisible()
 })
 
+test('serves script-cased Chinese localized download pages', async ({
+  page,
+}) => {
+  const simplifiedResponse = await page.goto('/zh-Hans/download')
+  expect(simplifiedResponse?.status()).toBe(200)
+  await expect(page.locator('html')).toHaveAttribute('lang', 'zh-Hans')
+  await expect(page.getByRole('heading', { name: '下载' })).toBeVisible()
+  await expect(page.getByRole('link', { name: '每夜构建' })).toBeVisible()
+
+  const traditionalResponse = await page.goto('/zh-Hant/download')
+  expect(traditionalResponse?.status()).toBe(200)
+  await expect(page.locator('html')).toHaveAttribute('lang', 'zh-Hant')
+  await expect(page.getByRole('heading', { name: '下載' })).toBeVisible()
+  await expect(page.getByRole('link', { name: '每夜構建' })).toBeVisible()
+})
+
 test('serves framework-neutral header navigation controls', async ({
   page,
 }) => {

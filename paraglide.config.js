@@ -2,24 +2,33 @@
 
 /** @typedef {import('@inlang/paraglide-js').CompilerOptions} CompilerOptions */
 
+const baseLocale = 'ja'
 const locales = /** @type {const} */ ([
   'en',
   'fr',
-  'ja',
+  baseLocale,
   'ko',
   'zh-Hans',
   'zh-Hant',
 ])
+const localizedLocalesBySpecificity = [
+  ...locales.filter((locale) => locale !== baseLocale),
+  baseLocale,
+]
 
 const localizedRootPaths =
   /** @type {NonNullable<CompilerOptions['urlPatterns']>[number]['localized']} */ (
-    locales.map((locale) => [locale, locale === 'ja' ? '/' : `/${locale}`])
+    localizedLocalesBySpecificity.map((locale) => [
+      locale,
+      locale === baseLocale ? '/' : `/${locale}`,
+    ])
   )
 const localizedCatchAllPaths =
   /** @type {NonNullable<CompilerOptions['urlPatterns']>[number]['localized']} */ (
-    locales.map((locale) => [
+    // The base-locale catch-all is greedy, so keep it after prefixed locales.
+    localizedLocalesBySpecificity.map((locale) => [
       locale,
-      locale === 'ja' ? '/:path(.*)?' : `/${locale}/:path(.*)?`,
+      locale === baseLocale ? '/:path(.*)?' : `/${locale}/:path(.*)?`,
     ])
   )
 
