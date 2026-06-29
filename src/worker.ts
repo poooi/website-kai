@@ -27,14 +27,16 @@ interface ExecutionContextLike {
   passThroughOnException?(): void
 }
 
+interface StartHandlerContext {
+  ctx: ExecutionContextLike
+  env: WorkerEnv
+  requestHeaders: [string, string][]
+}
+
 type StartHandlerWithContext = (
   request: Request,
   options: {
-    context: {
-      ctx: ExecutionContextLike
-      env: WorkerEnv
-      requestHeaders: [string, string][]
-    }
+    context: StartHandlerContext
   },
 ) => Promise<Response>
 
@@ -42,9 +44,16 @@ type SentryHandler = Parameters<typeof withSentry>[1]
 
 const clientHintValues =
   'Sec-CH-UA-Platform, Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Mobile, Sec-CH-Prefers-Color-Scheme'
+const localizedPageNames = new Set(['download', 'explore'])
+const proxyRoots = new Set(['/dist', '/fcd', '/update'])
+const proxyPrefixes = ['/dist/', '/fcd/', '/update/']
 
 const buildDate = process.env.BUILD_DATE ?? 'development'
 const commitHash = process.env.COMMIT_HASH ?? 'development'
+
+const trimTrailingSlashes = (pathname: string) => {
+  return pathname === '/' ? pathname : pathname.replace(/\/+$/, '')
+}
 
 const isFileRequest = (pathname: string) => {
   return pathname.includes('.')
@@ -60,9 +69,26 @@ const isSocialImagePath = (pathname: string) => {
 }
 
 const isProxyRootPath = (pathname: string) => {
-  const normalized = pathname === '/' ? pathname : pathname.replace(/\/+$/, '')
+  return proxyRoots.has(trimTrailingSlashes(pathname))
+}
+
+const isProxyRoutePath = (pathname: string) => {
   return (
-    normalized === '/dist' || normalized === '/fcd' || normalized === '/update'
+    isProxyRootPath(pathname) ||
+    proxyPrefixes.some((prefix) => pathname.startsWith(prefix))
+  )
+}
+
+const isDocumentRequestMethod = (method: string) => {
+  return method === 'GET' || method === 'HEAD'
+}
+
+const isDocumentPath = (pathname: string) => {
+  return (
+    !pathname.startsWith('/api/') &&
+    !pathname.startsWith('/status') &&
+    !isSocialImagePath(pathname) &&
+    !isFileRequest(pathname)
   )
 }
 
@@ -78,91 +104,70 @@ const normalizeMonitoringRequest = (request: Request) => {
 const isPageRequest = (request: Request) => {
   const { pathname } = new URL(request.url)
   return (
-    (request.method === 'GET' || request.method === 'HEAD') &&
-    !pathname.startsWith('/api/') &&
-    !pathname.startsWith('/status') &&
-    !isSocialImagePath(pathname) &&
-    !isFileRequest(pathname)
+    isDocumentRequestMethod(request.method) &&
+    isDocumentPath(pathname) &&
+    !isProxyRoutePath(pathname)
   )
 }
 
-const isPagePath = (pathname: string) => {
+const shouldHandleLocaleRedirects = (request: Request, pathname: string) => {
   return (
-    !pathname.startsWith('/api/') &&
-    !pathname.startsWith('/status') &&
-    !isProxyRootPath(pathname) &&
-    !pathname.startsWith('/dist/') &&
-    !pathname.startsWith('/fcd/') &&
-    !pathname.startsWith('/update/') &&
-    !isSocialImagePath(pathname) &&
-    !isFileRequest(pathname)
+    isDocumentRequestMethod(request.method) &&
+    isDocumentPath(pathname) &&
+    !isProxyRoutePath(pathname)
+  )
+}
+
+const isKnownLocalizedPagePath = (pathname: string) => {
+  const [firstSegment, secondSegment, ...restSegments] = pathname
+    .split('/')
+    .filter(Boolean)
+
+  if (!firstSegment) {
+    return true
+  }
+
+  if (restSegments.length > 0) {
+    return false
+  }
+
+  if (!secondSegment) {
+    return (
+      localizedPageNames.has(firstSegment) || isSupportedLocale(firstSegment)
+    )
+  }
+
+  return (
+    localizedPageNames.has(secondSegment) && isSupportedLocale(firstSegment)
   )
 }
 
 const redirectTo = (request: Request, pathname: string, status: 307 | 308) => {
   const url = new URL(request.url)
   url.pathname = pathname
-  const headers = new Headers()
+  const headers = new Headers({
+    'Content-Type': 'text/plain; charset=utf-8',
+    Location: url.toString(),
+  })
   if (status === 307) {
     headers.set('Cache-Control', 'no-store')
     headers.set('Vary', 'Cookie, Accept-Language')
   }
-  headers.set('Content-Type', 'text/plain; charset=utf-8')
-  return new Response('', {
-    headers: {
-      ...Object.fromEntries(headers),
-      Location: url.toString(),
-    },
-    status,
-  })
+  return new Response('', { headers, status })
 }
 
 const handleLocaleRedirects = (request: Request) => {
   const { pathname } = new URL(request.url)
-  if (request.method !== 'GET' && request.method !== 'HEAD') {
+  if (!shouldHandleLocaleRedirects(request, pathname)) {
     return undefined
   }
 
-  if (!isPagePath(pathname)) {
-    return undefined
-  }
-
-  const pathSegments = pathname.split('/').filter(Boolean)
-  const firstSegment = pathSegments[0]
-  const secondSegment = pathSegments[1]
-  const knownUnprefixedPage =
-    pathSegments.length === 1 &&
-    (firstSegment === 'download' || firstSegment === 'explore')
-  const knownDefaultPage = pathSegments.length === 0 || knownUnprefixedPage
-  const localeShapedSegment =
-    !!firstSegment && /^[a-z]{2}(?:-[A-Za-z]+)?$/.test(firstSegment)
-  const supportedLocalizedPage =
-    firstSegment &&
-    isSupportedLocale(firstSegment) &&
-    (pathSegments.length === 1 ||
-      (pathSegments.length === 2 &&
-        (secondSegment === 'download' || secondSegment === 'explore')))
-  const knownLocalizedPage =
-    firstSegment &&
-    !knownUnprefixedPage &&
-    !isSupportedLocale(firstSegment) &&
-    (pathSegments.length === 1 ||
-      (localeShapedSegment &&
-        pathSegments.length === 2 &&
-        (secondSegment === 'download' || secondSegment === 'explore')))
-  if (knownLocalizedPage) {
-    return new Response('', { status: 404 })
-  }
-
-  if (!knownDefaultPage && !supportedLocalizedPage) {
+  if (!isKnownLocalizedPagePath(pathname)) {
     return new Response('', { status: 404 })
   }
 
   const locale = getPathLocale(pathname)
-  let canonicalPathname = pathname
-  if (canonicalPathname !== '/' && canonicalPathname.endsWith('/')) {
-    canonicalPathname = canonicalPathname.replace(/\/+$/, '')
-  }
+  let canonicalPathname = trimTrailingSlashes(pathname)
   if (locale && isDefaultLocale(locale)) {
     canonicalPathname = stripLocalePrefix(canonicalPathname)
   }
@@ -179,6 +184,14 @@ const handleLocaleRedirects = (request: Request) => {
   }
 
   return undefined
+}
+
+const copyResponseWithHeaders = (response: Response, headers: Headers) => {
+  return new Response(response.body, {
+    headers,
+    status: response.status,
+    statusText: response.statusText,
+  })
 }
 
 const appendVary = (headers: Headers, value: string) => {
@@ -220,11 +233,7 @@ const withGlobalHeaders = (response: Response, request: Request) => {
     }
   }
 
-  return new Response(response.body, {
-    headers,
-    status: response.status,
-    statusText: response.statusText,
-  })
+  return copyResponseWithHeaders(response, headers)
 }
 
 const withAssetHeaders = (response: Response, request: Request) => {
@@ -235,11 +244,7 @@ const withAssetHeaders = (response: Response, request: Request) => {
   } else {
     headers.set('Cache-Control', 'public,max-age=3600')
   }
-  return new Response(response.body, {
-    headers,
-    status: response.status,
-    statusText: response.statusText,
-  })
+  return copyResponseWithHeaders(response, headers)
 }
 
 const handleAsset = async (request: Request, env: WorkerEnv) => {
@@ -255,39 +260,60 @@ const handleAsset = async (request: Request, env: WorkerEnv) => {
   return withAssetHeaders(response, request)
 }
 
+const fetchStartHandler = (request: Request, context: StartHandlerContext) => {
+  return (startHandler.fetch as StartHandlerWithContext)(request, { context })
+}
+
+const withParaglide = (
+  request: Request,
+  fetchRoute: (request: Request) => Promise<Response>,
+) => {
+  const headers = new Headers(request.headers)
+  headers.delete('Sec-Fetch-Dest')
+
+  return paraglideMiddleware(new Request(request, { headers }), () =>
+    fetchRoute(request),
+  )
+}
+
+const handleStartRequest = (request: Request, context: StartHandlerContext) => {
+  const fetchRoute = (handlerRequest: Request) =>
+    fetchStartHandler(handlerRequest, context)
+
+  if (isPageRequest(request)) {
+    return withParaglide(request, fetchRoute)
+  }
+
+  return fetchRoute(request)
+}
+
+export const handleWorkerRequest = async (
+  request: Request,
+  env: WorkerEnv,
+  ctx: ExecutionContextLike,
+) => {
+  const { pathname } = new URL(request.url)
+
+  if (isProxyRootPath(pathname)) {
+    return new Response('', { status: 404 })
+  }
+
+  const workerResponse =
+    handleLocaleRedirects(request) ?? (await handleAsset(request, env))
+  if (workerResponse) {
+    return workerResponse
+  }
+
+  return handleStartRequest(normalizeMonitoringRequest(request), {
+    env,
+    ctx,
+    requestHeaders: [...request.headers],
+  })
+}
+
 const worker = {
   async fetch(request: Request, env: WorkerEnv, ctx: ExecutionContextLike) {
-    const { pathname } = new URL(request.url)
-
-    let response: Response | undefined
-    if (isProxyRootPath(pathname)) {
-      response = new Response('', { status: 404 })
-    }
-
-    response ??= handleLocaleRedirects(request)
-    response ??= await handleAsset(request, env)
-
-    const routedRequest = normalizeMonitoringRequest(request)
-    const fetchStartHandler = (handlerRequest: Request) =>
-      (startHandler.fetch as StartHandlerWithContext)(handlerRequest, {
-        context: { env, ctx, requestHeaders: [...request.headers] },
-      })
-
-    if (!response) {
-      if (isPageRequest(routedRequest)) {
-        const middlewareHeaders = new Headers(routedRequest.headers)
-        middlewareHeaders.delete('Sec-Fetch-Dest')
-        const middlewareRequest = new Request(routedRequest, {
-          headers: middlewareHeaders,
-        })
-        response = await paraglideMiddleware(middlewareRequest, () =>
-          fetchStartHandler(routedRequest),
-        )
-      } else {
-        response = await fetchStartHandler(routedRequest)
-      }
-    }
-
+    const response = await handleWorkerRequest(request, env, ctx)
     return withGlobalHeaders(response, request)
   },
 }
