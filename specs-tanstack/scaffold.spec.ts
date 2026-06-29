@@ -198,3 +198,44 @@ test('serves invalid proxy route inputs as 404 through TanStack', async ({
     expect(response.headers()['x-poi-codename']).toBe('Shiratsuyu')
   }
 })
+
+test('keeps proxy collection roots reserved before locale redirects', async ({
+  request,
+}) => {
+  for (const path of [
+    '/dist',
+    '/dist/',
+    '/fcd',
+    '/fcd/',
+    '/update',
+    '/update/',
+  ]) {
+    const response = await request.get(path, {
+      headers: {
+        Cookie: 'NEXT_LOCALE=en',
+      },
+      maxRedirects: 0,
+    })
+
+    expect(response.status()).toBe(404)
+    expect(response.headers().location).toBeUndefined()
+    expect(response.headers()['x-poi-codename']).toBe('Shiratsuyu')
+  }
+})
+
+test('returns 404 for unknown localized page shapes', async ({ request }) => {
+  for (const path of [
+    '/missing',
+    '/en/missing',
+    '/xx/download',
+    '/fr/download/extra',
+  ]) {
+    const response = await request.get(path, {
+      maxRedirects: 0,
+    })
+
+    expect(response.status()).toBe(404)
+    expect(response.headers().location).toBeUndefined()
+    expect(response.headers()['x-poi-codename']).toBe('Shiratsuyu')
+  }
+})
