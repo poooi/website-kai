@@ -11,6 +11,7 @@ import {
   stripLocalePrefix,
 } from '~/lib/i18n-routing'
 import { sentryDsn, sentryRelease } from '~/lib/sentry'
+import { withSocialImageHeaders } from '~/lib/social-image-constants'
 import { paraglideMiddleware } from '~/paraglide/server'
 
 interface AssetsBinding {
@@ -260,6 +261,34 @@ const handleAsset = async (request: Request, env: WorkerEnv) => {
   return withAssetHeaders(response, request)
 }
 
+const fetchAssetPath = (request: Request, env: WorkerEnv, pathname: string) => {
+  const url = new URL(request.url)
+  url.pathname = pathname
+  return env.ASSETS!.fetch(new Request(url, request))
+}
+
+const handleSocialImage = async (request: Request, env: WorkerEnv) => {
+  const { pathname } = new URL(request.url)
+  if (
+    !env.ASSETS ||
+    !isSocialImagePath(pathname) ||
+    !isDocumentRequestMethod(request.method)
+  ) {
+    return undefined
+  }
+
+  if (request.method === 'HEAD') {
+    return new Response(null, {
+      headers: withSocialImageHeaders(),
+    })
+  }
+
+  const { createSocialImageResponse } = await import('~/lib/social-image')
+  return createSocialImageResponse((assetPath) =>
+    fetchAssetPath(request, env, assetPath),
+  )
+}
+
 const fetchStartHandler = (request: Request, context: StartHandlerContext) => {
   return (startHandler.fetch as StartHandlerWithContext)(request, { context })
 }
@@ -299,7 +328,9 @@ export const handleWorkerRequest = async (
   }
 
   const workerResponse =
-    handleLocaleRedirects(request) ?? (await handleAsset(request, env))
+    handleLocaleRedirects(request) ??
+    (await handleSocialImage(request, env)) ??
+    (await handleAsset(request, env))
   if (workerResponse) {
     return workerResponse
   }

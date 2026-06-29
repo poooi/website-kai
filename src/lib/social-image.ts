@@ -1,14 +1,9 @@
-const transparentPngBase64 =
-  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAFgwJ/l1Yv4wAAAABJRU5ErkJggg=='
+import resvgWasmModule from '@resvg/resvg-wasm/index_bg.wasm'
+import yogaWasmModule from 'satori/yoga.wasm'
 
-const transparentPng = Uint8Array.from(atob(transparentPngBase64), (char) =>
-  char.charCodeAt(0),
-)
+import { createSocialImageResponseWithWasm } from './social-image-renderer'
 
-export const createSocialImageResponse = () =>
-  new Response(transparentPng, {
-    headers: {
-      'Cache-Control': 'public,max-age=3600',
-      'Content-Type': 'image/png',
-    },
-  })
+type FetchAsset = (pathname: string) => Promise<Response>
+
+export const createSocialImageResponse = (fetchAsset: FetchAsset) =>
+  createSocialImageResponseWithWasm(fetchAsset, resvgWasmModule, yogaWasmModule)
