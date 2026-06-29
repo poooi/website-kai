@@ -2,6 +2,7 @@ name = "poi-web-kai"
 compatibility_date = "2026-06-21"
 compatibility_flags = ["nodejs_compat"]
 main = "src/worker.ts"
+preview_urls = true
 
 routes = [
   { pattern = "poi.moe", custom_domain = true },

@@ -67,6 +67,9 @@ if (!existsSync(wranglerConfigPath)) {
   if (wranglerConfig.main !== 'index.js') {
     fail(`Expected Worker main index.js, got ${wranglerConfig.main}`)
   }
+  if (wranglerConfig.preview_urls !== true) {
+    fail(`Expected preview_urls true, got ${wranglerConfig.preview_urls}`)
+  }
   if (wranglerConfig.assets?.directory !== '../client') {
     fail(`Expected assets.directory ../client, got ${wranglerConfig.assets?.directory}`)
   }
