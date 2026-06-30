@@ -24,9 +24,9 @@ function DownloadPage() {
   return (
     <Transition
       role="main"
-      className="prose flex w-full max-w-none grow flex-col dark:prose-invert"
+      className="prose dark:prose-invert flex w-full max-w-none grow flex-col"
     >
-      <h1 className="mb-[1em] mt-0 text-[1.5em] font-semibold leading-[1.3333333]">
+      <h1 className="mt-0 mb-[1em] text-[1.5em] leading-[1.3333333] font-semibold">
         {m.download()}
       </h1>
       {data.platform.isMobile ? (

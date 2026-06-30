@@ -60,7 +60,7 @@ const footerItems: FooterItem[] = [
 export const Footer = () => {
   const language = getLocale()
   return (
-    <div className="inline-flex w-fit flex-wrap items-center gap-x-8 gap-y-2 text-nowrap py-4 md:flex md:flex-nowrap">
+    <div className="inline-flex w-fit flex-wrap items-center gap-x-8 gap-y-2 py-4 text-nowrap md:flex md:flex-nowrap">
       <span className="px-4">{`© ${new Date().getFullYear()} poi Contributors`}</span>
       <div className="grid grid-cols-2 place-items-start xl:flex">
         {footerItems

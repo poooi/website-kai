@@ -108,7 +108,7 @@ export const Background = () => {
   return (
     <canvas
       aria-hidden
-      className="-z-1 t-0 l-0 fixed bg-background"
+      className="t-0 l-0 bg-background fixed -z-1"
       ref={canvas}
     />
   )

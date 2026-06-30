@@ -1,5 +1,5 @@
 import { type Config } from 'tailwindcss'
-import { fontFamily } from 'tailwindcss/defaultTheme'
+import defaultTheme from 'tailwindcss/defaultTheme'
 
 export default {
   darkMode: ['class'],
@@ -7,11 +7,11 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['IBM Plex Sans', ...fontFamily.sans],
-        ja: ['IBM Plex Sans JP', ...fontFamily.sans],
-        'zh-hant': ['IBM Plex Sans TC', ...fontFamily.sans],
-        'zh-hans': ['IBM Plex Sans SC', ...fontFamily.sans],
-        ko: ['IBM Plex Sans KR', ...fontFamily.sans],
+        sans: ['IBM Plex Sans', ...defaultTheme.fontFamily.sans],
+        ja: ['IBM Plex Sans JP', ...defaultTheme.fontFamily.sans],
+        'zh-hant': ['IBM Plex Sans TC', ...defaultTheme.fontFamily.sans],
+        'zh-hans': ['IBM Plex Sans SC', ...defaultTheme.fontFamily.sans],
+        ko: ['IBM Plex Sans KR', ...defaultTheme.fontFamily.sans],
       },
       borderRadius: {
         lg: 'var(--radius)',
