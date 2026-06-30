@@ -38,7 +38,7 @@ export const LanguageChooser = () => {
           title={m.language()}
           aria-label={m.language()}
         >
-          <GlobeIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />
+          <GlobeIcon className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all" />
           <span className="sr-only">{m.language()}</span>
         </Button>
       </DropdownMenuTrigger>

@@ -23,7 +23,7 @@ function ExplorePage() {
   return (
     <Transition
       role="main"
-      className="prose w-full max-w-none grow dark:prose-invert"
+      className="prose dark:prose-invert w-full max-w-none grow"
       dangerouslySetInnerHTML={{ __html: contentHtml }}
     />
   )
