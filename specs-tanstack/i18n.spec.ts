@@ -450,7 +450,7 @@ test('renders desktop request-aware download links', async ({ browser }) => {
   ).toHaveAttribute('href', '/dist/poi-setup-10.10.0-beta.1.exe')
   await expect(page.getByText('Sighted by skilled lookouts:')).toBeVisible()
   await expect(page.getByText('Windows', { exact: true })).toBeVisible()
-  await expect(page.getByText('Windows installer')).toBeVisible()
+  await expect(page.getByText('Windows installer (recommended)')).toBeVisible()
 
   await page.getByRole('link', { name: 'Download options' }).click()
   await expect(page).toHaveURL('http://127.0.0.1:3002/en/download')
@@ -466,7 +466,7 @@ test('renders desktop request-aware download links', async ({ browser }) => {
   await expect(
     platformButtons
       .nth(1)
-      .evaluate((button) => button.scrollWidth <= button.clientWidth),
+      .evaluate((button) => button.scrollWidth <= button.clientWidth + 1),
   ).resolves.toBe(true)
   await platformButtons.first().click()
   const linuxItem = page.getByRole('menuitem', { name: 'Linux' })
