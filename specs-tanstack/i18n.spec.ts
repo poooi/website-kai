@@ -448,9 +448,7 @@ test('renders desktop request-aware download links', async ({ browser }) => {
   await expect(
     page.getByRole('link', { name: /Download v10\.10\.0-beta\.1/ }),
   ).toHaveAttribute('href', '/dist/poi-setup-10.10.0-beta.1.exe')
-  await expect(
-    page.getByText('Auto-detected recommended download:'),
-  ).toBeVisible()
+  await expect(page.getByText('Sighted by skilled lookouts:')).toBeVisible()
   await expect(page.getByText('Windows', { exact: true })).toBeVisible()
   await expect(page.getByText('Windows 64-bit installer')).toBeVisible()
 

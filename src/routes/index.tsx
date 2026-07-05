@@ -70,7 +70,7 @@ function HomePage() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <span>{m.autoDetectedRecommendedDownload()}</span>
+              <span>{m.sightedBySkilledLookouts()}</span>
               <Badge variant="secondary">
                 {platformLabels.os[data.platform.os]}
               </Badge>
