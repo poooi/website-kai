@@ -117,6 +117,50 @@ export const parseUA = async (headers: Headers) => {
   return UAParser(Object.fromEntries(headers)).withClientHints()
 }
 
+const normalizeClientHintValue = (value: string | null) =>
+  value?.trim().replace(/^"|"$/g, '')
+
+const detectClientHintArchitecture = (headers: Headers) => {
+  const arch = normalizeClientHintValue(headers.get('Sec-CH-UA-Arch'))
+    ?.toLowerCase()
+    .replace('-', '_')
+  const bitness = normalizeClientHintValue(headers.get('Sec-CH-UA-Bitness'))
+
+  if (arch === 'arm' || arch === 'aarch64') {
+    return bitness === '64' ? 'arm64' : 'arm'
+  }
+  if (arch === 'arm64') {
+    return 'arm64'
+  }
+  if (arch === 'x86') {
+    return bitness === '64' ? 'amd64' : 'ia32'
+  }
+  if (arch === 'x86_64') {
+    return 'amd64'
+  }
+
+  return undefined
+}
+
+const detectClientHintOS = (headers: Headers) => {
+  const platform = normalizeClientHintValue(
+    headers.get('Sec-CH-UA-Platform'),
+  )?.toLowerCase()
+
+  switch (platform) {
+    case 'windows':
+      return 'Windows'
+    case 'macos':
+      return 'macOS'
+    // Keep Linux distro names from the UA when available; "Linux" from
+    // Client Hints is too generic to choose deb/rpm packages.
+    case 'linux':
+      return 'Linux'
+    default:
+      return undefined
+  }
+}
+
 const isMobileUA = (ua: Awaited<ReturnType<typeof parseUA>>) => {
   return [
     'mobile',
@@ -134,10 +178,14 @@ export const isMobileDevice = async (headers: Headers) => {
 
 const detectTargetFromUA = (
   ua: Awaited<ReturnType<typeof parseUA>>,
+  hints?: { architecture?: string; os?: string },
 ): DetectionResult => {
-  const { os, cpu } = ua
-  if (os.name === 'Linux') {
-    if (cpu.architecture === 'arm64' || cpu.architecture === 'arm') {
+  const osName =
+    hints?.os === 'Linux' ? (ua.os.name ?? hints.os) : (hints?.os ?? ua.os.name)
+  const architecture = hints?.architecture ?? ua.cpu.architecture
+
+  if (osName === 'Linux') {
+    if (architecture === 'arm64' || architecture === 'arm') {
       return {
         os: OS.linux,
         spec: PlatformSpec.ARMPortable,
@@ -151,8 +199,8 @@ const detectTargetFromUA = (
     }
   }
 
-  if (os.name === 'Debian' || os.name === 'Ubuntu') {
-    if (cpu.architecture === 'arm64' || cpu.architecture === 'arm') {
+  if (osName === 'Debian' || osName === 'Ubuntu') {
+    if (architecture === 'arm64' || architecture === 'arm') {
       return {
         os: OS.linux,
         spec: PlatformSpec.ARMDEB,
@@ -166,8 +214,8 @@ const detectTargetFromUA = (
       target: Target.linuxDeb,
     }
   }
-  if (os.name === 'CentOS' || os.name === 'Fedora') {
-    if (cpu.architecture === 'arm64' || cpu.architecture === 'arm') {
+  if (osName === 'CentOS' || osName === 'Fedora') {
+    if (architecture === 'arm64' || architecture === 'arm') {
       return {
         os: OS.linux,
         spec: PlatformSpec.ARMPortable,
@@ -180,8 +228,8 @@ const detectTargetFromUA = (
       target: Target.linuxRpm,
     }
   }
-  if (os.name === 'macOS') {
-    if (cpu.architecture === 'arm64' || cpu.architecture === 'arm') {
+  if (osName === 'macOS') {
+    if (architecture === 'arm64' || architecture === 'arm') {
       return {
         os: OS.macos,
         spec: PlatformSpec.ARM,
@@ -194,15 +242,15 @@ const detectTargetFromUA = (
       target: Target.macos,
     }
   }
-  if (os.name === 'Windows') {
-    if (cpu.architecture === 'arm64' || cpu.architecture === 'arm') {
+  if (osName === 'Windows') {
+    if (architecture === 'arm64' || architecture === 'arm') {
       return {
         os: OS.windows,
         spec: PlatformSpec.ARM,
         target: Target.winArm,
       }
     }
-    if (cpu.architecture === 'ia64' || cpu.architecture === 'amd64') {
+    if (architecture === 'ia64' || architecture === 'amd64') {
       return {
         os: OS.windows,
         spec: PlatformSpec.X64Setup,
@@ -225,7 +273,10 @@ const detectTargetFromUA = (
 export const detectTargetFromRequest = async (
   headers: Headers,
 ): Promise<DetectionResult> => {
-  return detectTargetFromUA(await parseUA(headers))
+  return detectTargetFromUA(await parseUA(headers), {
+    architecture: detectClientHintArchitecture(headers),
+    os: detectClientHintOS(headers),
+  })
 }
 
 export const detectRequestPlatform = async (
@@ -233,7 +284,10 @@ export const detectRequestPlatform = async (
 ): Promise<RequestPlatformResult> => {
   const ua = await parseUA(headers)
   return {
-    ...detectTargetFromUA(ua),
+    ...detectTargetFromUA(ua, {
+      architecture: detectClientHintArchitecture(headers),
+      os: detectClientHintOS(headers),
+    }),
     isMobile: isMobileUA(ua),
   }
 }

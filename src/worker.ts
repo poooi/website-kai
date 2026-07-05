@@ -45,6 +45,8 @@ type SentryHandler = Parameters<typeof withSentry>[1]
 
 const clientHintValues =
   'Sec-CH-UA-Platform, Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Mobile, Sec-CH-Prefers-Color-Scheme'
+const clientHintPermissionsPolicy =
+  'ch-ua-platform=(self), ch-ua-arch=(self), ch-ua-bitness=(self), ch-ua-mobile=(self), ch-prefers-color-scheme=(self)'
 const localizedPageNames = new Set(['download', 'explore'])
 const proxyRoots = new Set(['/dist', '/fcd', '/update'])
 const proxyPrefixes = ['/dist/', '/fcd/', '/update/']
@@ -227,6 +229,7 @@ const withGlobalHeaders = (response: Response, request: Request) => {
   if (isPageRequest(request)) {
     headers.set('Accept-CH', clientHintValues)
     headers.set('Critical-CH', clientHintValues)
+    headers.set('Permissions-Policy', clientHintPermissionsPolicy)
     appendVary(headers, clientHintValues)
     const contentType = headers.get('Content-Type')
     if (!contentType || contentType.includes('text/html')) {
