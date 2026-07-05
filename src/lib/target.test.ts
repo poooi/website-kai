@@ -146,9 +146,9 @@ describe('detectTargetFromRequest', () => {
     await expect(
       detectTargetFromRequest(
         headersFor(
-          'Mozilla/5.0 (X11; Fedora; Linux aarch64) AppleWebKit/537.36',
+          'Mozilla/5.0 (X11; Fedora; Linux x86_64) AppleWebKit/537.36',
           {
-            'Sec-CH-UA-Arch': '"arm"',
+            'Sec-CH-UA-Arch': '"x86"',
             'Sec-CH-UA-Bitness': '"64"',
             'Sec-CH-UA-Mobile': '?0',
             'Sec-CH-UA-Platform': '"Linux"',
@@ -157,8 +157,8 @@ describe('detectTargetFromRequest', () => {
       ),
     ).resolves.toEqual({
       os: OS.linux,
-      spec: PlatformSpec.ARMPortable,
-      target: Target.linuxArm,
+      spec: PlatformSpec.X64RPM,
+      target: Target.linuxRpm,
     })
   })
 

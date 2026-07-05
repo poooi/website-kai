@@ -117,7 +117,7 @@ export const parseUA = async (headers: Headers) => {
   return UAParser(Object.fromEntries(headers)).withClientHints()
 }
 
-const parseRawUA = async (headers: Headers) => {
+const parseRawUA = (headers: Headers) => {
   return UAParser(Object.fromEntries(headers))
 }
 
@@ -177,7 +177,19 @@ const detectClientHintOS = (headers: Headers) => {
   }
 }
 
-const isMobileUA = (ua: Awaited<ReturnType<typeof parseUA>>) => {
+const detectClientHintMobile = (headers: Headers) => {
+  const mobile = normalizeClientHintValue(headers.get('Sec-CH-UA-Mobile'))
+  if (mobile === '?1') {
+    return true
+  }
+  if (mobile === '?0') {
+    return false
+  }
+
+  return undefined
+}
+
+const isMobileUA = (ua: ReturnType<typeof parseRawUA>) => {
   return [
     'mobile',
     'tablet',
@@ -193,7 +205,7 @@ export const isMobileDevice = async (headers: Headers) => {
 }
 
 const detectTargetFromUA = (
-  ua: Awaited<ReturnType<typeof parseUA>>,
+  ua: ReturnType<typeof parseRawUA>,
   hints?: { architecture?: string; os?: string },
 ): DetectionResult => {
   const osName =
@@ -289,7 +301,7 @@ const detectTargetFromUA = (
 export const detectTargetFromRequest = async (
   headers: Headers,
 ): Promise<DetectionResult> => {
-  return detectTargetFromUA(await parseRawUA(headers), {
+  return detectTargetFromUA(parseRawUA(headers), {
     architecture: detectClientHintArchitecture(headers),
     os: detectClientHintOS(headers),
   })
@@ -298,12 +310,12 @@ export const detectTargetFromRequest = async (
 export const detectRequestPlatform = async (
   headers: Headers,
 ): Promise<RequestPlatformResult> => {
-  const ua = await parseUA(headers)
+  const ua = parseRawUA(headers)
   return {
-    ...detectTargetFromUA(await parseRawUA(headers), {
+    ...detectTargetFromUA(ua, {
       architecture: detectClientHintArchitecture(headers),
       os: detectClientHintOS(headers),
     }),
-    isMobile: isMobileUA(ua),
+    isMobile: detectClientHintMobile(headers) ?? isMobileUA(ua),
   }
 }

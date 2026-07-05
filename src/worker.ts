@@ -219,6 +219,23 @@ const appendVary = (headers: Headers, value: string) => {
   headers.set('Vary', [...values].join(', '))
 }
 
+const appendDelimitedHeader = (
+  headers: Headers,
+  headerName: string,
+  value: string,
+) => {
+  const values = new Set(
+    (headers.get(headerName) ?? '')
+      .split(',')
+      .map((entry) => entry.trim())
+      .filter(Boolean),
+  )
+  value.split(',').forEach((entry) => {
+    values.add(entry.trim())
+  })
+  headers.set(headerName, [...values].join(', '))
+}
+
 const withGlobalHeaders = (response: Response, request: Request) => {
   const headers = new Headers(response.headers)
   headers.set('X-Poi-Codename', 'Shiratsuyu')
@@ -229,7 +246,11 @@ const withGlobalHeaders = (response: Response, request: Request) => {
   if (isPageRequest(request)) {
     headers.set('Accept-CH', clientHintValues)
     headers.set('Critical-CH', clientHintValues)
-    headers.set('Permissions-Policy', clientHintPermissionsPolicy)
+    appendDelimitedHeader(
+      headers,
+      'Permissions-Policy',
+      clientHintPermissionsPolicy,
+    )
     appendVary(headers, clientHintValues)
     const contentType = headers.get('Content-Type')
     if (!contentType || contentType.includes('text/html')) {
