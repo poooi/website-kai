@@ -63,7 +63,7 @@
   "linuxARMDEB": "Linux ARM64 DEB",
   "linuxARMPortable": "Linux ARM64 便携版",
   "x64Portable": "64位便携版",
-  "sightedBySkilledLookouts": "自动检测的推荐下载：",
+  "autoDetectedRecommendedDownload": "自动检测的推荐下载：",
   "misc": "杂项",
   "kanColleBrowser": "舰娘专用浏览器",
   "nightlyBuilds": "每夜构建",

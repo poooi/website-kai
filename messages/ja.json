@@ -63,7 +63,7 @@
   "linuxARMDEB": "Linux ARM64 DEB",
   "linuxARMPortable": "Linux ARM64 ポータブル",
   "x64Portable": "64ビットポータブル",
-  "sightedBySkilledLookouts": "自動検出された推奨ダウンロード：",
+  "autoDetectedRecommendedDownload": "自動検出された推奨ダウンロード：",
   "misc": "その他",
   "kanColleBrowser": "艦これ専ブラ",
   "nightlyBuilds": "ナイトリービルド",

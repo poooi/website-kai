@@ -63,7 +63,7 @@
   "linuxARMDEB": "Linux ARM64 DEB",
   "linuxARMPortable": "Linux ARM64 便攜版",
   "x64Portable": "64位元便攜版",
-  "sightedBySkilledLookouts": "自動偵測的推薦下載：",
+  "autoDetectedRecommendedDownload": "自動偵測的推薦下載：",
   "misc": "雜項",
   "kanColleBrowser": "艦娘專用瀏覽器",
   "nightlyBuilds": "每夜構建",

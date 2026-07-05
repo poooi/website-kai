@@ -63,7 +63,7 @@
   "linuxARMDEB": "DEB Linux ARM64",
   "linuxARMPortable": "Portable Linux ARM64",
   "x64Portable": "Portable 64 bits",
-  "sightedBySkilledLookouts": "Téléchargement recommandé détecté automatiquement :",
+  "autoDetectedRecommendedDownload": "Téléchargement recommandé détecté automatiquement :",
   "misc": "Divers",
   "kanColleBrowser": "Navigateur KanColle",
   "nightlyBuilds": "Versions nocturnes",

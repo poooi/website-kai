@@ -63,7 +63,7 @@
   "linuxARMDEB": "Linux ARM64 DEB",
   "linuxARMPortable": "Linux ARM64 휴대용",
   "x64Portable": "64비트 휴대용",
-  "sightedBySkilledLookouts": "자동 감지된 권장 다운로드:",
+  "autoDetectedRecommendedDownload": "자동 감지된 권장 다운로드:",
   "misc": "기타",
   "kanColleBrowser": "칸콜레 브라우저",
   "nightlyBuilds": "나이트리 빌드",
