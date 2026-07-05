@@ -162,6 +162,42 @@ describe('detectTargetFromRequest', () => {
     })
   })
 
+  it('falls back to the parsed UA architecture when x86 Client Hints omit bitness', async () => {
+    await expect(
+      detectTargetFromRequest(
+        headersFor(
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ' +
+            '(KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36',
+          {
+            'Sec-CH-UA-Arch': '"x86"',
+            'Sec-CH-UA-Mobile': '?0',
+            'Sec-CH-UA-Platform': '"Windows"',
+          },
+        ),
+      ),
+    ).resolves.toEqual({
+      os: OS.windows,
+      spec: PlatformSpec.X64Setup,
+      target: Target.win64Setup,
+    })
+  })
+
+  it('falls back to the parsed UA architecture when arm Client Hints omit bitness', async () => {
+    await expect(
+      detectTargetFromRequest(
+        headersFor('Mozilla/5.0 (X11; Linux aarch64) AppleWebKit/537.36', {
+          'Sec-CH-UA-Arch': '"arm"',
+          'Sec-CH-UA-Mobile': '?0',
+          'Sec-CH-UA-Platform': '"Linux"',
+        }),
+      ),
+    ).resolves.toEqual({
+      os: OS.linux,
+      spec: PlatformSpec.ARMPortable,
+      target: Target.linuxArm,
+    })
+  })
+
   describe('isMobileDevice', () => {
     it('classifies wearable user agents as mobile devices', async () => {
       const headers = headersFor(

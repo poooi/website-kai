@@ -117,6 +117,10 @@ export const parseUA = async (headers: Headers) => {
   return UAParser(Object.fromEntries(headers)).withClientHints()
 }
 
+const parseRawUA = async (headers: Headers) => {
+  return UAParser(Object.fromEntries(headers))
+}
+
 const normalizeClientHintValue = (value: string | null) =>
   value?.trim().replace(/^"|"$/g, '')
 
@@ -126,14 +130,26 @@ const detectClientHintArchitecture = (headers: Headers) => {
     .replace('-', '_')
   const bitness = normalizeClientHintValue(headers.get('Sec-CH-UA-Bitness'))
 
-  if (arch === 'arm' || arch === 'aarch64') {
-    return bitness === '64' ? 'arm64' : 'arm'
-  }
-  if (arch === 'arm64') {
+  if (arch === 'aarch64' || arch === 'arm64') {
     return 'arm64'
   }
+  if (arch === 'arm') {
+    if (bitness === '64') {
+      return 'arm64'
+    }
+    if (bitness === '32') {
+      return 'arm'
+    }
+    return undefined
+  }
   if (arch === 'x86') {
-    return bitness === '64' ? 'amd64' : 'ia32'
+    if (bitness === '64') {
+      return 'amd64'
+    }
+    if (bitness === '32') {
+      return 'ia32'
+    }
+    return undefined
   }
   if (arch === 'x86_64') {
     return 'amd64'
@@ -273,7 +289,7 @@ const detectTargetFromUA = (
 export const detectTargetFromRequest = async (
   headers: Headers,
 ): Promise<DetectionResult> => {
-  return detectTargetFromUA(await parseUA(headers), {
+  return detectTargetFromUA(await parseRawUA(headers), {
     architecture: detectClientHintArchitecture(headers),
     os: detectClientHintOS(headers),
   })
@@ -284,7 +300,7 @@ export const detectRequestPlatform = async (
 ): Promise<RequestPlatformResult> => {
   const ua = await parseUA(headers)
   return {
-    ...detectTargetFromUA(ua, {
+    ...detectTargetFromUA(await parseRawUA(headers), {
       architecture: detectClientHintArchitecture(headers),
       os: detectClientHintOS(headers),
     }),

@@ -51,7 +51,7 @@
   "armDEB": "ARM DEB",
   "armPortable": "ARM portable",
   "x64Portable": "64-bit portable",
-  "sightedBySkilledLookouts": "Sighted by skilled lookouts:",
+  "sightedBySkilledLookouts": "Auto-detected recommended download:",
   "misc": "Misc",
   "kanColleBrowser": "KanColle Browser",
   "nightlyBuilds": "Nightly builds",

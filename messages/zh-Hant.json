@@ -51,7 +51,7 @@
   "armDEB": "ARM DEB",
   "armPortable": "ARM便攜版",
   "x64Portable": "64位元便攜版",
-  "sightedBySkilledLookouts": "熟練見張員觀察到了：",
+  "sightedBySkilledLookouts": "自動偵測的推薦下載：",
   "misc": "雜項",
   "kanColleBrowser": "艦娘專用瀏覽器",
   "nightlyBuilds": "每夜構建",

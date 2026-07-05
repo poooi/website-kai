@@ -51,7 +51,7 @@
   "armDEB": "ARM DEB",
   "armPortable": "ARM便携版",
   "x64Portable": "64位便携版",
-  "sightedBySkilledLookouts": "熟练见张员观察到了：",
+  "sightedBySkilledLookouts": "自动检测的推荐下载：",
   "misc": "杂项",
   "kanColleBrowser": "舰娘专用浏览器",
   "nightlyBuilds": "每夜构建",

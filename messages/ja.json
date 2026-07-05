@@ -51,7 +51,7 @@
   "armDEB": "ARM DEB",
   "armPortable": "ARMポータブル",
   "x64Portable": "64ビットポータブル",
-  "sightedBySkilledLookouts": "熟練見張員が観察した：",
+  "sightedBySkilledLookouts": "自動検出された推奨ダウンロード：",
   "misc": "その他",
   "kanColleBrowser": "艦これ専ブラ",
   "nightlyBuilds": "ナイトリービルド",
