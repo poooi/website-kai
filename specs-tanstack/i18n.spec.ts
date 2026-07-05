@@ -451,8 +451,8 @@ test('renders desktop request-aware download links', async ({ browser }) => {
   await expect(
     page.getByText('Auto-detected recommended download:'),
   ).toBeVisible()
-  await expect(page.getByText('Windows')).toBeVisible()
-  await expect(page.getByText('64-bit')).toBeVisible()
+  await expect(page.getByText('Windows', { exact: true })).toBeVisible()
+  await expect(page.getByText('Windows 64-bit installer')).toBeVisible()
 
   await page.getByRole('link', { name: 'Download options' }).click()
   await expect(page).toHaveURL('http://127.0.0.1:3002/en/download')
@@ -475,7 +475,9 @@ test('renders desktop request-aware download links', async ({ browser }) => {
     page.getByRole('link', { name: /Download v10\.9\.2/ }),
   ).toHaveCount(0)
   await platformButton.click()
-  const portableItem = page.getByRole('menuitem', { name: '64-bit portable' })
+  const portableItem = page.getByRole('menuitem', {
+    name: 'Linux 64-bit portable',
+  })
   await expect(portableItem).toBeVisible()
   await portableItem.click()
   await expect(
@@ -547,6 +549,38 @@ test('does not leak SSR platform state between download requests', async ({
   expect(windowsHtml).toContain('/dist/poi-setup-10.9.2.exe')
   expect(linuxArmHtml).toContain('/dist/poi-10.9.2-arm64.7z')
   expect(linuxArmHtml).not.toContain('/dist/poi-setup-10.9.2.exe')
+})
+
+test('labels detected macOS architecture as Intel or Apple Silicon', async ({
+  request,
+}) => {
+  const macIntelResponse = await request.get('/en', {
+    headers: {
+      'Sec-CH-UA-Arch': '"x86"',
+      'Sec-CH-UA-Bitness': '"64"',
+      'Sec-CH-UA-Mobile': '?0',
+      'Sec-CH-UA-Platform': '"macOS"',
+      'User-Agent':
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+    },
+  })
+  const appleSiliconResponse = await request.get('/en', {
+    headers: {
+      'Sec-CH-UA-Arch': '"arm"',
+      'Sec-CH-UA-Bitness': '"64"',
+      'Sec-CH-UA-Mobile': '?0',
+      'Sec-CH-UA-Platform': '"macOS"',
+      'User-Agent':
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+    },
+  })
+
+  const macIntelHtml = await macIntelResponse.text()
+  const appleSiliconHtml = await appleSiliconResponse.text()
+  expect(macIntelHtml).toContain('Intel Mac')
+  expect(macIntelHtml).toContain('/dist/poi-10.9.2.dmg')
+  expect(appleSiliconHtml).toContain('Apple Silicon Mac')
+  expect(appleSiliconHtml).toContain('/dist/poi-10.9.2-arm64.dmg')
 })
 
 test('rejects unsupported locale-like prefixes', async ({ request }) => {

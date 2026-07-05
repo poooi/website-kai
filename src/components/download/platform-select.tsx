@@ -13,7 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
-import { getPlatformLabels } from '~/lib/platform-labels'
+import { getPlatformLabels, getPlatformSpecLabel } from '~/lib/platform-labels'
 import { OS, type PlatformSpec, platformToTarget } from '~/lib/target'
 import { m } from '~/paraglide/messages'
 
@@ -41,7 +41,7 @@ export const PlatformSelect = ({
   }))
 
   const specOptions = Object.keys(platformToTarget[os!] ?? {}).map((spec) => ({
-    label: platformLabels.spec[spec as PlatformSpec],
+    label: getPlatformSpecLabel(os!, spec as PlatformSpec),
     value: spec,
   }))
 
