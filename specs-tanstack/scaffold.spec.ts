@@ -31,6 +31,9 @@ test('renders the isolated TanStack preview route', async ({ page }) => {
   expect(headers['accept-ch']).toContain('Sec-CH-Prefers-Color-Scheme')
   expect(headers['critical-ch']).toContain('Sec-CH-UA-Platform')
   expect(headers['critical-ch']).toContain('Sec-CH-Prefers-Color-Scheme')
+  expect(headers['permissions-policy']).toContain('ch-ua-arch=(self)')
+  expect(headers['permissions-policy']).toContain('ch-ua-bitness=(self)')
+  expect(headers['permissions-policy']).toContain('ch-ua-platform=(self)')
   expect(headers.vary).toContain('Sec-CH-UA-Platform')
   expect(headers.vary).toContain('Sec-CH-Prefers-Color-Scheme')
   expect(headers['cache-control']).toBe('no-store')
@@ -71,6 +74,9 @@ test('keeps request-personalized pages uncacheable and varied by request hints',
     expect(headers['cache-control']).toBe('no-store')
     expect(headers['accept-ch']).toContain('Sec-CH-UA-Platform')
     expect(headers['accept-ch']).toContain('Sec-CH-Prefers-Color-Scheme')
+    expect(headers['permissions-policy']).toContain('ch-ua-arch=(self)')
+    expect(headers['permissions-policy']).toContain('ch-ua-bitness=(self)')
+    expect(headers['permissions-policy']).toContain('ch-ua-platform=(self)')
     for (const value of [
       'Sec-CH-UA-Platform',
       'Sec-CH-UA-Arch',

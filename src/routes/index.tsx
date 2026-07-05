@@ -3,7 +3,7 @@ import { Link, createFileRoute } from '@tanstack/react-router'
 import { Transition } from '~/components/transition'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
-import { getPlatformLabels } from '~/lib/platform-labels'
+import { getPlatformLabels, getPlatformSpecLabel } from '~/lib/platform-labels'
 import { loadRequestAwarePageData } from '~/lib/tanstack-page-data'
 import { m } from '~/paraglide/messages'
 
@@ -75,7 +75,7 @@ function HomePage() {
                 {platformLabels.os[data.platform.os]}
               </Badge>
               <Badge variant="secondary">
-                {platformLabels.spec[data.platform.spec]}
+                {getPlatformSpecLabel(data.platform.os, data.platform.spec)}
               </Badge>
               <Button variant="link" asChild>
                 <Link to="/download">{m.downloadOptions()}</Link>
