@@ -28,9 +28,13 @@ jobs:
           TRIGGER_USER: ${{ github.actor }}
         run: |
           encoded_user=$(jq -nr --arg value "$TRIGGER_USER" '$value|@uri')
-          if ! permission=$(gh api "repos/${GITHUB_REPOSITORY}/collaborators/${encoded_user}/permission" --jq '.permission' 2>/dev/null); then
+          permission_error=$(mktemp)
+          if ! permission=$(gh api "repos/${GITHUB_REPOSITORY}/collaborators/${encoded_user}/permission" --jq '.permission' 2>"$permission_error"); then
+            echo "OpenCode permission lookup failed; treating ${TRIGGER_USER} as having no repository permission."
+            sed 's/^/gh api: /' "$permission_error"
             permission="none"
           fi
+          rm -f "$permission_error"
           permission=${permission:-none}
           echo "permission=${permission}" >> "$GITHUB_OUTPUT"
 
