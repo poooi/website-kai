@@ -98,15 +98,15 @@ const ComboBox = ({
         <Button
           variant="outline"
           disabled={disabled}
-          className="w-56"
+          className="w-80 max-w-full justify-between"
           aria-label={currentLabel}
           title={currentLabel}
         >
-          <span className="grow text-end">{currentLabel}</span>
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <span className="min-w-0 grow truncate text-end">{currentLabel}</span>
+          <ChevronsUpDown className="ml-3 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
+      <DropdownMenuContent className="w-80 max-w-[calc(100vw-2rem)]">
         {options.map((option) => (
           <DropdownMenuItem
             key={option.value}

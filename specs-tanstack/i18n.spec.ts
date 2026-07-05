@@ -463,6 +463,11 @@ test('renders desktop request-aware download links', async ({ browser }) => {
     .filter({ hasText: 'Operating system' })
   const platformButtons = platformControls.getByRole('button')
   await expect(platformButtons).toHaveCount(2)
+  await expect(
+    platformButtons
+      .nth(1)
+      .evaluate((button) => button.scrollWidth <= button.clientWidth),
+  ).resolves.toBe(true)
   await platformButtons.first().click()
   const linuxItem = page.getByRole('menuitem', { name: 'Linux' })
   await expect(linuxItem).toBeVisible()
