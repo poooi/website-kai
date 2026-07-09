@@ -112,15 +112,15 @@ describe('detectTargetFromRequest', () => {
       },
     },
     {
-      name: 'Safari-style macOS UA without architecture hints',
+      name: 'Safari-style macOS UA without architecture hints defaults to Apple Silicon',
       headers: headersFor(
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_7_7) ' +
           'AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Safari/605.1.15',
       ),
       expected: {
         os: OS.macos,
-        spec: PlatformSpec.X64Setup,
-        target: Target.macos,
+        spec: PlatformSpec.ARM,
+        target: Target.macosArm,
       },
     },
     {
