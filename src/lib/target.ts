@@ -231,7 +231,12 @@ const detectTargetFromUA = (
     }
   }
   if (osName === 'macOS') {
-    if (architecture === 'arm64' || architecture === 'arm') {
+    // default to Apple silicon when architecture is undetected
+    if (
+      architecture === 'arm64' ||
+      architecture === 'arm' ||
+      architecture === undefined
+    ) {
       return {
         os: OS.macos,
         spec: PlatformSpec.ARM,
