@@ -149,7 +149,7 @@ importers:
         version: 5.20260708.1
       '@inlang/paraglide-js':
         specifier: ^2.20.2
-        version: 2.21.0(typescript@6.0.3)
+        version: 2.22.0(typescript@6.0.3)(vite@8.1.4(@types/node@24.13.3)(esbuild@0.28.1)(jiti@1.21.7)(terser@5.48.0)(yaml@2.9.0))
       '@inlang/plugin-m-function-matcher':
         specifier: ^2.2.9
         version: 2.2.9
@@ -795,13 +795,16 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@inlang/paraglide-js@2.21.0':
-    resolution: {integrity: sha512-t+OOui1i5p73zQ2Dk28yFzu6rZhh7hsDOCHjkXDmSwFFsUsS5HyUD4CvPJ+wf02qgmlCMu2z1qffJ5aWwgx1CA==}
+  '@inlang/paraglide-js@2.22.0':
+    resolution: {integrity: sha512-GSzG7KEKcYAhwuPNJczIPB+DzyndYxr4lsXAkkB7xh00jTrt80NF2KfgjEAkxuJvWcnscqXf7y7d1Q0SWtSu7A==}
     hasBin: true
     peerDependencies:
       typescript: '>=5.6'
+      vite: '>=5.0.0'
     peerDependenciesMeta:
       typescript:
+        optional: true
+      vite:
         optional: true
 
   '@inlang/plugin-m-function-matcher@2.2.9':
@@ -1758,8 +1761,8 @@ packages:
     engines: {node: '>= 8.0.0'}
     hasBin: true
 
-  '@sinclair/typebox@0.31.29':
-    resolution: {integrity: sha512-LqNq82vIPlC8H29mgmzW6lFMYFhx8LoWiTHoEGhAOkPDAe4fz17oYdyIYE9oYtzFj7au9FWLH7nr+I73kumAwg==}
+  '@sinclair/typebox@0.31.30':
+    resolution: {integrity: sha512-MGsM7bVmHg3sUKCphlu3SGQ+T+5JTbygZWYArfKQCW5anJeACHeqLhcnf+R7XlCWZ+QR3C8JTBx3kCKJTN69ow==}
 
   '@sindresorhus/is@7.2.0':
     resolution: {integrity: sha512-P1Cz1dWaFfR4IR+U13mqqiGsLFf1KbayybWwdd2vfctdV6hDpUkgCY0nKOLLTMSoRd/jJNjtbqzf13K8DCCXQw==}
@@ -4679,7 +4682,7 @@ snapshots:
   '@img/sharp-win32-x64@0.34.5':
     optional: true
 
-  '@inlang/paraglide-js@2.21.0(typescript@6.0.3)':
+  '@inlang/paraglide-js@2.22.0(typescript@6.0.3)(vite@8.1.4(@types/node@24.13.3)(esbuild@0.28.1)(jiti@1.21.7)(terser@5.48.0)(yaml@2.9.0))':
     dependencies:
       '@inlang/recommend-sherlock': 0.2.1
       '@inlang/sdk': 2.10.2
@@ -4690,6 +4693,7 @@ snapshots:
       urlpattern-polyfill: 10.1.0
     optionalDependencies:
       typescript: 6.0.3
+      vite: 8.1.4(@types/node@24.13.3)(esbuild@0.28.1)(jiti@1.21.7)(terser@5.48.0)(yaml@2.9.0)
     transitivePeerDependencies:
       - babel-plugin-macros
 
@@ -4710,7 +4714,7 @@ snapshots:
   '@inlang/sdk@2.10.2':
     dependencies:
       '@lix-js/sdk': 0.4.10
-      '@sinclair/typebox': 0.31.29
+      '@sinclair/typebox': 0.31.30
       kysely: 0.28.17
       sqlite-wasm-kysely: 0.3.0(kysely@0.28.17)
       uuid: 14.0.1
@@ -5592,7 +5596,7 @@ snapshots:
       fflate: 0.7.4
       string.prototype.codepointat: 0.2.1
 
-  '@sinclair/typebox@0.31.29': {}
+  '@sinclair/typebox@0.31.30': {}
 
   '@sindresorhus/is@7.2.0': {}
 
