@@ -124,7 +124,7 @@ importers:
         version: 11.1.2
       satori:
         specifier: ^0.28.0
-        version: 0.28.0
+        version: 0.28.1
       tailwind-merge:
         specifier: ^3.3.1
         version: 3.6.0
@@ -3606,8 +3606,8 @@ packages:
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
 
-  satori@0.28.0:
-    resolution: {integrity: sha512-FhOx2irXIrxbNpPyE0x/+k3p8G+FVWfaTPAKuwMaB4kk02PehHFumYyJ4NtiLNC7moNAspeDt06S+DqUjJ9Fsg==}
+  satori@0.28.1:
+    resolution: {integrity: sha512-PjF/PhstPlvBHxsBhMi8A8F2z9pgd1VkEI8a7n2ZkFg4cKE1f8rRP/LGiXLv3EFTw7a2gr9wS2pWwgMYdVJKUg==}
     engines: {node: '>=16'}
 
   scheduler@0.27.0:
@@ -7565,7 +7565,7 @@ snapshots:
     dependencies:
       queue-microtask: 1.2.3
 
-  satori@0.28.0:
+  satori@0.28.1:
     dependencies:
       '@shuding/opentype.js': 1.4.0-beta.0
       css-background-parser: 0.1.0
