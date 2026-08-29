@@ -46,7 +46,7 @@ export const PlatformSelect = ({
   }))
 
   return (
-    <div className="grid w-fit grid-cols-2 gap-4">
+    <div className="grid w-fit grid-cols-2 gap-4" data-testid="platform-select">
       <div>{m.operatingSystem()}</div>
       <div>
         <ComboBox

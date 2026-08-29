@@ -1,3 +1,14 @@
+import sanitize from 'rehype-sanitize'
+import stringify from 'rehype-stringify'
+import { remark } from 'remark'
+import rehype from 'remark-rehype'
+
+import {
+  changelogFilename,
+  changelogLanguageCandidates,
+  isChangelogChannel,
+  type ChangelogChannel,
+} from './changelog'
 import {
   fetchPoiVersions,
   fetchWithTimeout,
@@ -17,7 +28,21 @@ interface FilenameParams {
   filename?: string
 }
 
+interface ChannelParams {
+  channel?: string
+}
+
 const notFound = () => new Response('', { status: 404 })
+
+// Kept next to the handler so the markdown pipeline never reaches the client
+// bundle through the shared changelog module.
+const changelogUrl = (language: string, channel: ChangelogChannel) =>
+  `https://raw.githubusercontent.com/poooi/poi-release/master/${changelogFilename(language, channel)}`
+
+const renderChangelog = async (markdown: string) =>
+  (
+    await remark().use(rehype).use(sanitize).use(stringify).process(markdown)
+  ).toString()
 
 const badGateway = () => new Response('', { status: 502 })
 
@@ -118,6 +143,42 @@ export const handleUpdate = async (
     `https://raw.githubusercontent.com/poooi/poi-release/master/${filename}`,
     context,
   )
+}
+
+export const handleChangelog = async (
+  request: Request,
+  { channel }: ChannelParams,
+  context?: HandlerContext,
+) => {
+  if (!isChangelogChannel(channel)) {
+    return notFound()
+  }
+
+  const locale = new URL(request.url).searchParams.get('locale') ?? undefined
+
+  for (const language of changelogLanguageCandidates(locale)) {
+    const upstream = await reverseFetch(
+      request,
+      changelogUrl(language, channel),
+      context,
+    )
+
+    if (upstream.ok) {
+      const html = await renderChangelog(await upstream.text())
+      return Response.json(
+        { html, language },
+        { headers: { 'Cache-Control': 'public, max-age=300' } },
+      )
+    }
+
+    // Only a missing file is worth falling back for; a failing upstream is
+    // reported as-is so the dialog can offer a retry.
+    if (upstream.status !== 404) {
+      return upstream
+    }
+  }
+
+  return notFound()
 }
 
 export const handleDist = async (

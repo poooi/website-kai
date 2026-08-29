@@ -3,6 +3,7 @@
 import { compare } from 'compare-versions'
 import { useAtomValue } from 'jotai'
 
+import { ChangelogDialog } from './changelog-dialog'
 import { osAtom, specAtom } from './store'
 
 import { Button } from '~/components/ui/button'
@@ -29,26 +30,34 @@ export const DownloadLinks = ({ poiVersions }: DownloadLinksProps) => {
 
   return (
     <div className={cn('not-prose my-8 flex gap-8')}>
-      <Button className="h-fit flex-col" asChild disabled={!stableURL}>
-        <a href={stableURL}>
-          <span>{m.downloadWithVersion({ version: poiVersions.version })}</span>
-          <span>{m.stableHint()}</span>
-        </a>
-      </Button>
-      {compare(poiVersions.version, poiVersions.betaVersion, '<') && (
-        <Button
-          variant="secondary"
-          className="h-fit flex-col"
-          asChild
-          disabled={!betaURL}
-        >
-          <a href={betaURL}>
+      <div className="flex flex-col gap-2">
+        <Button className="h-fit flex-col" asChild disabled={!stableURL}>
+          <a href={stableURL}>
             <span>
-              {m.downloadWithVersion({ version: poiVersions.betaVersion })}
+              {m.downloadWithVersion({ version: poiVersions.version })}
             </span>
-            <span>{m.betaHint()}</span>
+            <span>{m.stableHint()}</span>
           </a>
         </Button>
+        <ChangelogDialog channel="stable" version={poiVersions.version} />
+      </div>
+      {compare(poiVersions.version, poiVersions.betaVersion, '<') && (
+        <div className="flex flex-col gap-2">
+          <Button
+            variant="secondary"
+            className="h-fit flex-col"
+            asChild
+            disabled={!betaURL}
+          >
+            <a href={betaURL}>
+              <span>
+                {m.downloadWithVersion({ version: poiVersions.betaVersion })}
+              </span>
+              <span>{m.betaHint()}</span>
+            </a>
+          </Button>
+          <ChangelogDialog channel="beta" version={poiVersions.betaVersion} />
+        </div>
       )}
     </div>
   )
