@@ -1,5 +1,6 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 
+import { ChangelogDialog } from '~/components/download/changelog-dialog'
 import { Transition } from '~/components/transition'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
@@ -32,31 +33,43 @@ function HomePage() {
           <>
             <div className="my-8">
               <div className="flex gap-8">
-                <Button className="h-fit flex-col" asChild>
-                  <a href={data.stableUrl}>
-                    <span>
-                      {m.downloadWithVersion({
-                        version: data.poiVersions.version,
-                      })}
-                    </span>
-                    <span>{m.stableHint()}</span>
-                  </a>
-                </Button>
-                {data.showBeta && (
-                  <Button
-                    variant="secondary"
-                    className="h-fit flex-col"
-                    asChild
-                  >
-                    <a href={data.betaUrl}>
+                <div className="flex flex-col gap-2">
+                  <Button className="h-fit flex-col" asChild>
+                    <a href={data.stableUrl}>
                       <span>
                         {m.downloadWithVersion({
-                          version: data.poiVersions.betaVersion,
+                          version: data.poiVersions.version,
                         })}
                       </span>
-                      <span>{m.betaHint()}</span>
+                      <span>{m.stableHint()}</span>
                     </a>
                   </Button>
+                  <ChangelogDialog
+                    channel="stable"
+                    version={data.poiVersions.version}
+                  />
+                </div>
+                {data.showBeta && (
+                  <div className="flex flex-col gap-2">
+                    <Button
+                      variant="secondary"
+                      className="h-fit flex-col"
+                      asChild
+                    >
+                      <a href={data.betaUrl}>
+                        <span>
+                          {m.downloadWithVersion({
+                            version: data.poiVersions.betaVersion,
+                          })}
+                        </span>
+                        <span>{m.betaHint()}</span>
+                      </a>
+                    </Button>
+                    <ChangelogDialog
+                      channel="beta"
+                      version={data.poiVersions.betaVersion}
+                    />
+                  </div>
                 )}
               </div>
               <div className="mt-2 flex items-center gap-2">
