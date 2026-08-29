@@ -10,6 +10,7 @@
   "downloadWithVersion": "下载 {version}",
   "stableHint": "正式版，适合大部分人使用",
   "betaHint": "测试版，包含最新的功能",
+  "changelog": "更新日志",
   "otherVersions": "浏览完整列表",
   "telegramGroupLink": "https://t.me/joinchat/ENYTx0Cr6B9OxSCRKUzYUw",
   "discordChannelLink": "https://discordapp.com/channels/118339803660943369/367575898313981952",

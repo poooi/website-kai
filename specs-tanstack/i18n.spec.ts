@@ -458,9 +458,7 @@ test('renders desktop request-aware download links', async ({ browser }) => {
     page.getByRole('link', { name: /Download v10\.9\.2/ }),
   ).toHaveAttribute('href', '/dist/poi-setup-10.9.2.exe')
   await expect(page.getByText('Operating system')).toBeVisible()
-  const platformControls = page
-    .locator('section')
-    .filter({ hasText: 'Operating system' })
+  const platformControls = page.getByTestId('platform-select')
   const platformButtons = platformControls.getByRole('button')
   await expect(platformButtons).toHaveCount(2)
   await expect(

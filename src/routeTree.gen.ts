@@ -9,35 +9,21 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TwitterImageRouteImport } from './routes/twitter-image'
-import { Route as StatusRouteImport } from './routes/status'
-import { Route as OpengraphImageRouteImport } from './routes/opengraph-image'
-import { Route as ExploreRouteImport } from './routes/explore'
-import { Route as DownloadRouteImport } from './routes/download'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as UpdateFilenameRouteImport } from './routes/update.$filename'
-import { Route as FcdFilenameRouteImport } from './routes/fcd.$filename'
-import { Route as DistFilenameRouteImport } from './routes/dist.$filename'
+import { Route as DownloadRouteImport } from './routes/download'
+import { Route as ExploreRouteImport } from './routes/explore'
+import { Route as OpengraphImageRouteImport } from './routes/opengraph-image'
+import { Route as StatusRouteImport } from './routes/status'
+import { Route as TwitterImageRouteImport } from './routes/twitter-image'
 import { Route as ApiMonitoringRouteImport } from './routes/api.monitoring'
+import { Route as DistFilenameRouteImport } from './routes/dist.$filename'
+import { Route as FcdFilenameRouteImport } from './routes/fcd.$filename'
+import { Route as UpdateFilenameRouteImport } from './routes/update.$filename'
+import { Route as ApiChangelogChannelRouteImport } from './routes/api.changelog.$channel'
 
-const TwitterImageRoute = TwitterImageRouteImport.update({
-  id: '/twitter-image',
-  path: '/twitter-image',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const StatusRoute = StatusRouteImport.update({
-  id: '/status',
-  path: '/status',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OpengraphImageRoute = OpengraphImageRouteImport.update({
-  id: '/opengraph-image',
-  path: '/opengraph-image',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExploreRoute = ExploreRouteImport.update({
-  id: '/explore',
-  path: '/explore',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DownloadRoute = DownloadRouteImport.update({
@@ -45,19 +31,29 @@ const DownloadRoute = DownloadRouteImport.update({
   path: '/download',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ExploreRoute = ExploreRouteImport.update({
+  id: '/explore',
+  path: '/explore',
   getParentRoute: () => rootRouteImport,
 } as any)
-const UpdateFilenameRoute = UpdateFilenameRouteImport.update({
-  id: '/update/$filename',
-  path: '/update/$filename',
+const OpengraphImageRoute = OpengraphImageRouteImport.update({
+  id: '/opengraph-image',
+  path: '/opengraph-image',
   getParentRoute: () => rootRouteImport,
 } as any)
-const FcdFilenameRoute = FcdFilenameRouteImport.update({
-  id: '/fcd/$filename',
-  path: '/fcd/$filename',
+const StatusRoute = StatusRouteImport.update({
+  id: '/status',
+  path: '/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TwitterImageRoute = TwitterImageRouteImport.update({
+  id: '/twitter-image',
+  path: '/twitter-image',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMonitoringRoute = ApiMonitoringRouteImport.update({
+  id: '/api/monitoring',
+  path: '/api/monitoring',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DistFilenameRoute = DistFilenameRouteImport.update({
@@ -65,9 +61,19 @@ const DistFilenameRoute = DistFilenameRouteImport.update({
   path: '/dist/$filename',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiMonitoringRoute = ApiMonitoringRouteImport.update({
-  id: '/api/monitoring',
-  path: '/api/monitoring',
+const FcdFilenameRoute = FcdFilenameRouteImport.update({
+  id: '/fcd/$filename',
+  path: '/fcd/$filename',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UpdateFilenameRoute = UpdateFilenameRouteImport.update({
+  id: '/update/$filename',
+  path: '/update/$filename',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiChangelogChannelRoute = ApiChangelogChannelRouteImport.update({
+  id: '/api/changelog/$channel',
+  path: '/api/changelog/$channel',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/dist/$filename': typeof DistFilenameRoute
   '/fcd/$filename': typeof FcdFilenameRoute
   '/update/$filename': typeof UpdateFilenameRoute
+  '/api/changelog/$channel': typeof ApiChangelogChannelRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/dist/$filename': typeof DistFilenameRoute
   '/fcd/$filename': typeof FcdFilenameRoute
   '/update/$filename': typeof UpdateFilenameRoute
+  '/api/changelog/$channel': typeof ApiChangelogChannelRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   '/dist/$filename': typeof DistFilenameRoute
   '/fcd/$filename': typeof FcdFilenameRoute
   '/update/$filename': typeof UpdateFilenameRoute
+  '/api/changelog/$channel': typeof ApiChangelogChannelRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -121,6 +130,7 @@ export interface FileRouteTypes {
     | '/dist/$filename'
     | '/fcd/$filename'
     | '/update/$filename'
+    | '/api/changelog/$channel'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
     | '/dist/$filename'
     | '/fcd/$filename'
     | '/update/$filename'
+    | '/api/changelog/$channel'
   id:
     | '__root__'
     | '/'
@@ -145,6 +156,7 @@ export interface FileRouteTypes {
     | '/dist/$filename'
     | '/fcd/$filename'
     | '/update/$filename'
+    | '/api/changelog/$channel'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -158,36 +170,16 @@ export interface RootRouteChildren {
   DistFilenameRoute: typeof DistFilenameRoute
   FcdFilenameRoute: typeof FcdFilenameRoute
   UpdateFilenameRoute: typeof UpdateFilenameRoute
+  ApiChangelogChannelRoute: typeof ApiChangelogChannelRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/twitter-image': {
-      id: '/twitter-image'
-      path: '/twitter-image'
-      fullPath: '/twitter-image'
-      preLoaderRoute: typeof TwitterImageRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/status': {
-      id: '/status'
-      path: '/status'
-      fullPath: '/status'
-      preLoaderRoute: typeof StatusRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/opengraph-image': {
-      id: '/opengraph-image'
-      path: '/opengraph-image'
-      fullPath: '/opengraph-image'
-      preLoaderRoute: typeof OpengraphImageRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/explore': {
-      id: '/explore'
-      path: '/explore'
-      fullPath: '/explore'
-      preLoaderRoute: typeof ExploreRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/download': {
@@ -197,25 +189,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DownloadRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/explore': {
+      id: '/explore'
+      path: '/explore'
+      fullPath: '/explore'
+      preLoaderRoute: typeof ExploreRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/update/$filename': {
-      id: '/update/$filename'
-      path: '/update/$filename'
-      fullPath: '/update/$filename'
-      preLoaderRoute: typeof UpdateFilenameRouteImport
+    '/opengraph-image': {
+      id: '/opengraph-image'
+      path: '/opengraph-image'
+      fullPath: '/opengraph-image'
+      preLoaderRoute: typeof OpengraphImageRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/fcd/$filename': {
-      id: '/fcd/$filename'
-      path: '/fcd/$filename'
-      fullPath: '/fcd/$filename'
-      preLoaderRoute: typeof FcdFilenameRouteImport
+    '/status': {
+      id: '/status'
+      path: '/status'
+      fullPath: '/status'
+      preLoaderRoute: typeof StatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/twitter-image': {
+      id: '/twitter-image'
+      path: '/twitter-image'
+      fullPath: '/twitter-image'
+      preLoaderRoute: typeof TwitterImageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/monitoring': {
+      id: '/api/monitoring'
+      path: '/api/monitoring'
+      fullPath: '/api/monitoring'
+      preLoaderRoute: typeof ApiMonitoringRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dist/$filename': {
@@ -225,11 +231,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DistFilenameRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/monitoring': {
-      id: '/api/monitoring'
-      path: '/api/monitoring'
-      fullPath: '/api/monitoring'
-      preLoaderRoute: typeof ApiMonitoringRouteImport
+    '/fcd/$filename': {
+      id: '/fcd/$filename'
+      path: '/fcd/$filename'
+      fullPath: '/fcd/$filename'
+      preLoaderRoute: typeof FcdFilenameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/update/$filename': {
+      id: '/update/$filename'
+      path: '/update/$filename'
+      fullPath: '/update/$filename'
+      preLoaderRoute: typeof UpdateFilenameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/changelog/$channel': {
+      id: '/api/changelog/$channel'
+      path: '/api/changelog/$channel'
+      fullPath: '/api/changelog/$channel'
+      preLoaderRoute: typeof ApiChangelogChannelRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -246,6 +266,7 @@ const rootRouteChildren: RootRouteChildren = {
   DistFilenameRoute: DistFilenameRoute,
   FcdFilenameRoute: FcdFilenameRoute,
   UpdateFilenameRoute: UpdateFilenameRoute,
+  ApiChangelogChannelRoute: ApiChangelogChannelRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

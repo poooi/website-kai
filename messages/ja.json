@@ -10,6 +10,7 @@
   "downloadWithVersion": "{version} をダウンロード",
   "stableHint": "安定版・一般利用の方に推奨",
   "betaHint": "開発版・新機能が欲しい方に推奨",
+  "changelog": "変更履歴",
   "otherVersions": "完全な一覧を見る",
   "telegramGroupLink": "https://t.me/joinchat/ENYTx0Cr6B9OxSCRKUzYUw",
   "discordChannelLink": "https://discordapp.com/channels/118339803660943369/367575898313981952",
