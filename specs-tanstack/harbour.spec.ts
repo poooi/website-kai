@@ -52,10 +52,23 @@ test('offers direct downloads without retired ia32 packages', async ({
 }) => {
   await page.goto('/en/download', { waitUntil: 'networkidle' })
   await page.getByRole('button', { name: /^Operating system/ }).click()
+  await page.getByRole('menuitemradio', { name: 'macOS', exact: true }).click()
+  await page.getByRole('button', { name: /^Operating system/ }).click()
   await page
     .getByRole('menuitemradio', { name: 'Windows', exact: true })
     .click()
-  await page.getByRole('button', { name: /^Architecture & package/ }).click()
+  const packageSelector = page.getByRole('button', {
+    name: /^Architecture & package/,
+  })
+  await expect(packageSelector).toHaveText('Architecture & package')
+  await expect(packageSelector).toHaveAttribute(
+    'title',
+    'Architecture & package',
+  )
+  await expect(packageSelector).toHaveAccessibleName(
+    'Architecture & package Architecture & package',
+  )
+  await packageSelector.click()
   await expect(page.getByRole('menuitemradio')).toHaveCount(3)
   await expect(
     page.getByRole('menuitemradio').filter({ hasText: /ia32|32.bit|x86/i }),

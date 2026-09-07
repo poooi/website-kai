@@ -87,7 +87,7 @@ export const PlatformSelect = ({
         </span>
         <ComboBox
           labelledBy="download-package-label"
-          placeholder={m.operatingSystem()}
+          placeholder={m.downloadPackage()}
           value={spec as string}
           options={specOptions}
           onChange={(value) => {
