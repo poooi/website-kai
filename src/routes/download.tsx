@@ -30,7 +30,7 @@ function DownloadPage() {
           {m.mobileHint()}
         </p>
       ) : (
-        <div className="grid gap-10 border-b pb-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] md:gap-12">
+        <div className="grid gap-10 border-b pb-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.5fr)] lg:gap-16">
           <PlatformSelect
             initialOS={data.platform.os}
             initialSpec={
@@ -40,7 +40,7 @@ function DownloadPage() {
             }
             availableTargets={[...data.stableTargets, ...data.betaTargets]}
           />
-          <div className="min-w-0 md:border-l md:pl-12">
+          <div className="min-w-0">
             <DownloadLinks
               poiVersions={data.poiVersions}
               stableTargets={data.stableTargets}

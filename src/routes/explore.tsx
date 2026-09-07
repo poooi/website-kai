@@ -25,7 +25,10 @@ function ExplorePage() {
   return (
     <Transition>
       <PageHeader title={m.explore()} />
-      <PageProse dangerouslySetInnerHTML={{ __html: contentHtml }} />
+      <PageProse
+        className="prose-p:max-w-prose prose-ul:grid prose-ul:list-none prose-ul:gap-x-12 prose-ul:gap-y-6 prose-ul:pl-0 prose-li:m-0 prose-li:border-t prose-li:pl-0 prose-li:pt-5 sm:prose-ul:grid-cols-2 lg:max-w-none"
+        dangerouslySetInnerHTML={{ __html: contentHtml }}
+      />
     </Transition>
   )
 }

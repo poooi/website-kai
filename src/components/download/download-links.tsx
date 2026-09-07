@@ -11,6 +11,7 @@ import { type PoiVersions } from '~/lib/fetch-poi-versions'
 import { getDownloadTargetLabel } from '~/lib/platform-labels'
 import { getDownloadLink, platformToTarget, type Target } from '~/lib/target'
 import { m } from '~/paraglide/messages'
+import { cn } from '~/lib/utils'
 
 interface DownloadLinksProps {
   poiVersions: PoiVersions
@@ -63,14 +64,19 @@ export const DownloadLinks = ({
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div
+      className={cn(
+        'grid gap-6 lg:gap-8',
+        releases.length > 1 && 'sm:grid-cols-2',
+      )}
+    >
       {releases.map(({ channel, version, label, hint }) => {
         const url = getDownloadLink(version, target)
         const detailsId = channel + '-download-details'
         return (
           <section
             key={channel}
-            className="flex flex-col items-start gap-4 [&:not(:first-child)]:border-t [&:not(:first-child)]:pt-8"
+            className="flex flex-col items-start gap-4 border-t-2 border-primary/50 bg-card p-6 first:border-primary"
             aria-labelledby={channel + '-version'}
           >
             <div>
@@ -79,7 +85,7 @@ export const DownloadLinks = ({
               </p>
               <h2
                 id={channel + '-version'}
-                className="break-all text-3xl font-semibold tracking-tight"
+                className="break-all font-mono text-2xl font-medium tracking-tight"
               >
                 {version}
               </h2>
@@ -89,7 +95,7 @@ export const DownloadLinks = ({
             </div>
             <Button
               variant={channel === 'stable' ? 'default' : 'outline'}
-              className="mt-2 h-auto gap-3 px-7 py-3.5 text-lg shadow-none"
+              className="mt-auto h-auto gap-3 rounded-sm px-6 py-3 text-base shadow-none"
               asChild
             >
               <a
@@ -109,7 +115,7 @@ export const DownloadLinks = ({
       })}
       <Link
         to="/changelog"
-        className="decoration-current/40 inline-flex w-fit items-center gap-2 text-sm text-[var(--harbour-teal)] underline underline-offset-4 hover:decoration-current"
+        className="decoration-current/40 col-span-full inline-flex w-fit items-center gap-2 text-sm text-primary underline underline-offset-4 hover:decoration-current"
       >
         {m.changelog()}
         <ArrowRight className="h-4 w-4" aria-hidden="true" />

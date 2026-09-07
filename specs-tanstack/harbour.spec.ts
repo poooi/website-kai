@@ -1,5 +1,25 @@
 import { expect, test } from '@playwright/test'
 
+test('keeps the home release error readable above the persistent map', async ({
+  page,
+}) => {
+  await page.goto('/en/explore', { waitUntil: 'networkidle' })
+  await page.route('**/_serverFn/**', (route) => route.abort())
+  await page.getByRole('link', { name: 'Return to home page' }).click()
+
+  const main = page.locator('main')
+  await expect(main.getByRole('alert')).toContainText(
+    'Release information could not be loaded.',
+  )
+  await expect(
+    main.getByRole('link', { name: 'Releases on GitHub' }),
+  ).toHaveAttribute('href', 'https://github.com/poooi/poi/releases')
+  await expect(page.locator('.harbour-chart object')).toHaveCount(1)
+  await expect(main).toHaveCSS('position', 'relative')
+  await expect(main).toHaveCSS('z-index', '10')
+  await expect(main).toHaveCSS('background-color', 'rgb(245, 240, 224)')
+})
+
 test('loads release versions on the server during client navigation', async ({
   page,
 }) => {
@@ -32,10 +52,23 @@ test('offers direct downloads without retired ia32 packages', async ({
 }) => {
   await page.goto('/en/download', { waitUntil: 'networkidle' })
   await page.getByRole('button', { name: /^Operating system/ }).click()
+  await page.getByRole('menuitemradio', { name: 'macOS', exact: true }).click()
+  await page.getByRole('button', { name: /^Operating system/ }).click()
   await page
     .getByRole('menuitemradio', { name: 'Windows', exact: true })
     .click()
-  await page.getByRole('button', { name: /^Architecture & package/ }).click()
+  const packageSelector = page.getByRole('button', {
+    name: /^Architecture & package/,
+  })
+  await expect(packageSelector).toHaveText('Architecture & package')
+  await expect(packageSelector).toHaveAttribute(
+    'title',
+    'Architecture & package',
+  )
+  await expect(packageSelector).toHaveAccessibleName(
+    'Architecture & package Architecture & package',
+  )
+  await packageSelector.click()
   await expect(page.getByRole('menuitemradio')).toHaveCount(3)
   await expect(
     page.getByRole('menuitemradio').filter({ hasText: /ia32|32.bit|x86/i }),
