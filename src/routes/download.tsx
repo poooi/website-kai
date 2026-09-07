@@ -51,7 +51,7 @@ function DownloadPage() {
       )}
       <div className="mt-8">
         <a
-          className="decoration-current/40 inline-flex items-center gap-2 text-sm text-[var(--harbour-teal)] underline underline-offset-4 hover:decoration-current"
+          className="inline-flex items-center gap-2 text-sm text-[var(--harbour-teal)] underline decoration-current/40 underline-offset-4 hover:decoration-current"
           href="https://github.com/poooi/poi/releases"
         >
           {m.originalReleases()}

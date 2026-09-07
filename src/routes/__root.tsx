@@ -219,7 +219,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           />
           <div className="site-shell flex min-h-[100svh] flex-col">
             <Header LinkComponent={HeaderLink} />
-            <div className="site-content relative flex flex-1 flex-col [&>[role=main]]:mx-auto [&>[role=main]]:w-full [&>[role=main]]:max-w-[960px] [&>[role=main]]:flex-1 [&>[role=main]]:px-8 [&>[role=main]]:pb-[72px] [&>[role=main]]:pt-12 max-[700px]:[&>[role=main]]:px-[6%] max-[700px]:[&>[role=main]]:pb-12 max-[700px]:[&>[role=main]]:pt-8">
+            <div className="site-content relative flex flex-1 flex-col [&>[role=main]]:mx-auto [&>[role=main]]:w-full [&>[role=main]]:max-w-[960px] [&>[role=main]]:flex-1 [&>[role=main]]:px-8 [&>[role=main]]:pt-12 [&>[role=main]]:pb-[72px] max-[700px]:[&>[role=main]]:px-[6%] max-[700px]:[&>[role=main]]:pt-8 max-[700px]:[&>[role=main]]:pb-12">
               {(isHome || hasVisitedHome) && (
                 <div
                   className={cn(

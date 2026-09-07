@@ -29,7 +29,7 @@ function HomePage() {
       className="harbour-home relative flex min-h-[690px] flex-1 overflow-hidden max-[700px]:min-h-[calc(100svh_-_126px)] max-[700px]:pb-[330px]"
     >
       <section
-        className="relative z-[1] ml-[5.7%] flex min-h-[690px] w-[38%] max-w-[560px] flex-col justify-center pb-[100px] pt-[55px] max-[700px]:mx-[6%] max-[700px]:min-h-0 max-[700px]:w-[88%] max-[700px]:max-w-[550px] max-[700px]:pb-10 max-[700px]:pt-12 min-[701px]:max-[1100px]:w-[43%]"
+        className="relative z-[1] ml-[5.7%] flex min-h-[690px] w-[38%] max-w-[560px] flex-col justify-center pt-[55px] pb-[100px] max-[700px]:mx-[6%] max-[700px]:min-h-0 max-[700px]:w-[88%] max-[700px]:max-w-[550px] max-[700px]:pt-12 max-[700px]:pb-10 min-[701px]:max-[1100px]:w-[43%]"
         aria-labelledby="brand"
       >
         <div className="flex items-center gap-[22px] max-[700px]:gap-[18px]">
@@ -42,19 +42,19 @@ function HomePage() {
           />
           <h1
             id="brand"
-            className="mb-3 text-[clamp(100px,9vw,150px)] font-extrabold leading-none tracking-[-0.06em] max-[700px]:text-[108px]"
+            className="mb-3 text-[clamp(100px,9vw,150px)] leading-none font-extrabold tracking-[-0.06em] max-[700px]:text-[108px]"
           >
             {m.name()}
           </h1>
         </div>
-        <p className="mb-[38px] mt-[30px] max-w-[430px] text-pretty text-[clamp(23px,2vw,32px)] font-medium leading-[1.6] text-[var(--harbour-copy)] [word-break:auto-phrase] max-[700px]:mb-7 max-[700px]:mt-6 max-[700px]:text-[23px] min-[701px]:max-[1100px]:max-w-[360px] min-[701px]:max-[1100px]:text-2xl/[1.6]">
+        <p className="mt-[30px] mb-[38px] max-w-[430px] text-[clamp(23px,2vw,32px)] leading-[1.6] font-medium text-pretty [word-break:auto-phrase] text-[var(--harbour-copy)] max-[700px]:mt-6 max-[700px]:mb-7 max-[700px]:text-[23px] min-[701px]:max-[1100px]:max-w-[360px] min-[701px]:max-[1100px]:text-2xl/[1.6]">
           <span className="block">{m.harbourIntro()}</span>
           <span className="block">{m.harbourTools()}</span>
         </p>
         <div className="flex flex-wrap items-center gap-6 max-[700px]:gap-5">
           {!hasDirectDownload ? (
             <Link
-              className="inline-flex min-h-[62px] max-w-full items-center gap-4 rounded-lg bg-primary px-[28px] py-[17px] text-[23px] text-primary-foreground [transition:background_0.15s,transform_0.15s] hover:-translate-y-0.5 hover:bg-[#89362b] dark:hover:bg-[#c15a46] max-[700px]:min-h-[56px] max-[700px]:px-5 max-[700px]:py-[14px] max-[700px]:text-[20px] min-[701px]:max-[1100px]:px-[23px] min-[701px]:max-[1100px]:py-[15px] min-[701px]:max-[1100px]:text-[21px]"
+              className="inline-flex min-h-[62px] max-w-full items-center gap-4 rounded-lg bg-primary px-[28px] py-[17px] text-[23px] text-primary-foreground [transition:background_0.15s,translate_0.15s] hover:-translate-y-0.5 hover:bg-[#89362b] max-[700px]:min-h-[56px] max-[700px]:px-5 max-[700px]:py-[14px] max-[700px]:text-[20px] min-[701px]:max-[1100px]:px-[23px] min-[701px]:max-[1100px]:py-[15px] min-[701px]:max-[1100px]:text-[21px] dark:hover:bg-[#c15a46]"
               to="/download"
             >
               <ArrowDownToLine
@@ -65,7 +65,7 @@ function HomePage() {
             </Link>
           ) : (
             <a
-              className="inline-flex min-h-[62px] max-w-full items-center gap-4 rounded-lg bg-primary px-[28px] py-[17px] text-[23px] text-primary-foreground [transition:background_0.15s,transform_0.15s] hover:-translate-y-0.5 hover:bg-[#89362b] dark:hover:bg-[#c15a46] max-[700px]:min-h-[56px] max-[700px]:px-5 max-[700px]:py-[14px] max-[700px]:text-[20px] min-[701px]:max-[1100px]:px-[23px] min-[701px]:max-[1100px]:py-[15px] min-[701px]:max-[1100px]:text-[21px]"
+              className="inline-flex min-h-[62px] max-w-full items-center gap-4 rounded-lg bg-primary px-[28px] py-[17px] text-[23px] text-primary-foreground [transition:background_0.15s,translate_0.15s] hover:-translate-y-0.5 hover:bg-[#89362b] max-[700px]:min-h-[56px] max-[700px]:px-5 max-[700px]:py-[14px] max-[700px]:text-[20px] min-[701px]:max-[1100px]:px-[23px] min-[701px]:max-[1100px]:py-[15px] min-[701px]:max-[1100px]:text-[21px] dark:hover:bg-[#c15a46]"
               href={data.stableUrl}
               aria-describedby="download-details"
             >
@@ -77,7 +77,7 @@ function HomePage() {
             </a>
           )}
           <Link
-            className="inline-flex items-center gap-4 text-lg/normal font-semibold text-primary underline underline-offset-8 dark:text-[#e49a84] max-[700px]:text-base min-[701px]:max-[1100px]:text-base"
+            className="inline-flex items-center gap-4 text-lg/normal font-semibold text-primary underline underline-offset-8 max-[700px]:text-base min-[701px]:max-[1100px]:text-base dark:text-[#e49a84]"
             to="/download"
           >
             {m.downloadOptions()}
@@ -87,7 +87,7 @@ function HomePage() {
         {hasDirectDownload && (
           <p
             id="download-details"
-            className="mb-[22px] mt-3 text-base text-muted-foreground max-[700px]:text-sm/normal"
+            className="mt-3 mb-[22px] text-base text-muted-foreground max-[700px]:text-sm/normal"
           >
             {data.poiVersions.version} · {m.stable()} ·{' '}
             {getPlatformSpecLabel(data.platform.os, data.platform.spec)}
@@ -105,7 +105,7 @@ function HomePage() {
             </a>
             <p
               id="beta-download-details"
-              className="mb-[22px] mt-3 text-base text-muted-foreground max-[700px]:text-sm/normal"
+              className="mt-3 mb-[22px] text-base text-muted-foreground max-[700px]:text-sm/normal"
             >
               {data.poiVersions.betaVersion} · {m.beta()} ·{' '}
               {getPlatformSpecLabel(data.platform.os, data.platform.spec)}
@@ -124,7 +124,7 @@ function HomePage() {
           {m.changelog()} <span aria-hidden="true">→</span>
         </Link>
       </section>
-      <div className="absolute bottom-4 right-6 z-10 flex flex-col items-end gap-2 sm:bottom-8 sm:right-10">
+      <div className="absolute right-6 bottom-4 z-10 flex flex-col items-end gap-2 sm:right-10 sm:bottom-8">
         <span
           className="text-sm tracking-widest text-muted-foreground"
           aria-hidden="true"

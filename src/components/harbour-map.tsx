@@ -67,7 +67,7 @@ function MapArtwork() {
 export function HarbourMap() {
   return (
     <div
-      className="harbour-chart pointer-events-none absolute left-[27.1%] top-0 h-full w-[72.9%] [mask-image:linear-gradient(90deg,transparent,#000_10%)] max-[700px]:bottom-0 max-[700px]:left-0 max-[700px]:top-auto max-[700px]:h-[430px] max-[700px]:w-[135%] max-[700px]:[mask-image:linear-gradient(180deg,transparent,#000_23%)] min-[701px]:max-[1100px]:[mask-image:linear-gradient(90deg,transparent,#00000010_28%,#000_64%)]"
+      className="harbour-chart pointer-events-none absolute top-0 left-[27.1%] h-full w-[72.9%] [mask-image:linear-gradient(90deg,transparent,#000_10%)] max-[700px]:top-auto max-[700px]:bottom-0 max-[700px]:left-0 max-[700px]:h-[430px] max-[700px]:w-[135%] max-[700px]:[mask-image:linear-gradient(180deg,transparent,#000_23%)] min-[701px]:max-[1100px]:[mask-image:linear-gradient(90deg,transparent,#00000010_28%,#000_64%)]"
       aria-hidden="true"
     >
       <MapArtwork />

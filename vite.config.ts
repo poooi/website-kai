@@ -4,6 +4,7 @@ import { cloudflare } from '@cloudflare/vite-plugin'
 import { paraglideVitePlugin } from '@inlang/paraglide-js'
 import { sentryTanstackStart } from '@sentry/tanstackstart-react/vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
+import tailwindcss from '@tailwindcss/vite'
 import viteReact from '@vitejs/plugin-react'
 import { execa } from 'execa'
 import { defineConfig } from 'vite'
@@ -55,6 +56,7 @@ export default defineConfig({
     ),
   },
   plugins: [
+    tailwindcss(),
     paraglideVitePlugin(paraglideOptions),
     cloudflare({
       configPath: './wrangler.toml',
