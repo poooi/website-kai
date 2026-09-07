@@ -1,6 +1,19 @@
 import { OS, PlatformSpec } from '~/lib/target'
 import { m } from '~/paraglide/messages'
 
+export const getDownloadTargetLabel = (os: OS, spec: PlatformSpec) => {
+  const architecture = [
+    PlatformSpec.ARM,
+    PlatformSpec.ARMDEB,
+    PlatformSpec.ARMPortable,
+  ].includes(spec)
+    ? 'arm64'
+    : [PlatformSpec.IA32Setup, PlatformSpec.IA32Portable].includes(spec)
+      ? 'x86'
+      : 'x64'
+  return `${getPlatformLabels().os[os]} ${architecture}`
+}
+
 export const getPlatformLabels = () => ({
   os: {
     [OS.windows]: m.windows(),

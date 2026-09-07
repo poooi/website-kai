@@ -8,8 +8,6 @@ import {
   SiX,
 } from '@icons-pack/react-simple-icons'
 
-import { Button } from './ui/button'
-
 import { m } from '~/paraglide/messages'
 import { getLocale, type Locale } from '~/paraglide/runtime'
 
@@ -60,33 +58,30 @@ const footerItems: FooterItem[] = [
 export const Footer = () => {
   const language = getLocale()
   return (
-    <div className="inline-flex w-fit flex-wrap items-center gap-x-8 gap-y-2 text-nowrap py-4 md:flex md:flex-nowrap">
-      <span className="px-4">{`© ${new Date().getFullYear()} poi Contributors`}</span>
-      <div className="grid grid-cols-2 place-items-start xl:flex">
+    <footer className="site-footer">
+      <span className="shrink-0">
+        © {new Date().getFullYear()} poi Contributors
+      </span>
+      <div className="items-center">
         {footerItems
           .filter(({ applyLocales, skipLocales }) => {
-            if (applyLocales) {
-              return applyLocales.includes(language)
-            }
-            if (skipLocales) {
-              return !skipLocales.includes(language)
-            }
+            if (applyLocales) return applyLocales.includes(language)
+            if (skipLocales) return !skipLocales.includes(language)
             return true
           })
           .map(({ url, icon: Icon, text }) => (
-            <Button variant="link" asChild key={url}>
-              <a
-                className="inline-flex gap-1"
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Icon className="h-4 w-4" />
-                <span>{text()}</span>
-              </a>
-            </Button>
+            <a
+              className="inline-flex items-center gap-1.5 whitespace-nowrap"
+              href={url}
+              key={url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Icon className="h-4 w-4" aria-hidden="true" />
+              <span>{text()}</span>
+            </a>
           ))}
       </div>
-    </div>
+    </footer>
   )
 }

@@ -32,14 +32,9 @@ export const LanguageChooser = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          size="icon"
-          title={m.language()}
-          aria-label={m.language()}
-        >
+        <Button variant="ghost" title={m.language()} aria-label={m.language()}>
           <GlobeIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />
-          <span className="sr-only">{m.language()}</span>
+          <span>{m.language()}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

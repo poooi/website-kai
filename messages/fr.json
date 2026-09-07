@@ -1,5 +1,13 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
+  "downloadIntro": "Choisissez votre système et votre paquet pour télécharger poi.",
+  "downloadPackage": "Architecture et paquet",
+  "selectDownloadPlatform": "Choisissez un système et un paquet pour afficher le téléchargement disponible.",
+  "harbourIntro": "Un navigateur et des outils",
+  "harbourTools": "extensibles pour KanColle.",
+  "downloadTarget": "Télécharger pour {target}",
+  "originalReleases": "Publications d’origine",
+  "releaseLoadError": "Impossible de charger les publications. Réessayez ou consultez la page officielle.",
   "language": "français",
   "name": "poi",
   "description": "Navigateur et outil évolutif pour KanColle",

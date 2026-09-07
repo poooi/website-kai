@@ -12,10 +12,12 @@ import {
   type PoiVersions,
 } from '~/lib/fetch-poi-versions'
 import { isSupportedLocale, type SupportedLocale } from '~/lib/i18n-routing'
+import { fetchReleaseTargets } from '~/lib/release-targets'
 import {
   detectRequestPlatform,
   getDownloadLink,
   type RequestPlatformResult,
+  type Target,
 } from '~/lib/target'
 import { getLocale } from '~/paraglide/runtime'
 import { type TanStackRouterContext } from '~/routes/__root'
@@ -65,12 +67,20 @@ const loadPoiVersions = async (env?: ServerContext['env']) => {
 const buildDownloadData = (
   poiVersions: PoiVersions,
   platform: RequestPlatformResult,
+  stableTargets: Target[],
+  betaTargets: Target[],
 ) => ({
-  betaUrl: getDownloadLink(poiVersions.betaVersion, platform.target),
+  betaUrl: betaTargets.includes(platform.target)
+    ? getDownloadLink(poiVersions.betaVersion, platform.target)
+    : 'https://github.com/poooi/poi/releases',
+  stableTargets,
+  betaTargets,
   platform,
   poiVersions,
   showBeta: compare(poiVersions.version, poiVersions.betaVersion, '<'),
-  stableUrl: getDownloadLink(poiVersions.version, platform.target),
+  stableUrl: stableTargets.includes(platform.target)
+    ? getDownloadLink(poiVersions.version, platform.target)
+    : 'https://github.com/poooi/poi/releases',
 })
 
 export const requireSupportedLocale = (locale: string): SupportedLocale => {
@@ -97,7 +107,13 @@ export const loadRequestAwarePageData = async (
     detectRequestPlatform(headers),
   ])
 
-  return buildDownloadData(poiVersions, platform)
+  const [stableTargets, betaTargets] = await Promise.all([
+    fetchReleaseTargets(poiVersions.version),
+    compare(poiVersions.version, poiVersions.betaVersion, '<')
+      ? fetchReleaseTargets(poiVersions.betaVersion)
+      : Promise.resolve([]),
+  ])
+  return buildDownloadData(poiVersions, platform, stableTargets, betaTargets)
 }
 
 export const loadExploreHtml = async (locale: string = getLocale()) => {

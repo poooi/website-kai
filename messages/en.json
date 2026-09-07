@@ -1,5 +1,13 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
+  "downloadIntro": "Choose your operating system and package to download poi.",
+  "downloadPackage": "Architecture & package",
+  "selectDownloadPlatform": "Choose an operating system and package to see the available download.",
+  "harbourIntro": "An extensible KanColle",
+  "harbourTools": "browser and tool.",
+  "downloadTarget": "Download {target}",
+  "originalReleases": "Original releases",
+  "releaseLoadError": "Unable to load releases. Please retry or visit the official release page.",
   "language": "English",
   "name": "poi",
   "description": "Scalable KanColle browser and tool.",
