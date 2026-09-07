@@ -21,7 +21,7 @@ test('renders the isolated TanStack preview route', async ({ page }) => {
   ).toBeVisible()
   await expect(page.locator('body')).toHaveCSS(
     'background-color',
-    'rgb(255, 255, 255)',
+    'rgb(245, 240, 224)',
   )
   expect(response).not.toBeNull()
   const headers = response!.headers()

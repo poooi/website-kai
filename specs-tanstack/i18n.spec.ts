@@ -96,12 +96,15 @@ test('serves localized non-default content', async ({ page }) => {
   await expect(page.locator('html')).toHaveAttribute('lang', 'en')
   await expect(page).toHaveTitle('poi | KanColle Browser')
   await expect(
-    page.getByText('Scalable KanColle browser and tool.'),
+    page.getByText('An extensible KanColle', { exact: true }),
+  ).toBeVisible()
+  await expect(
+    page.getByText('browser and tool.', { exact: true }),
   ).toBeVisible()
   await expect(
     page.getByRole('link', { name: 'Download options' }),
   ).toBeVisible()
-  await expect(page.getByText('New', { exact: true })).toBeVisible()
+  await expect(page.getByText(/v10\.10\.0-beta\.1 · Beta/)).toBeVisible()
 })
 
 test('serves localized download and explore pages', async ({ page }) => {
@@ -136,60 +139,86 @@ test('serves framework-neutral header navigation controls', async ({
 }) => {
   await page.goto('/en')
 
-  await expect(page.getByRole('link', { name: 'poi' })).toHaveAttribute(
-    'href',
-    '/en',
-  )
-  await expect(page.getByAltText('poi')).toHaveAttribute('src', /poi-.*\.png/)
-  await expect(page.getByRole('link', { name: 'Explore' })).toHaveAttribute(
+  const header = page.getByRole('banner')
+  await expect(
+    header.getByRole('link', { name: 'Return to home page' }),
+  ).toHaveAttribute('href', '/en')
+  await expect(header.getByRole('link', { name: 'Explore' })).toHaveAttribute(
     'href',
     '/en/explore',
   )
   await expect(
-    page.getByRole('link', { name: 'Download', exact: true }),
+    header.getByRole('link', { name: 'Download', exact: true }),
   ).toHaveAttribute('href', '/en/download')
+  await expect(header.getByRole('link', { name: 'Changelog' })).toHaveAttribute(
+    'href',
+    '/en/changelog',
+  )
+  await expect(page.getByRole('main').locator('img')).toHaveAttribute('alt', '')
 })
 
-test('keeps background canvas stable during client navigation', async ({
+test('keeps harbour map present through client navigation without a reload', async ({
   page,
 }) => {
   await page.goto('/en')
-  await page.waitForFunction(() => {
-    const canvas = document.querySelector('canvas')
-    return canvas instanceof HTMLCanvasElement && canvas.width > 0
-  })
-  const before = await page
-    .locator('canvas')
-    .evaluate((canvas: HTMLCanvasElement) => canvas.toDataURL())
+  const header = page.getByRole('banner')
+  const harbourMap = page.locator('.harbour-chart object')
 
-  await page.getByRole('link', { name: 'Download', exact: true }).click()
+  await expect(harbourMap).toBeVisible()
+  await expect
+    .poll(() =>
+      harbourMap.evaluate(
+        (object) =>
+          object instanceof HTMLObjectElement &&
+          object.contentDocument?.documentElement.localName === 'svg',
+      ),
+    )
+    .toBe(true)
+  const headerGeometryBefore = await header.boundingBox()
+  const timeOriginBefore = await page.evaluate(() => performance.timeOrigin)
+
+  await header.getByRole('link', { name: 'Download', exact: true }).click()
   await expect(page).toHaveURL('http://127.0.0.1:3002/en/download')
   await expect(
     page.getByRole('heading', { level: 1, name: 'Download' }),
   ).toBeVisible()
+  await expect(harbourMap).toHaveCount(0)
 
-  await expect(
-    page
-      .locator('canvas')
-      .evaluate((canvas: HTMLCanvasElement) => canvas.toDataURL()),
-  ).resolves.toBe(before)
+  await header.getByRole('link', { name: 'Return to home page' }).click()
+  await expect(page).toHaveURL('http://127.0.0.1:3002/en')
+  await expect(harbourMap).toBeVisible()
+  await expect
+    .poll(() =>
+      harbourMap.evaluate(
+        (object) =>
+          object instanceof HTMLObjectElement &&
+          object.contentDocument?.documentElement.localName === 'svg',
+      ),
+    )
+    .toBe(true)
+  expect(await page.evaluate(() => performance.timeOrigin)).toBe(
+    timeOriginBefore,
+  )
+
+  const headerGeometryAfter = await header.boundingBox()
+  expect(headerGeometryAfter?.width).toBe(headerGeometryBefore?.width)
+  expect(headerGeometryAfter?.height).toBe(headerGeometryBefore?.height)
 })
 
-test('matches Next page layout backgrounds and headings', async ({ page }) => {
+test('keeps layout coherent across routes with prose typography', async ({
+  page,
+}) => {
   await page.goto('/en')
   await expect(page.getByRole('main')).toBeVisible()
+  await expect(page.getByRole('main')).toHaveClass(/harbour-home/)
   await expect(page.locator('main.bg-background')).toHaveCount(0)
-  await expect(
-    page.getByRole('heading', { name: 'poi' }).evaluate((heading) => {
-      return getComputedStyle(heading.parentElement!).backgroundColor
-    }),
-  ).resolves.toBe('rgba(0, 0, 0, 0)')
 
   await page.goto('/en/download')
   await expect(
     page.getByRole('heading', { level: 1, name: 'Download' }),
   ).toBeVisible()
   await expect(page.getByRole('main')).toBeVisible()
+  await expect(page.getByRole('main')).not.toHaveClass(/harbour-home/)
 
   await page.goto('/en/explore')
   await expect(page.locator('main.prose')).toHaveCount(0)
@@ -200,35 +229,65 @@ test('matches Next page layout backgrounds and headings', async ({ page }) => {
   await expect(exploreContent).toBeVisible()
   await expect(
     exploreContent.locator('xpath=ancestor::div[contains(@class, "prose")]'),
-  ).toHaveClass(/grow/)
+  ).toHaveClass(/max-w-prose/)
 })
 
 test('keeps header pathname current after client history changes', async ({
   page,
 }) => {
   await page.goto('/en')
+  const header = page.getByRole('banner')
+  await expect(
+    header.getByRole('link', { name: 'Return to home page' }),
+  ).toHaveAttribute('aria-current', 'page')
+
   await page.evaluate(() => {
     window.history.pushState({}, '', '/en/download')
   })
 
-  await expect(page.getByRole('link', { name: 'poi' })).not.toHaveClass(
-    /opacity-0/,
-  )
+  await expect(
+    header.getByRole('link', { name: 'Download', exact: true }),
+  ).toHaveAttribute('aria-current', 'page')
   await page.getByRole('button', { name: 'English' }).click()
   await page.getByRole('menuitemradio', { name: 'français' }).click()
   await expect(page).toHaveURL('http://127.0.0.1:3002/fr/download')
 })
 
-test('loads localized download pages with hash fragments', async ({ page }) => {
+test('loads localized download pages with hash fragments', async ({
+  browser,
+}) => {
+  const context = await browser.newContext({
+    baseURL: 'http://127.0.0.1:3002',
+    extraHTTPHeaders: {
+      'Sec-CH-UA-Arch': '"x86"',
+      'Sec-CH-UA-Bitness': '"64"',
+      'Sec-CH-UA-Mobile': '?0',
+      'Sec-CH-UA-Platform': '"Windows"',
+    },
+    userAgent:
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ' +
+      '(KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
+  })
+  const page = await context.newPage()
+
   await page.goto('/en/download#download')
 
   await expect(page).toHaveURL('http://127.0.0.1:3002/en/download#download')
   await expect(
     page.getByRole('heading', { level: 1, name: 'Download' }),
   ).toBeVisible()
+  await expect(page.getByRole('link', { name: /Download v\d/ })).toHaveCount(0)
+
+  const main = page.getByRole('main')
+  const stableSection = main.locator('section').filter({ hasText: 'v10.9.2' })
   await expect(
-    page.getByRole('link', { name: /Download v\d+\.\d+\.\d+/ }).first(),
-  ).toHaveAttribute('href', /\/dist\/poi-setup-\d+\.\d+\.\d+\.exe/)
+    stableSection.getByRole('link', { name: 'Download', exact: true }),
+  ).toHaveAttribute('href', '/dist/poi-setup-10.9.2.exe')
+  await expect(
+    main.locator('section').filter({ hasText: 'v10.10.0-beta.1' }),
+  ).toBeVisible()
+
+  await context.close()
 })
 
 test('switches language with NEXT_LOCALE and canonical URL', async ({
@@ -334,15 +393,26 @@ test('keeps system theme selected after client-hint dark SSR', async ({
     page.getByRole('menuitemradio', { name: 'System' }),
   ).toHaveAttribute('aria-checked', 'true')
 
+  const harbourMap = page.locator('.harbour-chart object')
+  await expect
+    .poll(() =>
+      harbourMap.evaluate((object: HTMLObjectElement) => {
+        const background = object.contentDocument?.querySelector('svg > rect')
+        return background ? getComputedStyle(background).fill : undefined
+      }),
+    )
+    .toBe('rgb(18, 30, 41)')
+
   await page.emulateMedia({ colorScheme: 'light' })
   await expect(page.locator('html')).not.toHaveClass(/dark/)
-  await expect(
-    page
-      .locator('canvas')
-      .evaluate((canvas: HTMLCanvasElement) =>
-        canvas.getContext('2d')?.getImageData(0, 0, 1, 1).data.join(','),
-      ),
-  ).resolves.toBeDefined()
+  await expect
+    .poll(() =>
+      harbourMap.evaluate((object: HTMLObjectElement) => {
+        const background = object.contentDocument?.querySelector('svg > rect')
+        return background ? getComputedStyle(background).fill : undefined
+      }),
+    )
+    .toBe('rgb(245, 240, 223)')
 
   await context.close()
 })
@@ -419,11 +489,19 @@ test('theme switching works when localStorage is unavailable', async ({
   }
 })
 
-test('does not mount background canvas on small screens', async ({ page }) => {
+test('shows the harbour map on small screens without horizontal overflow', async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 500, height: 800 })
   await page.goto('/en')
 
-  await expect(page.locator('canvas')).toHaveCount(0)
+  await expect(page.locator('.harbour-chart object')).toBeVisible()
+  const fitsViewport = await page.evaluate(
+    () =>
+      document.documentElement.scrollWidth <=
+      document.documentElement.clientWidth,
+  )
+  expect(fitsViewport).toBe(true)
 })
 
 test('renders desktop request-aware download links', async ({ browser }) => {
@@ -442,47 +520,61 @@ test('renders desktop request-aware download links', async ({ browser }) => {
   const page = await context.newPage()
 
   await page.goto('/en')
+  const main = page.getByRole('main')
   await expect(
-    page.getByRole('link', { name: /Download v10\.9\.2/ }),
-  ).toHaveAttribute('href', '/dist/poi-setup-10.9.2.exe')
+    main.locator('a[href="/dist/poi-setup-10.9.2.exe"]'),
+  ).toHaveAccessibleName('Download')
   await expect(
-    page.getByRole('link', { name: /Download v10\.10\.0-beta\.1/ }),
-  ).toHaveAttribute('href', '/dist/poi-setup-10.10.0-beta.1.exe')
-  await expect(page.getByText('Sighted by skilled lookouts:')).toBeVisible()
-  await expect(page.getByText('Windows', { exact: true })).toBeVisible()
-  await expect(page.getByText('Windows installer (recommended)')).toBeVisible()
+    main.locator('a[href="/dist/poi-setup-10.10.0-beta.1.exe"]'),
+  ).toHaveAccessibleName('Download')
+  await expect(
+    page.getByText(/v10\.9\.2 · Stable · Windows installer \(recommended\)/),
+  ).toBeVisible()
+  await expect(
+    page.getByText(
+      /v10\.10\.0-beta\.1 · Beta · Windows installer \(recommended\)/,
+    ),
+  ).toBeVisible()
 
   await page.getByRole('link', { name: 'Download options' }).click()
   await expect(page).toHaveURL('http://127.0.0.1:3002/en/download')
+  const stableSection = main.locator('section').filter({ hasText: 'v10.9.2' })
+  const betaSection = main
+    .locator('section')
+    .filter({ hasText: 'v10.10.0-beta.1' })
   await expect(
-    page.getByRole('link', { name: /Download v10\.9\.2/ }),
+    stableSection.getByRole('link', { name: 'Download', exact: true }),
   ).toHaveAttribute('href', '/dist/poi-setup-10.9.2.exe')
-  await expect(page.getByText('Operating system')).toBeVisible()
+  await expect(
+    betaSection.getByRole('link', { name: 'Download', exact: true }),
+  ).toHaveAttribute('href', '/dist/poi-setup-10.10.0-beta.1.exe')
+  await expect(
+    page.getByText('Operating system', { exact: true }),
+  ).toBeVisible()
+  await expect(
+    page.getByText('Architecture & package', { exact: true }),
+  ).toBeVisible()
+
   const platformControls = page.getByTestId('platform-select')
   const platformButtons = platformControls.getByRole('button')
   await expect(platformButtons).toHaveCount(2)
-  await expect(
-    platformButtons
-      .nth(1)
-      .evaluate((button) => button.scrollWidth <= button.clientWidth + 1),
-  ).resolves.toBe(true)
   await platformButtons.first().click()
-  const linuxItem = page.getByRole('menuitem', { name: 'Linux' })
+  const linuxItem = page.getByRole('menuitemradio', {
+    name: 'Linux',
+    exact: true,
+  })
   await expect(linuxItem).toBeVisible()
   await linuxItem.click()
-  const platformButton = page.getByRole('button', { name: 'Platform' })
-  await expect(platformButton).toBeVisible()
-  await expect(
-    page.getByRole('link', { name: /Download v10\.9\.2/ }),
-  ).toHaveCount(0)
-  await platformButton.click()
-  const portableItem = page.getByRole('menuitem', {
+  await expect(main.locator('a[href^="/dist/"]')).toHaveCount(0)
+  await platformButtons.nth(1).click()
+  const portableItem = page.getByRole('menuitemradio', {
     name: 'Linux 64-bit portable',
+    exact: true,
   })
   await expect(portableItem).toBeVisible()
   await portableItem.click()
   await expect(
-    page.getByRole('link', { name: /Download v10\.9\.2/ }),
+    stableSection.getByRole('link', { name: 'Download', exact: true }),
   ).toHaveAttribute('href', '/dist/poi-10.9.2.7z')
 
   await context.close()
@@ -508,17 +600,17 @@ test('renders mobile request-aware hint without download links', async ({
   await expect(
     page.getByText('poi is designed for desktop devices'),
   ).toBeVisible()
-  await expect(
-    page.getByRole('link', { name: /Download v10\.9\.2/ }),
-  ).toHaveCount(0)
+  await expect(page.getByRole('main').locator('a[href^="/dist/"]')).toHaveCount(
+    0,
+  )
 
   await page.goto('/en/download')
   await expect(
     page.getByText('poi is designed for desktop devices'),
   ).toBeVisible()
-  await expect(
-    page.getByRole('link', { name: /Download v10\.9\.2/ }),
-  ).toHaveCount(0)
+  await expect(page.getByRole('main').locator('a[href^="/dist/"]')).toHaveCount(
+    0,
+  )
 
   await context.close()
 })
