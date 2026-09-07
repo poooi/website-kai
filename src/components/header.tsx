@@ -63,9 +63,9 @@ export const Header = ({ LinkComponent = AnchorLink }: HeaderProps) => {
           </LinkComponent>
         ))}
       </nav>
-      <div className="header-tools ml-auto shrink-0">
+      <div className="ml-auto flex shrink-0 items-center gap-6 max-[700px]:gap-1">
         <a
-          className="header-github"
+          className="whitespace-nowrap hover:underline hover:underline-offset-[5px] max-[700px]:hidden"
           href="https://github.com/poooi/poi"
           target="_blank"
           rel="noopener noreferrer"

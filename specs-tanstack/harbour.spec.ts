@@ -1,5 +1,32 @@
 import { expect, test } from '@playwright/test'
 
+test('loads release versions on the server during client navigation', async ({
+  page,
+}) => {
+  const upstreamRequests: string[] = []
+  const serverRequests: string[] = []
+  await page.route(
+    'https://raw.githubusercontent.com/poooi/poi-release/**',
+    (route) => {
+      upstreamRequests.push(route.request().url())
+      return route.abort()
+    },
+  )
+  page.on('request', (request) => {
+    if (new URL(request.url()).pathname.startsWith('/_serverFn/'))
+      serverRequests.push(request.url())
+  })
+  await page.goto('/en/explore', { waitUntil: 'networkidle' })
+  await expect(page.locator('.harbour-chart object')).toHaveCount(0)
+  await page
+    .getByRole('banner')
+    .getByRole('link', { name: 'Download', exact: true })
+    .click()
+  await expect(page.locator('main a[href^="/dist/"]').first()).toBeVisible()
+  expect(upstreamRequests).toEqual([])
+  expect(serverRequests.length).toBeGreaterThan(0)
+})
+
 test('offers direct downloads without retired ia32 packages', async ({
   page,
 }) => {

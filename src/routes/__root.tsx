@@ -3,13 +3,15 @@ import {
   Scripts,
   createRootRouteWithContext,
   useNavigate,
+  useRouterState,
 } from '@tanstack/react-router'
 import { createServerOnlyFn } from '@tanstack/react-start'
 import { getRequestHeaders } from '@tanstack/react-start/server'
-import { forwardRef, type MouseEvent } from 'react'
+import { forwardRef, useEffect, useState, type MouseEvent } from 'react'
 
 import '~/styles/globals.css'
 import { Footer } from '~/components/footer'
+import { HarbourMap } from '~/components/harbour-map'
 import { Header, type HeaderLinkProps } from '~/components/header'
 import { JotaiRootProvider } from '~/components/jotai-provider'
 import { SentryClient } from '~/components/sentry-client'
@@ -147,6 +149,13 @@ export const Route = createRootRouteWithContext<TanStackRouterContext>()({
 function RootDocument({ children }: { children: React.ReactNode }) {
   const { theme, themePreference } = Route.useLoaderData()
   const locale = getLocale()
+  const isHome = useRouterState({
+    select: (state) => state.matches.some((match) => match.routeId === '/'),
+  })
+  const [hasVisitedHome, setHasVisitedHome] = useState(isHome)
+  useEffect(() => {
+    if (isHome) setHasVisitedHome(true)
+  }, [isHome])
 
   return (
     <html
@@ -208,9 +217,24 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             enableSystem
             disableTransitionOnChange
           />
-          <div className="site-shell">
+          <div className="site-shell flex min-h-[100svh] flex-col">
             <Header LinkComponent={HeaderLink} />
-            {children}
+            <div className="site-content relative flex flex-1 flex-col [&>[role=main]]:mx-auto [&>[role=main]]:w-full [&>[role=main]]:max-w-[960px] [&>[role=main]]:flex-1 [&>[role=main]]:px-8 [&>[role=main]]:pb-[72px] [&>[role=main]]:pt-12 max-[700px]:[&>[role=main]]:px-[6%] max-[700px]:[&>[role=main]]:pb-12 max-[700px]:[&>[role=main]]:pt-8">
+              {(isHome || hasVisitedHome) && (
+                <div
+                  className={cn(
+                    'pointer-events-none absolute inset-0 overflow-hidden',
+                    {
+                      invisible: !isHome,
+                    },
+                  )}
+                  aria-hidden="true"
+                >
+                  <HarbourMap />
+                </div>
+              )}
+              {children}
+            </div>
             <Footer />
           </div>
         </JotaiRootProvider>
