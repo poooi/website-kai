@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useLayoutEffect } from 'react'
 import {
   type HTMLMotionProps,
   motion,
@@ -11,7 +11,7 @@ import {
 export const Transition = ({ children, ...props }: HTMLMotionProps<'main'>) => {
   const controls = useAnimationControls()
   const reducedMotion = useReducedMotion()
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (reducedMotion) {
       controls.set({ opacity: 1, y: 0 })
       return

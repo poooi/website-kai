@@ -33,7 +33,11 @@ function DownloadPage() {
         <div className="grid gap-10 border-b pb-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] md:gap-12">
           <PlatformSelect
             initialOS={data.platform.os}
-            initialSpec={data.platform.spec}
+            initialSpec={
+              data.stableTargets.includes(data.platform.target)
+                ? data.platform.spec
+                : undefined
+            }
             availableTargets={[...data.stableTargets, ...data.betaTargets]}
           />
           <div className="min-w-0 md:border-l md:pl-12">

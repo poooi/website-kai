@@ -1,10 +1,19 @@
 import { animate, useReducedMotion } from 'framer-motion'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef } from 'react'
+import { useTheme } from './theme-runtime'
 
-function MapArtwork({ dark = false }: { dark?: boolean }) {
+function MapArtwork() {
+  const { resolvedTheme } = useTheme()
   const ref = useRef<HTMLObjectElement>(null)
   const reducedMotion = useReducedMotion()
   const animations = useRef<ReturnType<typeof animate>[]>([])
+  const syncTheme = useCallback(() => {
+    ref.current?.contentDocument?.documentElement.setAttribute(
+      'data-theme',
+      resolvedTheme,
+    )
+  }, [resolvedTheme])
+  useLayoutEffect(syncTheme, [syncTheme])
   const reveal = useCallback(() => {
     animations.current.forEach((animation) => animation.stop())
     animations.current = []
@@ -41,12 +50,13 @@ function MapArtwork({ dark = false }: { dark?: boolean }) {
   return (
     <object
       ref={ref}
-      onLoad={reveal}
-      data={dark ? '/maps/maizuru-dark.svg' : '/maps/maizuru.svg'}
+      onLoad={() => {
+        syncTheme()
+        reveal()
+      }}
+      data="/maps/maizuru.svg"
       type="image/svg+xml"
-      className={
-        dark ? 'chart-dark h-full w-full' : 'chart-light h-full w-full'
-      }
+      className="h-full w-full"
       tabIndex={-1}
       aria-hidden="true"
     />
@@ -57,7 +67,6 @@ export function HarbourMap() {
   return (
     <div className="harbour-chart" aria-hidden="true">
       <MapArtwork />
-      <MapArtwork dark />
     </div>
   )
 }

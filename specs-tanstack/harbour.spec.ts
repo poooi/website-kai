@@ -1,5 +1,22 @@
 import { expect, test } from '@playwright/test'
 
+test('offers direct downloads without retired ia32 packages', async ({
+  page,
+}) => {
+  await page.goto('/en/download', { waitUntil: 'networkidle' })
+  await page.getByRole('button', { name: /^Operating system/ }).click()
+  await page
+    .getByRole('menuitemradio', { name: 'Windows', exact: true })
+    .click()
+  await page.getByRole('button', { name: /^Architecture & package/ }).click()
+  await expect(page.getByRole('menuitemradio')).toHaveCount(3)
+  await expect(
+    page.getByRole('menuitemradio').filter({ hasText: /ia32|32.bit|x86/i }),
+  ).toHaveCount(0)
+  await page.getByRole('menuitemradio').first().click()
+  await expect(page.locator('main a[href^="/dist/"]').first()).toBeVisible()
+})
+
 test('reveals map layers in sequence and respects reduced motion', async ({
   page,
 }) => {
@@ -11,7 +28,9 @@ test('reveals map layers in sequence and respects reduced motion', async ({
     const frames: number[][] = []
     const start = performance.now()
     while (performance.now() - start < 2000) {
-      const object = document.querySelector<HTMLObjectElement>('.chart-light')
+      const object = document.querySelector<HTMLObjectElement>(
+        '.harbour-chart object',
+      )
       const layers = object?.contentDocument?.querySelectorAll('#geography > *')
       if (layers?.length)
         frames.push(
@@ -31,16 +50,18 @@ test('reveals map layers in sequence and respects reduced motion', async ({
   const complete = [1, 1, 1, 1, 1, 1, 1, 0.18, 1, 1]
   expect(frames.at(-1)).toEqual(complete)
   await page.emulateMedia({ reducedMotion: 'reduce' })
+  await expect(page.locator('.harbour-chart object')).toHaveCount(1)
   for (const theme of ['light', 'dark']) {
-    await page.evaluate(
-      (theme) =>
-        document.documentElement.classList.toggle('dark', theme === 'dark'),
-      theme,
-    )
+    await page.getByRole('button', { name: 'Theme', exact: true }).click()
+    await page
+      .getByRole('menuitemradio', {
+        name: theme === 'dark' ? 'Chibaheit' : 'Lilywhite',
+      })
+      .click()
     await expect
       .poll(() =>
         page
-          .locator('.chart-' + theme)
+          .locator('.harbour-chart object')
           .evaluate((object: HTMLObjectElement) =>
             Array.from(
               object.contentDocument?.querySelectorAll('#geography > *') ?? [],
@@ -49,6 +70,17 @@ test('reveals map layers in sequence and respects reduced motion', async ({
           ),
       )
       .toEqual(complete)
+    await expect
+      .poll(() =>
+        page
+          .locator('.harbour-chart object')
+          .evaluate((object: HTMLObjectElement) => {
+            const background =
+              object.contentDocument?.querySelector('svg > rect')
+            return background && getComputedStyle(background).fill
+          }),
+      )
+      .toBe(theme === 'dark' ? 'rgb(18, 30, 41)' : 'rgb(245, 240, 223)')
   }
 })
 
@@ -69,6 +101,7 @@ test('preserves localized social links and attributes the map directly', async (
   page,
 }) => {
   for (const locale of ['zh-Hans', 'zh-Hant', 'en', 'ja', 'ko', 'fr']) {
+    await page.context().clearCookies()
     await page.goto('/' + locale)
     const footer = page.locator('footer')
     const chinese = locale.startsWith('zh-')

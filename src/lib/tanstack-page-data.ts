@@ -12,12 +12,11 @@ import {
   type PoiVersions,
 } from '~/lib/fetch-poi-versions'
 import { isSupportedLocale, type SupportedLocale } from '~/lib/i18n-routing'
-import { fetchReleaseTargets } from '~/lib/release-targets'
 import {
   detectRequestPlatform,
   getDownloadLink,
   type RequestPlatformResult,
-  type Target,
+  Target,
 } from '~/lib/target'
 import { getLocale } from '~/paraglide/runtime'
 import { type TanStackRouterContext } from '~/routes/__root'
@@ -32,6 +31,11 @@ const exploreContentByLocale = import.meta.glob<string>(
 )
 
 const exploreHtmlByLocale = new Map<SupportedLocale, string>()
+
+// Upstream no longer supports 32-bit Windows.
+const supportedTargets = Object.values(Target).filter(
+  (target) => target !== Target.win32 && target !== Target.win32Setup,
+)
 
 type ServerContext = NonNullable<TanStackRouterContext['serverContext']>
 type RequestAwareContext = ServerContext | TanStackRouterContext
@@ -107,13 +111,12 @@ export const loadRequestAwarePageData = async (
     detectRequestPlatform(headers),
   ])
 
-  const [stableTargets, betaTargets] = await Promise.all([
-    fetchReleaseTargets(poiVersions.version),
-    compare(poiVersions.version, poiVersions.betaVersion, '<')
-      ? fetchReleaseTargets(poiVersions.betaVersion)
-      : Promise.resolve([]),
-  ])
-  return buildDownloadData(poiVersions, platform, stableTargets, betaTargets)
+  return buildDownloadData(
+    poiVersions,
+    platform,
+    supportedTargets,
+    supportedTargets,
+  )
 }
 
 export const loadExploreHtml = async (locale: string = getLocale()) => {

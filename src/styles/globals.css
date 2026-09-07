@@ -145,13 +145,6 @@
   mask-image: linear-gradient(90deg, transparent, #000 10%);
   pointer-events: none;
 }
-.chart-dark,
-.dark .chart-light {
-  display: none;
-}
-.dark .chart-dark {
-  display: block;
-}
 .harbour-hero {
   position: relative;
   z-index: 1;
