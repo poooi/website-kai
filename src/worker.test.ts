@@ -88,6 +88,19 @@ beforeEach(() => {
 })
 
 describe('handleWorkerRequest', () => {
+  it('passes server-function calls through without treating them as localized pages', async () => {
+    const response = await handleWorkerRequest(
+      makeRequest('/_serverFn/changelog?payload=test', {
+        headers: { 'Accept-Language': 'fr' },
+      }),
+      makeEnv(),
+      makeCtx(),
+    )
+    expect(response.status).toBe(200)
+    expect(await response.text()).toBe('start:/_serverFn/changelog')
+    expect(mocks.startFetch).toHaveBeenCalledOnce()
+    expect(mocks.paraglideMiddleware).not.toHaveBeenCalled()
+  })
   it.each(['/dist', '/dist/', '/fcd', '/fcd/', '/update', '/update/'])(
     'short-circuits reserved proxy root %s before locale routing',
     async (path) => {

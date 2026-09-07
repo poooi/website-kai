@@ -1,5 +1,13 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
+  "downloadIntro": "选择你的操作系统和安装包，下载 poi。",
+  "downloadPackage": "架构与安装包",
+  "selectDownloadPlatform": "选择操作系统和安装包后，即可查看对应的下载版本。",
+  "harbourIntro": "可扩展的《舰队 Collection》",
+  "harbourTools": "浏览器与工具。",
+  "downloadTarget": "下载 {target}",
+  "originalReleases": "原始发布记录",
+  "releaseLoadError": "无法加载发布信息。请重试或访问官方发布页。",
   "language": "简体中文",
   "name": "poi",
   "description": "可扩展的「舰队 Collection」浏览器",

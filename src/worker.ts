@@ -47,7 +47,7 @@ const clientHintValues =
   'Sec-CH-UA-Platform, Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Mobile, Sec-CH-Prefers-Color-Scheme'
 const clientHintPermissionsPolicy =
   'ch-ua-platform=(self), ch-ua-arch=(self), ch-ua-bitness=(self), ch-ua-mobile=(self), ch-prefers-color-scheme=(self)'
-const localizedPageNames = new Set(['download', 'explore'])
+const localizedPageNames = new Set(['download', 'explore', 'changelog'])
 const proxyRoots = new Set(['/dist', '/fcd', '/update'])
 const proxyPrefixes = ['/dist/', '/fcd/', '/update/']
 
@@ -89,6 +89,7 @@ const isDocumentRequestMethod = (method: string) => {
 const isDocumentPath = (pathname: string) => {
   return (
     !pathname.startsWith('/api/') &&
+    !pathname.startsWith('/_serverFn/') &&
     !pathname.startsWith('/status') &&
     !isSocialImagePath(pathname) &&
     !isFileRequest(pathname)

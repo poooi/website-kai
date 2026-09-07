@@ -1,6 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Transition } from '~/components/transition'
+import { PageHeader } from '~/components/page-header'
+import { PageProse } from '~/components/page-prose'
 import { loadExploreHtml } from '~/lib/tanstack-page-data'
 import { m } from '~/paraglide/messages'
 
@@ -21,10 +23,9 @@ export const Route = createFileRoute('/explore')({
 function ExplorePage() {
   const { contentHtml } = Route.useLoaderData()
   return (
-    <Transition
-      role="main"
-      className="prose w-full max-w-none grow dark:prose-invert"
-      dangerouslySetInnerHTML={{ __html: contentHtml }}
-    />
+    <Transition>
+      <PageHeader title={m.explore()} />
+      <PageProse dangerouslySetInnerHTML={{ __html: contentHtml }} />
+    </Transition>
   )
 }

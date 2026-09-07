@@ -1,5 +1,13 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
+  "downloadIntro": "OS とパッケージを選んで poi をダウンロード。",
+  "downloadPackage": "アーキテクチャとパッケージ",
+  "selectDownloadPlatform": "OS とパッケージを選ぶと、ダウンロードできるバージョンが表示されます。",
+  "harbourIntro": "拡張可能な「艦隊これくしょん」",
+  "harbourTools": "ブラウザーとツール。",
+  "downloadTarget": "{target} をダウンロード",
+  "originalReleases": "元のリリース",
+  "releaseLoadError": "リリース情報を読み込めません。再試行するか公式リリースページをご覧ください。",
   "language": "日本語",
   "name": "poi",
   "description": "拡張可能な「艦隊これくしょん」ブラウザ",

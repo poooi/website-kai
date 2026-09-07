@@ -1,14 +1,5 @@
-import sanitize from 'rehype-sanitize'
-import stringify from 'rehype-stringify'
-import { remark } from 'remark'
-import rehype from 'remark-rehype'
-
-import {
-  changelogFilename,
-  changelogLanguageCandidates,
-  isChangelogChannel,
-  type ChangelogChannel,
-} from './changelog'
+import { isChangelogChannel } from './changelog'
+import { fetchLocalizedChangelog } from './changelog.server'
 import {
   fetchPoiVersions,
   fetchWithTimeout,
@@ -33,16 +24,6 @@ interface ChannelParams {
 }
 
 const notFound = () => new Response('', { status: 404 })
-
-// Kept next to the handler so the markdown pipeline never reaches the client
-// bundle through the shared changelog module.
-const changelogUrl = (language: string, channel: ChangelogChannel) =>
-  `https://raw.githubusercontent.com/poooi/poi-release/master/${changelogFilename(language, channel)}`
-
-const renderChangelog = async (markdown: string) =>
-  (
-    await remark().use(rehype).use(sanitize).use(stringify).process(markdown)
-  ).toString()
 
 const badGateway = () => new Response('', { status: 502 })
 
@@ -156,29 +137,17 @@ export const handleChangelog = async (
 
   const locale = new URL(request.url).searchParams.get('locale') ?? undefined
 
-  for (const language of changelogLanguageCandidates(locale)) {
-    const upstream = await reverseFetch(
-      request,
-      changelogUrl(language, channel),
-      context,
-    )
-
-    if (upstream.ok) {
-      const html = await renderChangelog(await upstream.text())
-      return Response.json(
-        { html, language },
-        { headers: { 'Cache-Control': 'public, max-age=300' } },
-      )
-    }
-
-    // Only a missing file is worth falling back for; a failing upstream is
-    // reported as-is so the dialog can offer a retry.
-    if (upstream.status !== 404) {
-      return upstream
-    }
+  try {
+    const changelog = await fetchLocalizedChangelog(locale, channel, {
+      ...context,
+      signal: request.signal,
+    })
+    return Response.json(changelog, {
+      headers: { 'Cache-Control': 'public, max-age=300' },
+    })
+  } catch (error) {
+    return mapUpstreamError(error)
   }
-
-  return notFound()
 }
 
 export const handleDist = async (

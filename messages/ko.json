@@ -1,5 +1,13 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
+  "downloadIntro": "운영체제와 패키지를 선택하고 poi를 다운로드하세요.",
+  "downloadPackage": "아키텍처 및 패키지",
+  "selectDownloadPlatform": "운영체제와 패키지를 선택하면 다운로드할 수 있는 버전이 표시됩니다.",
+  "harbourIntro": "확장 가능한 함대 컬렉션",
+  "harbourTools": "브라우저와 도구.",
+  "downloadTarget": "{target} 다운로드",
+  "originalReleases": "원본 릴리스",
+  "releaseLoadError": "릴리스 정보를 불러올 수 없습니다. 다시 시도하거나 공식 릴리스 페이지를 방문하세요.",
   "language": "한국어",
   "name": "poi",
   "description": "확장 가능한 「함대 컬렉션」 브라우저",

@@ -9,7 +9,6 @@ import { getRequestHeaders } from '@tanstack/react-start/server'
 import { forwardRef, type MouseEvent } from 'react'
 
 import '~/styles/globals.css'
-import { DesktopBackground } from '~/components/desktop-background'
 import { Footer } from '~/components/footer'
 import { Header, type HeaderLinkProps } from '~/components/header'
 import { JotaiRootProvider } from '~/components/jotai-provider'
@@ -146,7 +145,7 @@ export const Route = createRootRouteWithContext<TanStackRouterContext>()({
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
-  const { isMobile, theme, themePreference } = Route.useLoaderData()
+  const { theme, themePreference } = Route.useLoaderData()
   const locale = getLocale()
 
   return (
@@ -164,8 +163,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         {theme === 'dark' && (
           <script
             dangerouslySetInnerHTML={{
-              __html:
-                "document.documentElement.classList.add('dark');document.currentScript.remove();",
+              __html: "document.documentElement.classList.add('dark');",
             }}
           />
         )}
@@ -210,8 +208,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             enableSystem
             disableTransitionOnChange
           />
-          <DesktopBackground initialEnabled={!isMobile} />
-          <div className="relative z-0 mx-auto flex min-h-screen max-w-[960px] flex-col items-center justify-center px-4 md:px-8">
+          <div className="site-shell">
             <Header LinkComponent={HeaderLink} />
             {children}
             <Footer />

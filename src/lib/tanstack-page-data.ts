@@ -16,6 +16,7 @@ import {
   detectRequestPlatform,
   getDownloadLink,
   type RequestPlatformResult,
+  Target,
 } from '~/lib/target'
 import { getLocale } from '~/paraglide/runtime'
 import { type TanStackRouterContext } from '~/routes/__root'
@@ -30,6 +31,11 @@ const exploreContentByLocale = import.meta.glob<string>(
 )
 
 const exploreHtmlByLocale = new Map<SupportedLocale, string>()
+
+// Upstream no longer supports 32-bit Windows.
+const supportedTargets = Object.values(Target).filter(
+  (target) => target !== Target.win32 && target !== Target.win32Setup,
+)
 
 type ServerContext = NonNullable<TanStackRouterContext['serverContext']>
 type RequestAwareContext = ServerContext | TanStackRouterContext
@@ -65,12 +71,20 @@ const loadPoiVersions = async (env?: ServerContext['env']) => {
 const buildDownloadData = (
   poiVersions: PoiVersions,
   platform: RequestPlatformResult,
+  stableTargets: Target[],
+  betaTargets: Target[],
 ) => ({
-  betaUrl: getDownloadLink(poiVersions.betaVersion, platform.target),
+  betaUrl: betaTargets.includes(platform.target)
+    ? getDownloadLink(poiVersions.betaVersion, platform.target)
+    : 'https://github.com/poooi/poi/releases',
+  stableTargets,
+  betaTargets,
   platform,
   poiVersions,
   showBeta: compare(poiVersions.version, poiVersions.betaVersion, '<'),
-  stableUrl: getDownloadLink(poiVersions.version, platform.target),
+  stableUrl: stableTargets.includes(platform.target)
+    ? getDownloadLink(poiVersions.version, platform.target)
+    : 'https://github.com/poooi/poi/releases',
 })
 
 export const requireSupportedLocale = (locale: string): SupportedLocale => {
@@ -97,7 +111,12 @@ export const loadRequestAwarePageData = async (
     detectRequestPlatform(headers),
   ])
 
-  return buildDownloadData(poiVersions, platform)
+  return buildDownloadData(
+    poiVersions,
+    platform,
+    supportedTargets,
+    supportedTargets,
+  )
 }
 
 export const loadExploreHtml = async (locale: string = getLocale()) => {

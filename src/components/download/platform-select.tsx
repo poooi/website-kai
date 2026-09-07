@@ -10,21 +10,29 @@ import { Button } from '~/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
 import { getPlatformLabels, getPlatformSpecLabel } from '~/lib/platform-labels'
-import { OS, type PlatformSpec, platformToTarget } from '~/lib/target'
+import {
+  OS,
+  type PlatformSpec,
+  platformToTarget,
+  type Target,
+} from '~/lib/target'
 import { m } from '~/paraglide/messages'
 
 interface PlatformSelectProps {
   initialOS?: OS
   initialSpec?: PlatformSpec
+  availableTargets: Target[]
 }
 
 export const PlatformSelect = ({
   initialOS,
   initialSpec,
+  availableTargets,
 }: PlatformSelectProps) => {
   useHydrateAtoms([
     [osAtom, initialOS],
@@ -40,16 +48,27 @@ export const PlatformSelect = ({
     value: os,
   }))
 
-  const specOptions = Object.keys(platformToTarget[os!] ?? {}).map((spec) => ({
-    label: getPlatformSpecLabel(os!, spec as PlatformSpec),
-    value: spec,
-  }))
+  const specOptions = Object.keys(platformToTarget[os!] ?? {})
+    .filter((spec) => {
+      const target = platformToTarget[os!]?.[spec as PlatformSpec]
+      return target !== undefined && availableTargets.includes(target)
+    })
+    .map((spec) => ({
+      label: getPlatformSpecLabel(os!, spec as PlatformSpec),
+      value: spec,
+    }))
 
   return (
-    <div className="grid w-fit grid-cols-2 gap-4" data-testid="platform-select">
-      <div>{m.operatingSystem()}</div>
-      <div>
+    <div className="flex min-w-0 flex-col gap-7" data-testid="platform-select">
+      <div className="flex flex-col gap-3">
+        <span
+          id="download-os-label"
+          className="text-sm font-medium text-muted-foreground"
+        >
+          {m.operatingSystem()}
+        </span>
         <ComboBox
+          labelledBy="download-os-label"
           placeholder={m.operatingSystem()}
           value={os as string}
           options={osOptions}
@@ -59,9 +78,15 @@ export const PlatformSelect = ({
           }}
         />
       </div>
-      <div>{m.platform()}</div>
-      <div>
+      <div className="flex flex-col gap-3">
+        <span
+          id="download-package-label"
+          className="text-sm font-medium text-muted-foreground"
+        >
+          {m.downloadPackage()}
+        </span>
         <ComboBox
+          labelledBy="download-package-label"
           placeholder={m.platform()}
           value={spec as string}
           options={specOptions}
@@ -81,6 +106,7 @@ interface ComboBoxProps {
   onChange: (value: string) => void
   disabled?: boolean
   placeholder: string
+  labelledBy: string
 }
 
 const ComboBox = ({
@@ -89,6 +115,7 @@ const ComboBox = ({
   options,
   placeholder,
   value,
+  labelledBy,
 }: ComboBoxProps) => {
   const currentLabel =
     options.find((option) => option.value === value)?.label ?? placeholder
@@ -98,23 +125,34 @@ const ComboBox = ({
         <Button
           variant="outline"
           disabled={disabled}
-          className="w-80 max-w-full justify-between"
-          aria-label={currentLabel}
+          className="h-auto min-h-12 w-full justify-between gap-3 bg-background px-4 py-3 text-base font-normal"
+          aria-labelledby={labelledBy + ' ' + labelledBy + '-value'}
           title={currentLabel}
         >
-          <span className="min-w-0 grow truncate text-end">{currentLabel}</span>
+          <span
+            id={labelledBy + '-value'}
+            className="min-w-0 grow whitespace-normal text-left"
+          >
+            {currentLabel}
+          </span>
           <ChevronsUpDown className="ml-3 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-80 max-w-[calc(100vw-2rem)]">
-        {options.map((option) => (
-          <DropdownMenuItem
-            key={option.value}
-            onSelect={() => onChange(option.value)}
-          >
-            {option.label}
-          </DropdownMenuItem>
-        ))}
+      <DropdownMenuContent
+        align="start"
+        className="w-[var(--radix-dropdown-menu-trigger-width)] max-w-[calc(100vw-2rem)]"
+      >
+        <DropdownMenuRadioGroup value={value ?? ''} onValueChange={onChange}>
+          {options.map((option) => (
+            <DropdownMenuRadioItem
+              key={option.value}
+              value={option.value}
+              className="py-3"
+            >
+              {option.label}
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   )
