@@ -85,7 +85,7 @@ export const DownloadLinks = ({
               </p>
               <h2
                 id={channel + '-version'}
-                className="break-all font-mono text-2xl font-medium tracking-tight"
+                className="font-mono text-2xl font-medium tracking-tight break-all"
               >
                 {version}
               </h2>
@@ -115,7 +115,7 @@ export const DownloadLinks = ({
       })}
       <Link
         to="/changelog"
-        className="decoration-current/40 col-span-full inline-flex w-fit items-center gap-2 text-sm text-primary underline underline-offset-4 hover:decoration-current"
+        className="col-span-full inline-flex w-fit items-center gap-2 text-sm text-primary underline decoration-current/40 underline-offset-4 hover:decoration-current"
       >
         {m.changelog()}
         <ArrowRight className="h-4 w-4" aria-hidden="true" />

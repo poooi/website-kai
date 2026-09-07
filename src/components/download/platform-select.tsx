@@ -131,7 +131,7 @@ const ComboBox = ({
         >
           <span
             id={labelledBy + '-value'}
-            className="min-w-0 grow whitespace-normal text-left"
+            className="min-w-0 grow text-left whitespace-normal"
           >
             {currentLabel}
           </span>

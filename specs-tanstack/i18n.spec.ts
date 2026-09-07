@@ -250,6 +250,17 @@ test('keeps layout coherent across routes with prose typography', async ({
   await expect(page.getByRole('main')).toBeVisible()
   await expect(page.getByRole('main')).not.toHaveClass(/harbour-home/)
 
+  const title = page.getByRole('heading', { level: 1, name: 'Download' })
+  for (const [width, fontSize, lineHeight] of [
+    [390, '36px', '45px'],
+    [768, '48px', '60px'],
+    [1440, '60px', '60px'],
+  ] as const) {
+    await page.setViewportSize({ width, height: 900 })
+    await expect(title).toHaveCSS('font-size', fontSize)
+    await expect(title).toHaveCSS('line-height', lineHeight)
+  }
+
   await page.goto('/en/explore')
   await expect(page.locator('main.prose')).toHaveCount(0)
   await expect(page.getByRole('main')).toBeVisible()
