@@ -1,5 +1,25 @@
 import { expect, test } from '@playwright/test'
 
+test('keeps the home release error readable above the persistent map', async ({
+  page,
+}) => {
+  await page.goto('/en/explore', { waitUntil: 'networkidle' })
+  await page.route('**/_serverFn/**', (route) => route.abort())
+  await page.getByRole('link', { name: 'Return to home page' }).click()
+
+  const main = page.locator('main')
+  await expect(main.getByRole('alert')).toContainText(
+    'Release information could not be loaded.',
+  )
+  await expect(
+    main.getByRole('link', { name: 'Releases on GitHub' }),
+  ).toHaveAttribute('href', 'https://github.com/poooi/poi/releases')
+  await expect(page.locator('.harbour-chart object')).toHaveCount(1)
+  await expect(main).toHaveCSS('position', 'relative')
+  await expect(main).toHaveCSS('z-index', '10')
+  await expect(main).toHaveCSS('background-color', 'rgb(245, 240, 224)')
+})
+
 test('loads release versions on the server during client navigation', async ({
   page,
 }) => {
