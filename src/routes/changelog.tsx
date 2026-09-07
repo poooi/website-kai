@@ -39,6 +39,7 @@ function ChangelogPage() {
       {changelog ? (
         // Markdown is sanitized on the server before entering the route data.
         <PageProse
+          className="prose-h2:border-b prose-h2:pb-4 prose-h2:font-mono prose-h2:text-xl"
           lang={changelog.language}
           dangerouslySetInnerHTML={{ __html: changelog.html }}
         />

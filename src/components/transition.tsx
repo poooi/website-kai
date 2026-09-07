@@ -15,7 +15,7 @@ type TransitionProps = Omit<HTMLMotionProps<'main'>, 'variant'> & {
 }
 
 const pageLayout =
-  'mx-auto w-full max-w-[960px] flex-1 px-8 pt-12 pb-[72px] max-[700px]:px-[6%] max-[700px]:pt-8 max-[700px]:pb-12'
+  'mx-auto w-full max-w-7xl flex-1 px-6 pb-20 pt-10 sm:px-10 sm:pt-14 lg:px-16'
 
 export const Transition = ({
   children,

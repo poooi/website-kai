@@ -8,7 +8,7 @@ export const PageHeader = ({
   children?: ReactNode
 }) => (
   <header className="mb-10 border-b pb-8 sm:mb-12 sm:pb-10">
-    <h1 className="m-0 text-4xl font-semibold leading-tight tracking-tight sm:text-5xl sm:leading-tight">
+    <h1 className="m-0 text-4xl font-medium leading-tight tracking-tight sm:text-5xl sm:leading-tight lg:text-6xl">
       {title}
     </h1>
     {children && (

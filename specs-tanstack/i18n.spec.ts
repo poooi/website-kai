@@ -109,13 +109,17 @@ test('serves localized non-default content', async ({ page }) => {
 
 test('serves localized download and explore pages', async ({ page }) => {
   await page.goto('/en/download')
-  await expect(page.getByRole('heading', { name: 'Download' })).toBeVisible()
-  await expect(page.getByRole('heading', { name: 'Others' })).toBeVisible()
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Download' }),
+  ).toBeVisible()
+  await expect(
+    page.getByRole('heading', { name: 'More downloads & source' }),
+  ).toBeVisible()
   await expect(page.getByRole('link', { name: 'Nightly builds' })).toBeVisible()
   await expect(page.getByRole('link', { name: 'Source code' })).toBeVisible()
 
   await page.goto('/en/explore')
-  await expect(page.getByRole('heading', { name: 'what is poi' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'About poi' })).toBeVisible()
 })
 
 test('serves script-cased Chinese localized download pages', async ({
@@ -124,14 +128,18 @@ test('serves script-cased Chinese localized download pages', async ({
   const simplifiedResponse = await page.goto('/zh-Hans/download')
   expect(simplifiedResponse?.status()).toBe(200)
   await expect(page.locator('html')).toHaveAttribute('lang', 'zh-Hans')
-  await expect(page.getByRole('heading', { name: '下载' })).toBeVisible()
+  await expect(
+    page.getByRole('heading', { level: 1, name: '下载' }),
+  ).toBeVisible()
   await expect(page.getByRole('link', { name: '每夜构建' })).toBeVisible()
 
   const traditionalResponse = await page.goto('/zh-Hant/download')
   expect(traditionalResponse?.status()).toBe(200)
   await expect(page.locator('html')).toHaveAttribute('lang', 'zh-Hant')
-  await expect(page.getByRole('heading', { name: '下載' })).toBeVisible()
-  await expect(page.getByRole('link', { name: '每夜構建' })).toBeVisible()
+  await expect(
+    page.getByRole('heading', { level: 1, name: '下載' }),
+  ).toBeVisible()
+  await expect(page.getByRole('link', { name: '每日建置版' })).toBeVisible()
 })
 
 test('serves framework-neutral header navigation controls', async ({
@@ -246,7 +254,7 @@ test('keeps layout coherent across routes with prose typography', async ({
   await expect(page.locator('main.prose')).toHaveCount(0)
   await expect(page.getByRole('main')).toBeVisible()
   const exploreContent = page.getByRole('heading', {
-    name: 'what is poi',
+    name: 'About poi',
   })
   await expect(exploreContent).toBeVisible()
   await expect(
@@ -623,7 +631,7 @@ test('renders mobile request-aware hint without download links', async ({
 
   await page.goto('/en')
   await expect(
-    page.getByText('poi is designed for desktop devices'),
+    page.getByText('poi is a desktop app for Windows, macOS and Linux.'),
   ).toBeVisible()
   await expect(page.getByRole('main').locator('a[href^="/dist/"]')).toHaveCount(
     0,
@@ -631,7 +639,7 @@ test('renders mobile request-aware hint without download links', async ({
 
   await page.goto('/en/download')
   await expect(
-    page.getByText('poi is designed for desktop devices'),
+    page.getByText('poi is a desktop app for Windows, macOS and Linux.'),
   ).toBeVisible()
   await expect(page.getByRole('main').locator('a[href^="/dist/"]')).toHaveCount(
     0,
