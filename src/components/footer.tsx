@@ -58,11 +58,11 @@ const footerItems: FooterItem[] = [
 export const Footer = () => {
   const language = getLocale()
   return (
-    <footer className="site-footer">
+    <footer className="mx-[2.7%] flex min-h-[62px] items-center justify-between gap-5 border-t border-border py-4 text-sm/normal text-muted-foreground max-[700px]:mx-[6%] max-[700px]:flex-wrap max-[700px]:gap-3 max-[700px]:text-xs/normal">
       <span className="shrink-0">
         © {new Date().getFullYear()} poi Contributors
       </span>
-      <div className="items-center">
+      <div className="flex flex-wrap items-center gap-6 max-[700px]:gap-4">
         {footerItems
           .filter(({ applyLocales, skipLocales }) => {
             if (applyLocales) return applyLocales.includes(language)
@@ -71,7 +71,7 @@ export const Footer = () => {
           })
           .map(({ url, icon: Icon, text }) => (
             <a
-              className="inline-flex items-center gap-1.5 whitespace-nowrap"
+              className="inline-flex items-center gap-1.5 whitespace-nowrap hover:underline hover:underline-offset-[5px]"
               href={url}
               key={url}
               target="_blank"

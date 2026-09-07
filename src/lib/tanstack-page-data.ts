@@ -1,4 +1,8 @@
-import { createServerOnlyFn } from '@tanstack/react-start'
+import {
+  createIsomorphicFn,
+  createServerFn,
+  createServerOnlyFn,
+} from '@tanstack/react-start'
 import { getRequestHeaders } from '@tanstack/react-start/server'
 import { compare } from 'compare-versions'
 import sanitize from 'rehype-sanitize'
@@ -68,6 +72,14 @@ const loadPoiVersions = async (env?: ServerContext['env']) => {
   return await fetchPoiVersions()
 }
 
+const loadPoiVersionsFromServer = createServerFn({ method: 'GET' }).handler(
+  async () => loadPoiVersions(),
+)
+
+const loadPoiVersionsForRequest = createIsomorphicFn()
+  .server(async (env?: ServerContext['env']) => loadPoiVersions(env))
+  .client(async (_env?: ServerContext['env']) => loadPoiVersionsFromServer())
+
 const buildDownloadData = (
   poiVersions: PoiVersions,
   platform: RequestPlatformResult,
@@ -107,7 +119,7 @@ export const loadRequestAwarePageData = async (
       ? getCurrentRequestHeaders()
       : new Headers()
   const [poiVersions, platform] = await Promise.all([
-    loadPoiVersions(serverContext?.env),
+    loadPoiVersionsForRequest(serverContext?.env),
     detectRequestPlatform(headers),
   ])
 

@@ -160,6 +160,11 @@ test('serves framework-neutral header navigation controls', async ({
 test('keeps harbour map present through client navigation without a reload', async ({
   page,
 }) => {
+  const mapRequests: string[] = []
+  page.on('request', (request) => {
+    if (/\/assets\/maizuru-[^/]+\.svg$/.test(new URL(request.url()).pathname))
+      mapRequests.push(request.url())
+  })
   await page.goto('/en')
   const header = page.getByRole('banner')
   const harbourMap = page.locator('.harbour-chart object')
@@ -176,13 +181,17 @@ test('keeps harbour map present through client navigation without a reload', asy
     .toBe(true)
   const headerGeometryBefore = await header.boundingBox()
   const timeOriginBefore = await page.evaluate(() => performance.timeOrigin)
+  const mapDocument = await harbourMap.evaluateHandle(
+    (object: HTMLObjectElement) => object.contentDocument,
+  )
 
   await header.getByRole('link', { name: 'Download', exact: true }).click()
   await expect(page).toHaveURL('http://127.0.0.1:3002/en/download')
   await expect(
     page.getByRole('heading', { level: 1, name: 'Download' }),
   ).toBeVisible()
-  await expect(harbourMap).toHaveCount(0)
+  await expect(harbourMap).toHaveCount(1)
+  await expect(harbourMap).toBeHidden()
 
   await header.getByRole('link', { name: 'Return to home page' }).click()
   await expect(page).toHaveURL('http://127.0.0.1:3002/en')
@@ -199,6 +208,19 @@ test('keeps harbour map present through client navigation without a reload', asy
   expect(await page.evaluate(() => performance.timeOrigin)).toBe(
     timeOriginBefore,
   )
+  expect(
+    await harbourMap.evaluate(
+      (object: HTMLObjectElement, previousDocument) =>
+        object.contentDocument === previousDocument,
+      mapDocument,
+    ),
+  ).toBe(true)
+  expect(mapRequests).toHaveLength(1)
+  const mapResponse = await page.request.get(mapRequests[0]!)
+  expect(mapResponse.headers()['cache-control']).toBe(
+    'public,max-age=31536000,immutable',
+  )
+  await mapDocument.dispose()
 
   const headerGeometryAfter = await header.boundingBox()
   expect(headerGeometryAfter?.width).toBe(headerGeometryBefore?.width)
@@ -538,6 +560,9 @@ test('renders desktop request-aware download links', async ({ browser }) => {
 
   await page.getByRole('link', { name: 'Download options' }).click()
   await expect(page).toHaveURL('http://127.0.0.1:3002/en/download')
+  await expect(
+    main.getByRole('heading', { level: 1, name: 'Download' }),
+  ).toBeVisible()
   const stableSection = main.locator('section').filter({ hasText: 'v10.9.2' })
   const betaSection = main
     .locator('section')
