@@ -43,12 +43,7 @@ export const changelogFilename = (
   channel: ChangelogChannel,
 ) => `${language}${channel === 'beta' ? '-beta' : ''}.md`
 
-export const changelogApiPath = (channel: ChangelogChannel, locale: string) =>
-  `/api/changelog/${channel}?locale=${encodeURIComponent(locale)}`
-
 export const changelogSchema = z.object({
   html: z.string(),
   language: z.string(),
 })
-
-export type Changelog = z.infer<typeof changelogSchema>

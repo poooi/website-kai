@@ -5,7 +5,7 @@ import poiLogo from '~/assets/poi.png'
 import { DownloadError } from '~/components/download/download-error'
 import { Transition } from '~/components/transition'
 import { getPlatformSpecLabel } from '~/lib/platform-labels'
-import { loadRequestAwarePageData } from '~/lib/tanstack-page-data'
+import { loadRequestAwarePageData } from '~/lib/page-data'
 import { m } from '~/paraglide/messages'
 
 export const Route = createFileRoute('/')({

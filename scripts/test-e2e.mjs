@@ -18,7 +18,7 @@ await execa('vite', ['build', '--config', 'vite.config.ts'], {
   env,
   stdio: 'inherit',
 })
-await execa('playwright', ['test', '--config=playwright.tanstack.config.ts'], {
+await execa('playwright', ['test', '--config=playwright.config.ts'], {
   env,
   stdio: 'inherit',
 })

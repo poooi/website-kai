@@ -6,7 +6,7 @@ import { DownloadError } from '~/components/download/download-error'
 import { PlatformSelect } from '~/components/download/platform-select'
 import { Transition } from '~/components/transition'
 import { PageHeader } from '~/components/page-header'
-import { loadRequestAwarePageData } from '~/lib/tanstack-page-data'
+import { loadRequestAwarePageData } from '~/lib/page-data'
 import { m } from '~/paraglide/messages'
 
 export const Route = createFileRoute('/download')({
