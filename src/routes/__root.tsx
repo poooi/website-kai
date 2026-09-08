@@ -10,6 +10,7 @@ import { getRequestHeaders } from '@tanstack/react-start/server'
 import { forwardRef, useEffect, useState, type MouseEvent } from 'react'
 
 import '~/styles/globals.css'
+import poiLogo from '~/assets/poi.svg?url'
 import { Footer } from '~/components/footer'
 import { HarbourMap } from '~/components/harbour-map'
 import { Header, type HeaderLinkProps } from '~/components/header'
@@ -119,7 +120,7 @@ export const Route = createRootRoute({
         content: socialImageContentType,
       },
     ],
-    links: [{ rel: 'icon', href: '/favicon.ico' }],
+    links: [{ rel: 'icon', href: poiLogo, type: 'image/svg+xml' }],
   }),
   shellComponent: RootDocument,
 })

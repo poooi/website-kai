@@ -8,7 +8,7 @@ import {
   withSocialImageHeaders,
 } from './social-image-constants'
 
-const socialImageLogoPath = '/social/poi.png'
+const socialImageLogoPath = '/social/poi.svg'
 const socialImageFontPath = '/social/IBMPlexSans-SemiBold.woff'
 
 type FetchAsset = (pathname: string) => Promise<Response>
@@ -53,7 +53,8 @@ const loadSocialImageInputs = (fetchAsset: FetchAsset) => {
       response.arrayBuffer(),
     ),
     readAsset(fetchAsset, socialImageLogoPath).then(async (response) => {
-      const contentType = response.headers.get('Content-Type') ?? 'image/png'
+      const contentType =
+        response.headers.get('Content-Type') ?? 'image/svg+xml'
       return `data:${contentType};base64,${arrayBufferToBase64(
         await response.arrayBuffer(),
       )}`

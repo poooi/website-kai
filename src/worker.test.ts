@@ -66,7 +66,7 @@ beforeEach(() => {
   mocks.createSocialImageResponse.mockReset()
   mocks.createSocialImageResponse.mockImplementation(async (fetchAsset) => {
     await Promise.all(
-      ['/social/IBMPlexSans-SemiBold.woff', '/social/poi.png'].map(fetchAsset),
+      ['/social/IBMPlexSans-SemiBold.woff', '/social/poi.svg'].map(fetchAsset),
     )
     return new Response(new Uint8Array([0x89, 0x50, 0x4e, 0x47]), {
       headers: {
@@ -206,10 +206,10 @@ describe('handleWorkerRequest', () => {
         expect(hash).toBe('')
         expect(request.headers.get('If-None-Match')).toBeNull()
         expect(request.headers.get('If-Modified-Since')).toBeNull()
-        if (pathname === '/social/poi.png') {
-          return new Response(new Uint8Array([0x89, 0x50, 0x4e, 0x47]), {
+        if (pathname === '/social/poi.svg') {
+          return new Response('<svg xmlns="http://www.w3.org/2000/svg"/>', {
             headers: {
-              'Content-Type': 'image/png',
+              'Content-Type': 'image/svg+xml',
             },
           })
         }

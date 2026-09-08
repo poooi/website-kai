@@ -35,7 +35,7 @@ test('keeps the mobile layout stable when web fonts arrive late', async ({
           .locator('.harbour-home img')
           .evaluate((image: HTMLImageElement) => image.currentSrc),
       )
-      .toContain('/assets/poi-200-')
+      .toMatch(/\/assets\/poi-[^/]+\.svg$/)
     // Let the optional font's short blocking period and page entrance finish.
     await page.waitForTimeout(1000)
     const chart = page.locator('.harbour-chart')
