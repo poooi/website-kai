@@ -8,7 +8,7 @@ import { createSocialImageResponseWithWasm } from './social-image-renderer'
 
 const pngSignature = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]
 const assetPaths = new Map([
-  ['/social/poi.png', ['src', 'assets', 'poi.png']],
+  ['/social/poi.svg', ['src', 'assets', 'poi.svg']],
   [
     '/social/IBMPlexSans-SemiBold.woff',
     [
@@ -29,7 +29,7 @@ const assetPaths = new Map([
 ])
 
 describe('createSocialImageResponse', () => {
-  it('generates the Next-era social card as a PNG', async () => {
+  it('generates the social card with the vector logo as a PNG', async () => {
     const wasmInput = await readFile(
       path.join(process.cwd(), ...assetPaths.get('/social/resvg.wasm')!),
     )

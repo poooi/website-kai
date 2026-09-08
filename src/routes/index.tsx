@@ -1,8 +1,7 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { ArrowDownToLine, ArrowRight } from 'lucide-react'
 
-import poiLogo from '~/assets/poi.png?url'
-import poiLogoSmall from '~/assets/poi-200.png?url'
+import poiLogo from '~/assets/poi.svg?url'
 import { DownloadError } from '~/components/download/download-error'
 import { Transition } from '~/components/transition'
 import { getPlatformSpecLabel } from '~/lib/platform-labels'
@@ -36,8 +35,6 @@ function HomePage() {
         <div className="flex items-center gap-[22px] max-[700px]:gap-[18px]">
           <img
             src={poiLogo}
-            srcSet={`${poiLogoSmall} 200w, ${poiLogo} 300w`}
-            sizes="(max-width: 700px) 95px, (max-width: 1111px) 100px, (min-width: 1667px) 150px, 9vw"
             alt=""
             width="140"
             height="140"

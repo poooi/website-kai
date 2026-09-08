@@ -83,7 +83,7 @@ export default defineConfig({
           },
         ]),
         {
-          src: 'src/assets/poi.png',
+          src: 'src/assets/poi.svg',
           dest: 'social',
           rename: { stripBase: true as const },
         },

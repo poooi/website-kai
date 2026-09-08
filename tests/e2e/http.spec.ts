@@ -15,6 +15,15 @@ test('renders the isolated TanStack preview route', async ({ page }) => {
   const response = await page.goto('/')
 
   await expect(page.getByRole('heading', { name: 'poi' })).toBeVisible()
+  const logo = page.locator('.harbour-home img')
+  await expect(logo).toHaveAttribute('src', /\/assets\/poi-[^/]+\.svg$/)
+  await expect(page.locator('link[rel="icon"]')).toHaveAttribute(
+    'href',
+    (await logo.getAttribute('src'))!,
+  )
+  await expect
+    .poll(() => logo.evaluate((image: HTMLImageElement) => image.naturalWidth))
+    .toBeGreaterThan(0)
   await expect(page.getByText(/拡張可能/)).toBeVisible()
   await expect(
     page.getByRole('link', { name: 'ダウンロードオプション' }),
