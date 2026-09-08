@@ -14,6 +14,8 @@ const withAssetHeaders = (response: Response, request: Request) => {
   const { pathname } = new URL(request.url)
   if (pathname.startsWith('/assets/')) {
     headers.set('Cache-Control', 'public,max-age=31536000,immutable')
+  } else if (pathname.startsWith('/fonts/')) {
+    headers.set('Cache-Control', 'public,max-age=604800')
   } else {
     headers.set('Cache-Control', 'public,max-age=3600')
   }

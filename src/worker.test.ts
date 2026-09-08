@@ -150,6 +150,7 @@ describe('handleWorkerRequest', () => {
 
   it.each([
     ['/robots.txt', 'public,max-age=3600'],
+    ['/fonts/plex-sans/IBMPlexSans-Regular.css', 'public,max-age=604800'],
     ['/assets/app.abc123.js', 'public,max-age=31536000,immutable'],
   ])(
     'serves asset %s before TanStack with cache headers',
