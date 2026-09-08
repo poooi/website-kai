@@ -32,7 +32,7 @@
     <clipPath id="hair-paint"><use href="#hair-silhouette"/></clipPath>
     <path id="hair-clip-silhouette" d="M453 320L498 288Q502 285 506 289L538 317Q541 321 538 325C532 334 525 343 519 348Q516 351 512 349C490 344 468 333 453 320Z"/>
     <clipPath id="hair-clip-paint"><use href="#hair-clip-silhouette"/></clipPath>
-    <path id="finger-silhouette" d="M294 601C299 579 302 556 313 538C321 523 332 525 339 539C345 551 344 558 335 560L336 610Z"/>
+    <path id="finger-silhouette" d="M294 601C299 579 302 556 313 538C321 523 332 525 339 539C345 551 344 558 338 560Q334 561 334 564L336 610Z"/>
     <clipPath id="finger-paint"><use href="#finger-silhouette"/></clipPath>
     <path id="face-silhouette" d="M180 260C255 190 395 185 490 240C530 274 555 345 576 377C601 363 624 373 638 391C654 411 650 441 630 460C614 474 592 483 576 476C573 475 572 478 570 480C548 501 514 516 464 529C408 547 336 554 276 549C229 549 190 541 175 522C162 505 173 489 183 479Q186 476 185 471C182 451 179 420 183 392Z"/>
     <clipPath id="portrait-opening">
@@ -108,6 +108,7 @@
       <use href="#sleeve-cuff-silhouette" fill="none" stroke="#440300" stroke-width="6"/>
     </g>
       </g>
+      <path id="collar-root-contact" fill="#440300" stroke="none" d="M505 529L514 521L511 533Z"/>
       <g id="scarf-tail">
       <use href="#scarf-tail-silhouette" fill="#fff" stroke="none"/>
       <g clip-path="url(#scarf-tail-paint)">
