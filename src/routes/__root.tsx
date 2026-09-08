@@ -1,7 +1,7 @@
 import {
   HeadContent,
   Scripts,
-  createRootRouteWithContext,
+  createRootRoute,
   useNavigate,
   useRouterState,
 } from '@tanstack/react-router'
@@ -63,34 +63,12 @@ const HeaderLink = forwardRef<HTMLAnchorElement, HeaderLinkProps>(
 )
 HeaderLink.displayName = 'HeaderLink'
 
-const getCurrentRequestHeadersForRoot = (context: TanStackRouterContext) => {
-  const requestHeaders =
-    context.serverContext?.requestHeaders ?? context.requestHeaders
-  if (requestHeaders) {
-    return new Headers(requestHeaders)
-  }
-
-  return typeof document === 'undefined'
-    ? getCurrentRequestHeaders()
-    : new Headers()
-}
-
-export interface TanStackRouterContext {
-  env?: {
-    TANSTACK_TEST_POI_VERSIONS?: string
-  }
-  requestHeaders?: [string, string][]
-  serverContext?: {
-    env?: {
-      TANSTACK_TEST_POI_VERSIONS?: string
-    }
-    requestHeaders?: [string, string][]
-  }
-}
-
-export const Route = createRootRouteWithContext<TanStackRouterContext>()({
-  loader: async ({ context }) => {
-    const headers = getCurrentRequestHeadersForRoot(context)
+export const Route = createRootRoute({
+  loader: async () => {
+    const headers =
+      typeof document === 'undefined'
+        ? getCurrentRequestHeaders()
+        : new Headers()
     return {
       isMobile: await isMobileDevice(headers),
       theme: resolveServerTheme(headers),

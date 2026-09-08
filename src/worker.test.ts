@@ -8,13 +8,7 @@ const mocks = vi.hoisted(() => ({
         resolve: () => Promise<Response>,
       ) => Response | Promise<Response>
     >(),
-  startFetch:
-    vi.fn<
-      (
-        request: Request,
-        options: { context: { requestHeaders: [string, string][] } },
-      ) => Promise<Response>
-    >(),
+  startFetch: vi.fn<(request: Request) => Promise<Response>>(),
   createSocialImageResponse:
     vi.fn<
       (fetchAsset: (pathname: string) => Promise<Response>) => Promise<Response>
@@ -49,10 +43,6 @@ type AssetsFetchForTest = NonNullable<WorkerEnvForTest['ASSETS']>['fetch']
 
 const makeRequest = (path: string, init?: RequestInit) =>
   new Request(`https://poi.moe${path}`, init)
-
-const makeCtx = () => ({
-  waitUntil: vi.fn(),
-})
 
 const makeEnv = (fetch?: AssetsFetchForTest): WorkerEnvForTest => ({
   ASSETS: fetch
@@ -94,7 +84,6 @@ describe('handleWorkerRequest', () => {
         headers: { 'Accept-Language': 'fr' },
       }),
       makeEnv(),
-      makeCtx(),
     )
     expect(response.status).toBe(200)
     expect(await response.text()).toBe('start:/_serverFn/changelog')
@@ -111,7 +100,6 @@ describe('handleWorkerRequest', () => {
           },
         }),
         makeEnv(),
-        makeCtx(),
       )
 
       expect(response.status).toBe(404)
@@ -124,7 +112,6 @@ describe('handleWorkerRequest', () => {
     const response = await handleWorkerRequest(
       makeRequest('/ja/download/'),
       makeEnv(),
-      makeCtx(),
     )
 
     expect(response.status).toBe(308)
@@ -140,7 +127,6 @@ describe('handleWorkerRequest', () => {
         },
       }),
       makeEnv(),
-      makeCtx(),
     )
 
     expect(response.status).toBe(307)
@@ -155,11 +141,7 @@ describe('handleWorkerRequest', () => {
   it.each(['/missing', '/en/missing', '/xx/download', '/fr/download/extra'])(
     'returns 404 for unknown localized page path %s',
     async (path) => {
-      const response = await handleWorkerRequest(
-        makeRequest(path),
-        makeEnv(),
-        makeCtx(),
-      )
+      const response = await handleWorkerRequest(makeRequest(path), makeEnv())
 
       expect(response.status).toBe(404)
       expect(mocks.startFetch).not.toHaveBeenCalled()
@@ -176,7 +158,6 @@ describe('handleWorkerRequest', () => {
       const response = await handleWorkerRequest(
         makeRequest(path),
         makeEnv(assetFetch),
-        makeCtx(),
       )
 
       expect(response.status).toBe(200)
@@ -191,7 +172,6 @@ describe('handleWorkerRequest', () => {
     const response = await handleWorkerRequest(
       makeRequest('/favicon.ico'),
       makeEnv(async () => new Response('', { status: 404 })),
-      makeCtx(),
     )
 
     expect(response.status).toBe(200)
@@ -203,7 +183,6 @@ describe('handleWorkerRequest', () => {
     const response = await handleWorkerRequest(
       makeRequest('/opengraph-image', { method: 'HEAD' }),
       makeEnv(vi.fn()),
-      makeCtx(),
     )
 
     expect(response.status).toBe(200)
@@ -243,7 +222,6 @@ describe('handleWorkerRequest', () => {
           },
         }),
         makeEnv(assetFetch),
-        makeCtx(),
       )
 
       expect(response.status).toBe(200)
@@ -255,7 +233,7 @@ describe('handleWorkerRequest', () => {
     },
   )
 
-  it('normalizes monitoring slash routes before calling TanStack', async () => {
+  it('passes monitoring requests and their headers to TanStack', async () => {
     await handleWorkerRequest(
       makeRequest('/api/monitoring/', {
         headers: {
@@ -263,16 +241,12 @@ describe('handleWorkerRequest', () => {
         },
       }),
       makeEnv(),
-      makeCtx(),
     )
 
     expect(mocks.startFetch).toHaveBeenCalledOnce()
-    const [request, options] = mocks.startFetch.mock.calls[0]!
-    expect(new URL(request.url).pathname).toBe('/api/monitoring')
-    expect(options.context.requestHeaders).toContainEqual([
-      'x-unit-test',
-      'monitoring',
-    ])
+    const [request] = mocks.startFetch.mock.calls[0]!
+    expect(new URL(request.url).pathname).toBe('/api/monitoring/')
+    expect(request.headers.get('X-Unit-Test')).toBe('monitoring')
     expect(mocks.paraglideMiddleware).not.toHaveBeenCalled()
   })
 
@@ -290,7 +264,6 @@ describe('handleWorkerRequest', () => {
         },
       }),
       makeEnv(),
-      makeCtx(),
     )
 
     expect(middlewareRequest?.headers.get('Sec-Fetch-Dest')).toBeNull()
@@ -309,7 +282,6 @@ describe('handleWorkerRequest', () => {
         },
       }),
       makeEnv(),
-      makeCtx(),
     )
 
     expect(response.status).toBe(200)

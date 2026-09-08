@@ -27,16 +27,16 @@ jobs:
         run: corepack pnpm run typecheck
       - name: Run unit tests
         run: corepack pnpm run test:unit
-      - name: Check TanStack imports
-        run: corepack pnpm run check:tanstack-imports
-      - name: Check TanStack build output
-        run: corepack pnpm run check:tanstack-output
-      - name: Run TanStack Playwright tests
-        run: corepack pnpm run test:e2e:tanstack
+      - name: Check runtime imports
+        run: corepack pnpm run check:imports
+      - name: Check build output
+        run: corepack pnpm run check:build
+      - name: Run Playwright tests
+        run: corepack pnpm run test:e2e
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
           path: |
-            playwright-report-tanstack/
+            playwright-report/
           retention-days: 30

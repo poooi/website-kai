@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Transition } from '~/components/transition'
 import { PageHeader } from '~/components/page-header'
 import { PageProse } from '~/components/page-prose'
-import { loadExploreHtml } from '~/lib/tanstack-page-data'
+import { loadExploreHtml } from '~/lib/page-data'
 import { m } from '~/paraglide/messages'
 
 export const Route = createFileRoute('/explore')({
