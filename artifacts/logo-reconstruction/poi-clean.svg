@@ -10,7 +10,7 @@
       <circle cx="369.2" cy="378.2" r="336" fill="#fff"/>
       <use href="#hair-silhouette" fill="#000" stroke="#000" stroke-width="5" stroke-linejoin="round"/>
     </mask>
-    <path id="hair-contour" d="M112 388L105 399C77 421 43 426 18 418Q14 416 18 414C61 398 96 331 113 278C92 285 62 281 42 269C28 260 18 250 6 237Q4 234 7 232C40 215 64 207 87 204C114 199 144 201 165 210C203 176 253 158 305 147C376 136 454 147 521 172C556 156 601 148 645 159C690 170 714 205 754 225C720 254 661 267 604 256C620 286 625 328 619 366C593 365 568 379 556 404C548 380 532 366 516 358C457 347 411 320 390 224C392 278 400 336 410 368C371 382 332 390 294 384C277 367 271 322 271 261L267 389C230 387 196 393 160 400C154 386 151 367 152.5 350"/>
+    <path id="hair-contour" d="M112 388L105 399C77 421 43 426 18 418Q14 416 18 414C61 398 96 331 113 278C92 285 62 281 42 269C28 260 18 250 6 237Q4 234 7 232C40 215 64 207 87 204C114 199 144 201 165 210C203 176 253 158 305 147C376 136 454 147 521 172C556 156 601 148 645 159C690 170 714 205 754 225C720 254 661 267 604 256C620 286 625 328 619 366C593 365 568 379 556 404C548 380 532 366 516 358C462.9 348.1 420.33 325.24 397.038 250.783M391.5205 251.7394C394.7778 296.9686 401.7 341.44 410 368C371 382 332 390 294 384C279.04 369.04 272.5984 332.3968 271.2678 282.2481M270.34 282L267 389C230 387 196 393 160 400C154 386 151 367 152.5 350"/>
     <clipPath id="rear-hair-paint"><path d="M131 300C121 408 140 474 176 523L206 541L209 419L210 280Z"/></clipPath>
     <path id="sleeve-fabric-silhouette" d="M580 474C597 470 604 480 609 493L619 529C626 549 625 569 609 583C593 596 558 584 543 571C528 558 514 542 514 534C513 520 550 491 580 474Z"/>
     <clipPath id="sleeve-fabric-paint"><use href="#sleeve-fabric-silhouette"/></clipPath>
@@ -34,7 +34,7 @@
     <clipPath id="hair-clip-paint"><use href="#hair-clip-silhouette"/></clipPath>
     <path id="finger-silhouette" d="M294 601C299 579 302 556 313 538C321 523 332 525 339 539C345 551 344 558 335 560L336 610Z"/>
     <clipPath id="finger-paint"><use href="#finger-silhouette"/></clipPath>
-    <path id="face-silhouette" d="M180 260C255 190 395 185 490 240C530 274 555 345 576 377C601 363 624 373 638 391C654 411 650 441 630 460C614 474 592 483 576 476C573 475 572 478 570 480C548 501 514 516 464 529C408 547 336 554 276 549C229 549 190 541 175 522C162 505 174 487 187 476C182 451 179 420 183 392Z"/>
+    <path id="face-silhouette" d="M180 260C255 190 395 185 490 240C530 274 555 345 576 377C601 363 624 373 638 391C654 411 650 441 630 460C614 474 592 483 576 476C573 475 572 478 570 480C548 501 514 516 464 529C408 547 336 554 276 549C229 549 190 541 175 522C162 505 173 489 183 479Q186 476 185 471C182 451 179 420 183 392Z"/>
     <clipPath id="portrait-opening">
       <circle cx="369.2" cy="378.2" r="235.5"/>
     </clipPath>
@@ -112,7 +112,7 @@
       <use href="#scarf-tail-silhouette" fill="#fff" stroke="none"/>
       <g clip-path="url(#scarf-tail-paint)">
         <path id="scarf-tail-root-shadow" fill="#cfc7ba" stroke="none" d="M474 543C487 545 495 547 500 552C512 565 518 581 524 592L531 603C525 600 519 591 511 579C501 563 489 553 477 549Z"/>
-        <path id="sleeve-on-scarf-shadow" fill="#cfc7ba" stroke="none" d="M540 568C548 577 558 587 570 595C579 603 587 608 594 611C593 617 594 622 595 624L602 628L605 594C579 597 556 580 540 568Z"/>
+        <path id="sleeve-on-scarf-shadow" fill="#cfc7ba" stroke="none" d="M540 568C548 577 558 587 570 595C579 603 588 608 592 611C595 614 593 621 595 624Q598 627 602 628L605 594C579 597 556 580 540 568Z"/>
         <path id="scarf-tip-turnback" fill="#cfc7ba" stroke="none" d="M598 615C598 622 598 628 599 633L606 634L607 605Z"/>
         <path id="scarf-tip-fold-shade" fill="#beb7aa" stroke="none" d="M604 615C601 622 602 628 601 634L606 634L607 611Z"/>
         <path id="scarf-tip-open-crease" fill="#fff" stroke="none" d="M597 624C599 624 601 625 603 626C600 626 599 626 597 624ZM598 627C599 630 599 632 598 633L602 633C600 632 600 630 598 627Z"/>
@@ -129,7 +129,7 @@
         <path fill="#fff" stroke="none" d="M333 560C358 569 381 574 404 568C442 555 479 531 510 518C480 542 451 560 419 572C388 582 359 573 333 565Z"/>
         <path id="neck-scarf-diagonal-shadow" fill="#cfc7ba" stroke="none" d="M484 522L518 514C496 533 464 556 435 565C453 550 472 532 484 522Z"/>
         <path id="neck-scarf-crease" fill="#440300" stroke="none" d="M336 555C355 561 376 564 396 560C423 554 445 543 463 537C444 552 424 561 398 565C376 569 353 564 336 558Z"/>
-        <path id="neck-scarf-diagonal-crease" fill="#440300" stroke="none" d="M432 565C445 551 461 539 474 529L484 522C478 533 459 550 443 558Z"/>
+        <path id="neck-scarf-diagonal-crease" fill="#440300" stroke="none" d="M432 565C444 553 460 539 474 529L484 522C479 532 465 543 453 553C445 558 437 562 432 565Z"/>
         <path fill="none" stroke-width="5" d="M330 575C359 584 390 591 420 579C460 563 496 538 526 508"/>
       
       </g>
@@ -189,6 +189,7 @@
     
       </g>
       <use href="#hair-contour" fill="none" stroke="#440300" stroke-width="5" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="2"/>
+      <path id="bang-tapered-tips" fill="#440300" stroke="none" d="M267.78 283C268.5 269 270 254 271 245C271 260 273.5 275 273.8 283ZM389.08 252.8C388.7 240 389.5 228 390 220C391.5 232 395 244 399.73 251L394.95 252.5L394.08 252.4Z"/>
       <path id="side-lock-open-contours" fill="#440300" stroke="none" d="M149.96 351C149 315 158 272 173 239C163 276 155 317 154.96 351ZM109.28 387.7C117 377 124 369 128 366C124 375 118 384 113.48 390.3Z"/>
     </g>
     <g id="hair-clip">
@@ -200,7 +201,7 @@
       </g>
       <use href="#hair-clip-silhouette" fill="none" stroke="#440300" stroke-width="5.5"/>
     </g>
-    <path id="clip-overlap" fill="#440300" stroke="none" d="M420 303C443 322 482 338 520 348L522 357C480 352 446 338 420 303Z"/>
+    <path id="clip-overlap" fill="#440300" stroke="none" d="M420 303C443 322 482 338 520 348Q519 352 518 357C480 352 446 338 420 303Z"/>
     <g id="bow" fill="none">
       <use href="#bow-lines" stroke="#440300" stroke-width="9"/>
       <use href="#bow-lines" stroke="#fff" stroke-width="11" mask="url(#bow-on-dark-frame)"/>
