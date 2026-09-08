@@ -177,18 +177,19 @@ test('reserves monitoring route without locale/page headers', async ({
   request,
 }) => {
   for (const path of ['/api/monitoring', '/api/monitoring/']) {
-    const response = await request.get(path)
+    const response = await request.get(path, { maxRedirects: 0 })
 
     expect(response.status()).toBe(405)
     expect(response.headers().allow).toBe('POST')
     expect(response.headers()['x-poi-codename']).toBe('Shiratsuyu')
     expect(response.headers()['accept-ch']).toBeUndefined()
-  }
 
-  const malformedResponse = await request.post('/api/monitoring', {
-    data: 'not-json',
-  })
-  expect(malformedResponse.status()).toBe(400)
+    const malformedResponse = await request.post(path, {
+      data: 'not-json',
+      maxRedirects: 0,
+    })
+    expect(malformedResponse.status()).toBe(400)
+  }
 })
 
 test('serves status through the TanStack Worker route', async ({ request }) => {

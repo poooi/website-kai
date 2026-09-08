@@ -10,7 +10,7 @@ import { loadRequestAwarePageData } from '~/lib/page-data'
 import { m } from '~/paraglide/messages'
 
 export const Route = createFileRoute('/download')({
-  loader: ({ context }) => loadRequestAwarePageData(context),
+  loader: () => loadRequestAwarePageData(),
   head: () => ({
     meta: [{ title: `poi | ${m.kanColleBrowser()} | ${m.download()}` }],
   }),

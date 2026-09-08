@@ -23,7 +23,6 @@ import {
   Target,
 } from '~/lib/target'
 import { getLocale } from '~/paraglide/runtime'
-import { type TanStackRouterContext } from '~/routes/__root'
 
 const exploreContentByLocale = import.meta.glob<string>(
   '../contents/explore/*.md',
@@ -41,24 +40,12 @@ const supportedTargets = Object.values(Target).filter(
   (target) => target !== Target.win32 && target !== Target.win32Setup,
 )
 
-type ServerContext = NonNullable<TanStackRouterContext['serverContext']>
-type RequestAwareContext = ServerContext | TanStackRouterContext
-
 const getCurrentRequestHeaders = createServerOnlyFn(
   () => new Headers(getRequestHeaders()),
 )
 
-const normalizeServerContext = (
-  context?: RequestAwareContext,
-): ServerContext | undefined => {
-  return context && 'serverContext' in context && context.serverContext
-    ? context.serverContext
-    : context
-}
-
-const loadPoiVersions = async (env?: ServerContext['env']) => {
-  const fixture =
-    env?.TANSTACK_TEST_POI_VERSIONS ?? process.env.TANSTACK_TEST_POI_VERSIONS
+const loadPoiVersions = async () => {
+  const fixture = process.env.TANSTACK_TEST_POI_VERSIONS
   if (fixture) {
     try {
       return poiVersionsSchema.parse(JSON.parse(fixture) as unknown)
@@ -77,8 +64,8 @@ const loadPoiVersionsFromServer = createServerFn({ method: 'GET' }).handler(
 )
 
 const loadPoiVersionsForRequest = createIsomorphicFn()
-  .server(async (env?: ServerContext['env']) => loadPoiVersions(env))
-  .client(async (_env?: ServerContext['env']) => loadPoiVersionsFromServer())
+  .server(() => loadPoiVersions())
+  .client(() => loadPoiVersionsFromServer())
 
 const buildDownloadData = (
   poiVersions: PoiVersions,
@@ -109,17 +96,11 @@ export const requireSupportedLocale = (locale: string): SupportedLocale => {
   return locale
 }
 
-export const loadRequestAwarePageData = async (
-  context?: RequestAwareContext,
-) => {
-  const serverContext = normalizeServerContext(context)
-  const headers = serverContext?.requestHeaders
-    ? new Headers(serverContext.requestHeaders)
-    : typeof document === 'undefined'
-      ? getCurrentRequestHeaders()
-      : new Headers()
+export const loadRequestAwarePageData = async () => {
+  const headers =
+    typeof document === 'undefined' ? getCurrentRequestHeaders() : new Headers()
   const [poiVersions, platform] = await Promise.all([
-    loadPoiVersionsForRequest(serverContext?.env),
+    loadPoiVersionsForRequest(),
     detectRequestPlatform(headers),
   ])
 

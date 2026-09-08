@@ -11,71 +11,21 @@ import { withGlobalHeaders } from '~/server/response-headers'
 import { sentryDsn, sentryRelease } from '~/lib/sentry'
 import { paraglideMiddleware } from '~/paraglide/server'
 
-interface WorkerEnv extends AssetEnv {
-  TANSTACK_TEST_POI_VERSIONS?: string
-}
-
-interface ExecutionContextLike {
-  waitUntil(promise: Promise<unknown>): void
-  passThroughOnException?(): void
-}
-
-interface StartHandlerContext {
-  ctx: ExecutionContextLike
-  env: WorkerEnv
-  requestHeaders: [string, string][]
-}
-
-type StartHandlerWithContext = (
-  request: Request,
-  options: {
-    context: StartHandlerContext
-  },
-) => Promise<Response>
-
-type SentryHandler = Parameters<typeof withSentry>[1]
-
-const normalizeMonitoringRequest = (request: Request) => {
-  const url = new URL(request.url)
-  if (url.pathname !== '/api/monitoring/') {
-    return request
+const handleStartRequest = (request: Request) => {
+  if (!isPageRequest(request)) {
+    return startHandler.fetch(request)
   }
-  url.pathname = '/api/monitoring'
-  return new Request(url, request)
-}
 
-const fetchStartHandler = (request: Request, context: StartHandlerContext) => {
-  return (startHandler.fetch as StartHandlerWithContext)(request, { context })
-}
-
-const withParaglide = (
-  request: Request,
-  fetchRoute: (request: Request) => Promise<Response>,
-) => {
+  // Locale redirects are handled above; prevent Paraglide from redirecting again.
   const headers = new Headers(request.headers)
   headers.delete('Sec-Fetch-Dest')
-
+  // The router's rewrite handles delocalization, so forward the original request.
   return paraglideMiddleware(new Request(request, { headers }), () =>
-    fetchRoute(request),
+    startHandler.fetch(request),
   )
 }
 
-const handleStartRequest = (request: Request, context: StartHandlerContext) => {
-  const fetchRoute = (handlerRequest: Request) =>
-    fetchStartHandler(handlerRequest, context)
-
-  if (isPageRequest(request)) {
-    return withParaglide(request, fetchRoute)
-  }
-
-  return fetchRoute(request)
-}
-
-export const handleWorkerRequest = async (
-  request: Request,
-  env: WorkerEnv,
-  ctx: ExecutionContextLike,
-) => {
+export const handleWorkerRequest = async (request: Request, env: AssetEnv) => {
   const { pathname } = new URL(request.url)
 
   if (isProxyRootPath(pathname)) {
@@ -90,25 +40,21 @@ export const handleWorkerRequest = async (
     return workerResponse
   }
 
-  return handleStartRequest(normalizeMonitoringRequest(request), {
-    env,
-    ctx,
-    requestHeaders: [...request.headers],
-  })
+  return handleStartRequest(request)
 }
 
 const worker = {
-  async fetch(request: Request, env: WorkerEnv, ctx: ExecutionContextLike) {
-    const response = await handleWorkerRequest(request, env, ctx)
+  async fetch(request: Request, env: AssetEnv) {
+    const response = await handleWorkerRequest(request, env)
     return withGlobalHeaders(response, request)
   },
 }
 
-export default withSentry(
+export default withSentry<AssetEnv>(
   () => ({
     dsn: sentryDsn,
     release: sentryRelease,
     tracesSampleRate: 0.01,
   }),
-  worker as unknown as SentryHandler,
+  worker,
 )
