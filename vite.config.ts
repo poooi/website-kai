@@ -64,11 +64,24 @@ export default defineConfig({
     }),
     viteStaticCopy({
       targets: [
-        ...ibmFontPackages.map((fontPackage) => ({
-          src: `node_modules/@ibm/${fontPackage}/fonts/split/woff2/**/*.{css,woff2}`,
-          dest: `fonts/${fontPackage}`,
-          rename: { stripBase: true as const },
-        })),
+        ...ibmFontPackages.flatMap((fontPackage) => [
+          {
+            src: `node_modules/@ibm/${fontPackage}/fonts/split/woff2/**/*.woff2`,
+            dest: `fonts/${fontPackage}`,
+            rename: { stripBase: true as const },
+          },
+          {
+            src: `node_modules/@ibm/${fontPackage}/fonts/split/woff2/**/*.css`,
+            dest: `fonts/${fontPackage}`,
+            rename: { stripBase: true as const },
+            // Avoid a late font swap changing wrapping and moving the map.
+            transform: (content: string) =>
+              content.replaceAll(
+                '@font-face {',
+                '@font-face {\n  font-display: optional;',
+              ),
+          },
+        ]),
         {
           src: 'src/assets/poi.png',
           dest: 'social',

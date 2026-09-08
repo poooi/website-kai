@@ -105,9 +105,10 @@ test('serves copied IBM Plex font assets', async ({ request }) => {
   const response = await request.get(cssPath)
 
   expect(response.status()).toBe(200)
-  expect(response.headers()['cache-control']).toBe('public,max-age=3600')
+  expect(response.headers()['cache-control']).toBe('public,max-age=604800')
   const css = await response.text()
   expect(css).toContain('IBM Plex Sans')
+  expect(css).toContain('font-display: optional')
 
   const fontPath = /url\(["']?(.+?\.woff2)["']?\)/.exec(css)?.[1]
   expect(fontPath).toBeTruthy()
@@ -115,7 +116,7 @@ test('serves copied IBM Plex font assets', async ({ request }) => {
   const fontResponse = await request.get(fontUrl)
 
   expect(fontResponse.status()).toBe(200)
-  expect(fontResponse.headers()['cache-control']).toBe('public,max-age=3600')
+  expect(fontResponse.headers()['cache-control']).toBe('public,max-age=604800')
   expect(fontResponse.headers()['content-type']).toContain('font/woff2')
 })
 
