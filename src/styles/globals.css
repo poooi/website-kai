@@ -115,6 +115,22 @@
   }
 }
 
+/* Start with the SSR paint, so hydration never hides visible content. */
+.page-enter {
+  animation: page-enter 0.5s ease-in-out backwards;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
