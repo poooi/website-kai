@@ -8,6 +8,18 @@ export type Theme = z.infer<typeof themeSchema>
 
 export const themeCookieName = 'theme'
 
+// Runs in <head> before the body is painted, without waiting for hydration.
+export const getThemeInitScript = (cookieTheme: Theme | undefined) => `
+(() => {
+  let theme = ${JSON.stringify(cookieTheme ?? null)};
+  if (!theme) {
+    try { theme = localStorage.getItem(${JSON.stringify(themeCookieName)}); } catch {}
+  }
+  const dark = theme === 'dark' ||
+    (theme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+  document.documentElement.classList.toggle('dark', dark);
+})();`
+
 export const isTheme = (value: string | null | undefined): value is Theme => {
   return themeSchema.safeParse(value).success
 }

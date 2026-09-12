@@ -376,7 +376,7 @@ test('uses theme cookie for server-rendered explicit dark theme', async ({
     },
   })
 
-  expect(await response.text()).toContain("classList.add('dark')")
+  expect(await response.text()).toMatch(/<html[^>]*class="[^"]*\bdark\b/)
   await page.context().addCookies([
     {
       name: 'theme',
@@ -398,7 +398,7 @@ test('uses Sec-CH-Prefers-Color-Scheme for server-rendered system theme', async 
     },
   })
 
-  expect(await response.text()).toContain("classList.add('dark')")
+  expect(await response.text()).toMatch(/<html[^>]*class="[^"]*\bdark\b/)
   const context = await browser.newContext({
     baseURL: 'http://127.0.0.1:3002',
     colorScheme: 'dark',

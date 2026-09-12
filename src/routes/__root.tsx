@@ -23,7 +23,11 @@ import {
   socialImageWidth,
 } from '~/lib/social-image-constants'
 import { isMobileDevice } from '~/lib/target'
-import { getServerThemePreference, resolveServerTheme } from '~/lib/theme'
+import {
+  getThemeCookie,
+  getThemeInitScript,
+  resolveServerTheme,
+} from '~/lib/theme'
 import { cn } from '~/lib/utils'
 import { getLocale } from '~/paraglide/runtime'
 
@@ -73,7 +77,7 @@ export const Route = createRootRoute({
     return {
       isMobile: await isMobileDevice(headers),
       theme: resolveServerTheme(headers),
-      themePreference: getServerThemePreference(headers),
+      themePreference: getThemeCookie(headers.get('Cookie')),
     }
   },
   head: () => ({
@@ -140,6 +144,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     <html
       lang={locale}
       className={cn({
+        dark: theme === 'dark',
         'font-ja': locale === 'ja',
         'font-zh-hant': locale === 'zh-Hant',
         'font-zh-hans': locale === 'zh-Hans',
@@ -148,13 +153,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       suppressHydrationWarning
     >
       <head>
-        {theme === 'dark' && (
-          <script
-            dangerouslySetInnerHTML={{
-              __html: "document.documentElement.classList.add('dark');",
-            }}
-          />
-        )}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: getThemeInitScript(themePreference),
+          }}
+        />
         <link
           href="/fonts/plex-sans/IBMPlexSans-Regular.css"
           rel="stylesheet"
