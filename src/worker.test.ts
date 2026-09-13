@@ -16,6 +16,7 @@ const mocks = vi.hoisted(() => ({
   withSentry: vi.fn<(_options: unknown, handler: unknown) => unknown>(
     (_options, handler) => handler,
   ),
+  refreshPluginReleases: vi.fn<(store: unknown) => Promise<unknown>>(),
 }))
 
 vi.mock('@sentry/cloudflare', () => ({
@@ -36,21 +37,67 @@ vi.mock('~/lib/social-image', () => ({
   createSocialImageResponse: mocks.createSocialImageResponse,
 }))
 
-import { handleWorkerRequest } from './worker'
+vi.mock('~/lib/plugin-releases.server', () => ({
+  refreshPluginReleases: mocks.refreshPluginReleases,
+}))
 
-type WorkerEnvForTest = Parameters<typeof handleWorkerRequest>[1]
-type AssetsFetchForTest = NonNullable<WorkerEnvForTest['ASSETS']>['fetch']
+import worker, { handleWorkerRequest } from './worker'
+
+type AssetEnvForTest = Parameters<typeof handleWorkerRequest>[1]
+type AssetsFetchForTest = NonNullable<AssetEnvForTest['ASSETS']>['fetch']
 
 const makeRequest = (path: string, init?: RequestInit) =>
   new Request(`https://poi.moe${path}`, init)
 
-const makeEnv = (fetch?: AssetsFetchForTest): WorkerEnvForTest => ({
+const makeEnv = (fetch?: AssetsFetchForTest): AssetEnvForTest => ({
   ASSETS: fetch
     ? {
         fetch,
       }
     : undefined,
 })
+
+const unexpected = (what: string) => (): never => {
+  throw new Error(`unexpected ${what} call`)
+}
+
+/** Throwing KV double; production bindings still come from the generated type. */
+const makeKv = (): KVNamespace => ({
+  get: unexpected('KV get'),
+  getWithMetadata: unexpected('KV getWithMetadata'),
+  list: unexpected('KV list'),
+  put: unexpected('KV put'),
+  delete: unexpected('KV delete'),
+})
+
+const unusedAssets: Fetcher = {
+  fetch: unexpected('ASSETS.fetch'),
+  connect: unexpected('ASSETS.connect'),
+}
+
+const makeScheduledEnv = (pluginReleases: KVNamespace): CloudflareEnv => ({
+  ASSETS: unusedAssets,
+  PLUGIN_RELEASES: pluginReleases,
+})
+
+const scheduledController: ScheduledController = {
+  scheduledTime: 0,
+  cron: '0 * * * *',
+  noRetry: () => undefined,
+}
+
+const executionContext: ExecutionContext = {
+  waitUntil: () => undefined,
+  passThroughOnException: () => undefined,
+  props: undefined,
+  abort: () => undefined,
+  get exports(): Cloudflare.Exports {
+    throw new Error('unexpected ctx.exports access')
+  },
+  get tracing(): Tracing {
+    throw new Error('unexpected ctx.tracing access')
+  },
+}
 
 beforeEach(() => {
   mocks.paraglideMiddleware.mockReset()
@@ -75,6 +122,8 @@ beforeEach(() => {
       },
     })
   })
+  mocks.refreshPluginReleases.mockReset()
+  mocks.refreshPluginReleases.mockResolvedValue({})
 })
 
 describe('handleWorkerRequest', () => {
@@ -289,5 +338,28 @@ describe('handleWorkerRequest', () => {
     await expect(response.text()).resolves.toBe('start:/dist/en')
     expect(mocks.startFetch).toHaveBeenCalledOnce()
     expect(mocks.paraglideMiddleware).not.toHaveBeenCalled()
+  })
+})
+
+describe('scheduled', () => {
+  const runScheduled = (env: CloudflareEnv) => {
+    const scheduled = worker.scheduled
+    expect(scheduled).toBeDefined()
+    if (!scheduled) throw new Error('missing scheduled handler')
+    return scheduled(scheduledController, env, executionContext)
+  }
+
+  it('refreshes plugin releases from the KV binding', async () => {
+    const pluginReleases = makeKv()
+    await runScheduled(makeScheduledEnv(pluginReleases))
+    expect(mocks.refreshPluginReleases).toHaveBeenCalledOnce()
+    expect(mocks.refreshPluginReleases).toHaveBeenCalledWith(pluginReleases)
+  })
+
+  it('propagates refresh failures through the exported wrapped handler', async () => {
+    mocks.refreshPluginReleases.mockRejectedValue(new Error('refresh failed'))
+    await expect(runScheduled(makeScheduledEnv(makeKv()))).rejects.toThrow(
+      'refresh failed',
+    )
   })
 })

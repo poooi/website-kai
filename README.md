@@ -8,6 +8,14 @@ Production website for poi, built with TanStack Start and deployed to Cloudflare
 - `pnpm run build` creates the Cloudflare Worker build output under `dist/`.
 - `pnpm run test:e2e` runs the Playwright end-to-end suite.
 
+Cloudflare binding types are committed in `cloudflare-env.d.ts`. Run
+`pnpm run cf-typegen` after changing `wrangler.toml` bindings, triggers or the
+compatibility date, and commit the regenerated file; do not hand-edit it.
+`pnpm run typecheck` runs `pnpm run cf-typegen:check` (the same Wrangler command
+with `--check`) so a stale generated file fails before `tsc`, and CI typechecks
+before linting and building. Because the file is committed, lint and typecheck
+work on a clean checkout without regenerating it.
+
 ## Repository layout
 
 UI conventions and component usage are defined in [the website VI guide](docs/visual-identity.md).
@@ -71,6 +79,33 @@ The E2E runner sets `TANSTACK_TEST_RELEASE_HISTORY=1` so Vite reads and injects
 `tests/fixtures/release-history.json` at build time, alongside the existing fixed
 release-version fixture. The JSON stays out of child process environments.
 Production builds leave this variable unset and fetch the archive.
+
+## Plugins
+
+The plugins page server-renders the official catalog from
+`poooi/poi/master/assets/data/plugin.json` through the same public-document cache
+as the release sources. Names and descriptions are localized per field with an
+English fallback, Markdown descriptions are sanitized before rendering, and each
+entry links to its real npm package and author page. Plugin icons render the
+catalog's Font Awesome class directly through Font Awesome 7's packaged CSS and
+official v4 shims, matching poi without a per-plugin icon map.
+
+An hourly Worker Cron refreshes one compact snapshot of each plugin's npm
+`dist-tags.latest` version and that version's publication time into the
+`PLUGIN_RELEASES` KV namespace, stored at the single key
+`official-plugin-releases:v1`. Page requests only read that key and never call
+the npm registry. Per-package npm failures keep the previous entry; a failed
+catalog fetch or an unreadable prior snapshot aborts the refresh before any
+write; entries removed from the catalog drop out. Missing or unreadable KV still
+renders the catalog with the version and date omitted. Dates are formatted in
+UTC.
+
+A GET search form filters by package id, name, description or author and works
+without JavaScript; the same filter is keyboard accessible. The directory is a
+simple two-column list on desktop and one column on mobile. The E2E runner sets
+`TANSTACK_TEST_PLUGINS=1` so Vite reads and injects `tests/fixtures/plugins.json`
+and `tests/fixtures/plugin-releases.json` at build time instead of contacting
+GitHub or the npm registry.
 
 ## Deploy
 

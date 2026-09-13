@@ -64,5 +64,14 @@
   "releaseInvalid": "アーカイブに存在する 2 つのバージョンを選択してください。",
   "releaseBack": "変更履歴に戻る",
   "releaseMissingDate": "このバージョンの正確な公開日は不明です。",
-  "releaseRangeUnavailable": "リリースアーカイブを利用できないため、アップグレード範囲を完全に特定できません。"
+  "releaseRangeUnavailable": "リリースアーカイブを利用できないため、アップグレード範囲を完全に特定できません。",
+  "plugins": "プラグイン",
+  "pluginsSearchLabel": "名前・機能・作者で検索",
+  "pluginsSearch": "検索",
+  "pluginsInstallHint": "poi の設定 → プラグインからインストールできます。",
+  "pluginsCount": "公式プラグイン {total} 件中 {count} 件",
+  "pluginsClearSearch": "検索をクリア",
+  "pluginsNoResults": "該当するプラグインがありません。別の名前・機能・作者で検索してください。",
+  "pluginsLoadError": "プラグイン一覧を読み込めませんでした。ページを再読み込みしてください。",
+  "pluginsReleasePublished": "公開日 {date}"
 }

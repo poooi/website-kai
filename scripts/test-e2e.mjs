@@ -13,6 +13,7 @@ const env = {
     version: 'v10.9.2',
   }),
   TANSTACK_TEST_RELEASE_HISTORY: '1',
+  TANSTACK_TEST_PLUGINS: '1',
 }
 
 await execa('vite', ['build', '--config', 'vite.config.ts'], {

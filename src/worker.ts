@@ -8,6 +8,7 @@ import {
   isProxyRootPath,
 } from '~/server/request-routing'
 import { withGlobalHeaders } from '~/server/response-headers'
+import { refreshPluginReleases } from '~/lib/plugin-releases.server'
 import { sentryDsn, sentryRelease } from '~/lib/sentry'
 import { paraglideMiddleware } from '~/paraglide/server'
 
@@ -43,14 +44,17 @@ export const handleWorkerRequest = async (request: Request, env: AssetEnv) => {
   return handleStartRequest(request)
 }
 
-const worker = {
-  async fetch(request: Request, env: AssetEnv) {
+const worker: ExportedHandler<CloudflareEnv> = {
+  async fetch(request, env) {
     const response = await handleWorkerRequest(request, env)
     return withGlobalHeaders(response, request)
   },
+  async scheduled(_controller, env) {
+    await refreshPluginReleases(env.PLUGIN_RELEASES)
+  },
 }
 
-export default withSentry<AssetEnv>(
+export default withSentry<CloudflareEnv>(
   () => ({
     dsn: sentryDsn,
     release: sentryRelease,

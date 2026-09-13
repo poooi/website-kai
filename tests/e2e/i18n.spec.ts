@@ -165,6 +165,28 @@ test('serves framework-neutral header navigation controls', async ({
   await expect(page.getByRole('main').locator('img')).toHaveAttribute('alt', '')
 })
 
+test('keeps the header navigation readable at 320px in French', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 320, height: 844 })
+  await page.goto('/fr')
+  const navigation = page.getByRole('banner').getByRole('navigation')
+  await expect(
+    navigation.getByRole('link', { name: 'Journal des modifications' }),
+  ).toBeVisible()
+  for (const link of await navigation.getByRole('link').all())
+    expect(
+      await link.evaluate(
+        (element) => element.scrollWidth <= element.clientWidth + 1,
+      ),
+    ).toBe(true)
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth,
+    ),
+  ).toBe(true)
+})
+
 test('keeps harbour map present through client navigation without a reload', async ({
   page,
 }) => {

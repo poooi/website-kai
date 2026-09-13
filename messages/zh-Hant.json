@@ -64,5 +64,14 @@
   "releaseInvalid": "請選擇歸檔中存在的兩個版本。",
   "releaseBack": "返回更新日誌",
   "releaseMissingDate": "此版本沒有可靠的釋出日期。",
-  "releaseRangeUnavailable": "歷史日誌暫時不可用，無法確認完整的升級範圍。"
+  "releaseRangeUnavailable": "歷史日誌暫時不可用，無法確認完整的升級範圍。",
+  "plugins": "插件",
+  "pluginsSearchLabel": "搜尋名稱、功能或作者",
+  "pluginsSearch": "搜尋",
+  "pluginsInstallHint": "在 poi → 設定 → 插件中安裝。",
+  "pluginsCount": "{count} / {total} 個官方插件",
+  "pluginsClearSearch": "清除搜尋",
+  "pluginsNoResults": "沒有符合的插件，請嘗試其他名稱、功能或作者。",
+  "pluginsLoadError": "插件列表載入失敗，請重新整理頁面重試。",
+  "pluginsReleasePublished": "發佈於 {date}"
 }

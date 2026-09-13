@@ -19,12 +19,12 @@ jobs:
           corepack pnpm install --frozen-lockfile
       - name: Install Playwright Browsers
         run: corepack pnpm exec playwright install chrome --with-deps
-      - name: Build
-        run: corepack pnpm run build
-      - name: Lint
-        run: corepack pnpm run lint
       - name: Typecheck
         run: corepack pnpm run typecheck
+      - name: Lint
+        run: corepack pnpm run lint
+      - name: Build
+        run: corepack pnpm run build
       - name: Run unit tests
         run: corepack pnpm run test:unit
       - name: Check runtime imports

@@ -11,6 +11,7 @@ import {
 const localizedPageNames = new Set([
   'download',
   'explore',
+  'plugins',
   'changelog',
   'changelog/compare',
 ])

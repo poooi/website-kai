@@ -15,3 +15,10 @@ binding = "ASSETS"
 
 [observability]
 enabled = true
+
+[triggers]
+crons = ["0 * * * *"]
+
+[[kv_namespaces]]
+binding = "PLUGIN_RELEASES"
+id = "35ca2fc3d6a849029b51d045da35e75c"

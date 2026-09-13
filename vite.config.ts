@@ -30,6 +30,18 @@ const releaseHistoryFixture = process.env.TANSTACK_TEST_RELEASE_HISTORY
     )
   : ''
 const buildDate = new Date().toISOString()
+const pluginsFixture = process.env.TANSTACK_TEST_PLUGINS
+  ? await readFile(
+      new URL('./tests/fixtures/plugins.json', import.meta.url),
+      'utf8',
+    )
+  : ''
+const pluginReleasesFixture = process.env.TANSTACK_TEST_PLUGINS
+  ? await readFile(
+      new URL('./tests/fixtures/plugin-releases.json', import.meta.url),
+      'utf8',
+    )
+  : ''
 const sentryRelease = process.env.SENTRY_RELEASE ?? commitHash
 const sentryUploadEnabled = !!process.env.SENTRY_AUTH_TOKEN
 const ibmFontPackages = [
@@ -55,6 +67,10 @@ export default defineConfig({
     },
   },
   define: {
+    'process.env.TANSTACK_TEST_PLUGINS': JSON.stringify(pluginsFixture),
+    'process.env.TANSTACK_TEST_PLUGIN_RELEASES': JSON.stringify(
+      pluginReleasesFixture,
+    ),
     'process.env.BUILD_DATE': JSON.stringify(buildDate),
     'process.env.COMMIT_HASH': JSON.stringify(commitHash),
     'process.env.SENTRY_RELEASE': JSON.stringify(sentryRelease),
