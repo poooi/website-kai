@@ -149,6 +149,26 @@ for (const [locale, language, historyText, pluginName] of [
   })
 }
 
+test('hides new plugin announcements in all four archive languages', async ({
+  page,
+}) => {
+  for (const locale of ['en', 'zh-Hans', 'zh-Hant', 'ja']) {
+    await page.context().clearCookies()
+    await page.goto(`/${locale}/changelog`)
+    const latest = page.getByRole('region', {
+      name: 'POI v10.7.0',
+      exact: true,
+    })
+    await expect(latest).toContainText('Electron@15')
+    await expect(latest).not.toContainText(
+      /poi-plugin-quest-info-2|任务信息2|任務資訊2/,
+    )
+    await expect(
+      page.getByRole('region', { name: 'POI v10.2.0', exact: true }),
+    ).not.toContainText(/New Ship Reminder|新舰力保|新艦力保/)
+  }
+})
+
 test('groups versions by year and synchronizes navigation with scrolling', async ({
   page,
 }) => {

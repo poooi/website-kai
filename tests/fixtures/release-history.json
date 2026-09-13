@@ -230,18 +230,21 @@
         "pluginMarkdown": "- New plugin: `poi-plugin-quest-info-2` (The original quest plugin is deprecated)"
       },
       "zh-CN": {
-        "markdown": "### 功能\n\n- 增加新的装备图标\n- 增加开幕对潜支持: `神州丸` `加贺改二护` `夕张改二丁`\n- 增加对空 CI 支持: `亚特兰大 (38)`\n- 增加对潜水舰队攻击的支持\n- 增加月常任务倒计时\n- 新插件: `任务信息2` (原任务信息插件已停止支持，请移除)\n- 更新至 Electron@15 (Chromium@94)\n- 增加 ARM 支持（实验性）\n\n### 变更\n\n- Flash 支持已经被完全移除\n\n### 修复\n\n- 一些 UI 修复",
+        "markdown": "### 功能\n\n- 增加新的装备图标\n- 增加开幕对潜支持: `神州丸` `加贺改二护` `夕张改二丁`\n- 增加对空 CI 支持: `亚特兰大 (38)`\n- 增加对潜水舰队攻击的支持\n- 增加月常任务倒计时\n- 更新至 Electron@15 (Chromium@94)\n- 增加 ARM 支持（实验性）\n\n### 变更\n\n- Flash 支持已经被完全移除\n\n### 修复\n\n- 一些 UI 修复",
         "source": "https://github.com/poooi/website/blob/18465da1d5e9367c49a4c58d7bf6ca2e75f9a397/packages/data/update/zh-CN.md",
-        "reconstructed": false
+        "reconstructed": false,
+        "pluginMarkdown": "- 新插件: `任务信息2` (原任务信息插件已停止支持，请移除)"
       },
       "zh-TW": {
-        "markdown": "### 功能\n\n- 增加新的裝備圖示\n- 增加開幕對潛支援: `神州丸` `加賀改二護` `夕張改二丁`\n- 增加對空 CI 支援: `亞特蘭大 (38)`\n- 增加對潛水艦隊攻擊的支援\n- 增加月常任務倒計時\n- 新外掛: `任務資訊2` (原任務資訊外掛已停止支援，請移除)\n- 更新至 Electron@15 (Chromium@94)\n- 增加 ARM 支援（實驗性）\n\n### 變更\n\n- Flash 支援已經被完全移除\n\n### 修復\n\n- 一些 UI 修復",
+        "markdown": "### 功能\n\n- 增加新的裝備圖示\n- 增加開幕對潛支援: `神州丸` `加賀改二護` `夕張改二丁`\n- 增加對空 CI 支援: `亞特蘭大 (38)`\n- 增加對潛水艦隊攻擊的支援\n- 增加月常任務倒計時\n- 更新至 Electron@15 (Chromium@94)\n- 增加 ARM 支援（實驗性）\n\n### 變更\n\n- Flash 支援已經被完全移除\n\n### 修復\n\n- 一些 UI 修復",
+        "pluginMarkdown": "- 新外掛: `任務資訊2` (原任務資訊外掛已停止支援，請移除)",
         "source": "https://github.com/poooi/website/blob/18465da1d5e9367c49a4c58d7bf6ca2e75f9a397/packages/data/update/zh-CN.md",
         "reconstructed": false,
         "translatedFrom": "zh-CN"
       },
       "ja-JP": {
-        "markdown": "### 新機能\n- 新しい装備アイコンを追加\n- `神州丸`、`加賀改二護`、`夕張改二丁` の先制対潜に対応\n- `Atlanta (38)` の対空 CI に対応\n- 対潜水艦隊攻撃に対応\n- マンスリー任務の更新までのカウントダウンを追加\n- 新プラグイン `任务信息2` を追加（旧任務情報プラグインはサポート終了のため削除してください）\n- Electron@15 (Chromium@94) に更新\n- ARM に対応（実験的）\n\n### 変更\n- Flash サポートを完全に削除\n\n### 修正\n- 一部の UI を修正",
+        "markdown": "### 新機能\n- 新しい装備アイコンを追加\n- `神州丸`、`加賀改二護`、`夕張改二丁` の先制対潜に対応\n- `Atlanta (38)` の対空 CI に対応\n- 対潜水艦隊攻撃に対応\n- マンスリー任務の更新までのカウントダウンを追加\n- Electron@15 (Chromium@94) に更新\n- ARM に対応（実験的）\n\n### 変更\n- Flash サポートを完全に削除\n\n### 修正\n- 一部の UI を修正",
+        "pluginMarkdown": "- 新プラグイン `任务信息2` を追加（旧任務情報プラグインはサポート終了のため削除してください）",
         "source": "https://github.com/poooi/website/blob/18465da1d5e9367c49a4c58d7bf6ca2e75f9a397/packages/data/update/zh-CN.md",
         "reconstructed": false,
         "translatedFrom": "zh-CN"
@@ -504,23 +507,27 @@
     "publishedAt": "2019-01-25T18:59:46Z",
     "notes": {
       "en-US": {
-        "markdown": "### Feature\n- Update AACI data\n- Update OASW data\n- Add support of battle end notification\n- Add new plugin `New Ship Reminder`\n\n### Fix\n- Fix can't get plugin beta updates\n- Fix crash caused by API change",
+        "markdown": "### Feature\n- Update AACI data\n- Update OASW data\n- Add support of battle end notification\n### Fix\n- Fix can't get plugin beta updates\n- Fix crash caused by API change",
         "source": "https://github.com/poooi/poi-server/blob/b93238331b89ac77a3f63c97c6a2ae31c410815d/public/update/en-US.md",
-        "reconstructed": false
+        "reconstructed": false,
+        "pluginMarkdown": "- Add new plugin `New Ship Reminder`"
       },
       "zh-CN": {
-        "markdown": "### 功能\n- 更新了对空 CI 数据\n- 更新了开幕对潜数据\n- 增加了战斗结束语音\n- 新插件 `新舰力保`\n\n### 修复\n- 修复无法安装 beta 版插件的问题\n- 修复 API 更新造成的崩溃",
+        "markdown": "### 功能\n- 更新了对空 CI 数据\n- 更新了开幕对潜数据\n- 增加了战斗结束语音\n### 修复\n- 修复无法安装 beta 版插件的问题\n- 修复 API 更新造成的崩溃",
         "source": "https://github.com/poooi/poi-server/blob/b93238331b89ac77a3f63c97c6a2ae31c410815d/public/update/zh-CN.md",
-        "reconstructed": false
+        "reconstructed": false,
+        "pluginMarkdown": "- 新插件 `新舰力保`"
       },
       "zh-TW": {
-        "markdown": "### 功能\n- 更新了對空 CI 資料\n- 更新了開幕對潛資料\n- 增加了戰鬥結束語音\n- 新外掛 `新艦力保`\n\n### 修復\n- 修復無法安裝 beta 版外掛的問題\n- 修復 API 更新造成的崩潰",
+        "markdown": "### 功能\n- 更新了對空 CI 資料\n- 更新了開幕對潛資料\n- 增加了戰鬥結束語音\n### 修復\n- 修復無法安裝 beta 版外掛的問題\n- 修復 API 更新造成的崩潰",
+        "pluginMarkdown": "- 新外掛 `新艦力保`",
         "source": "https://github.com/poooi/poi-server/blob/b93238331b89ac77a3f63c97c6a2ae31c410815d/public/update/zh-CN.md",
         "reconstructed": false,
         "translatedFrom": "zh-CN"
       },
       "ja-JP": {
-        "markdown": "### 新機能\n- 対空 CI データを更新\n- 先制対潜データを更新\n- 戦闘終了時の音声を追加\n- 新プラグイン `新舰力保` を追加\n\n### 修正\n- beta 版プラグインをインストールできない問題を修正\n- API 更新によるクラッシュを修正",
+        "markdown": "### 新機能\n- 対空 CI データを更新\n- 先制対潜データを更新\n- 戦闘終了時の音声を追加\n### 修正\n- beta 版プラグインをインストールできない問題を修正\n- API 更新によるクラッシュを修正",
+        "pluginMarkdown": "- 新プラグイン `新舰力保` を追加",
         "source": "https://github.com/poooi/poi-server/blob/b93238331b89ac77a3f63c97c6a2ae31c410815d/public/update/zh-CN.md",
         "reconstructed": false,
         "translatedFrom": "zh-CN"
