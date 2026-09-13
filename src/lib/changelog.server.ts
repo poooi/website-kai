@@ -2,13 +2,13 @@ import sanitize from 'rehype-sanitize'
 import stringify from 'rehype-stringify'
 import { remark } from 'remark'
 import rehype from 'remark-rehype'
+import { fetchCachedRelease } from './release-cache.server'
 import {
   changelogFilename,
   changelogLanguageCandidates,
   type ChangelogChannel,
 } from './changelog'
 import {
-  fetchWithTimeout,
   type FetchLike,
   UpstreamNetworkError,
   UpstreamResponseError,
@@ -27,14 +27,24 @@ export const fetchLocalizedChangelog = async (
   for (const language of changelogLanguageCandidates(locale)) {
     let response: Response
     try {
-      response = await fetchWithTimeout(
-        fetcher,
+      response = await fetchCachedRelease(
         `https://raw.githubusercontent.com/poooi/poi-release/master/${changelogFilename(language, channel)}`,
-        { signal },
-        timeoutMs,
+        {
+          fetcher,
+          signal,
+          timeoutMs,
+          validate: (text) => {
+            if (!text.trim() || /^\s*(?:<!doctype html|<html\b)/i.test(text))
+              throw new Error('Invalid release Markdown')
+          },
+        },
       )
     } catch (error) {
-      if (error instanceof UpstreamTimeoutError) throw error
+      if (
+        error instanceof UpstreamTimeoutError ||
+        error instanceof UpstreamResponseError
+      )
+        throw error
       throw new UpstreamNetworkError(error)
     }
     if (response.status === 404) continue

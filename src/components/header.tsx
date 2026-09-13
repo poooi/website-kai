@@ -47,7 +47,7 @@ export const Header = ({ LinkComponent = AnchorLink }: HeaderProps) => {
         href={localizeHref('/', { locale })}
         aria-label={m.returnToHomepage()}
         aria-current={pathname === '/' ? 'page' : undefined}
-        className="inline-flex w-fit items-center py-2 transition-colors hover:text-[var(--harbour-teal)]"
+        className="inline-flex w-fit items-center py-2 transition-colors hover:text-navigation"
       >
         <span className="text-2xl font-bold tracking-tight">poi</span>
       </LinkComponent>
@@ -57,7 +57,7 @@ export const Header = ({ LinkComponent = AnchorLink }: HeaderProps) => {
             key={path}
             href={localizeHref(path, { locale })}
             aria-current={pathname === path ? 'page' : undefined}
-            className="inline-flex items-center justify-center border-b-2 border-transparent px-1 py-4 text-sm text-muted-foreground transition-colors hover:text-foreground aria-[current=page]:border-[var(--harbour-teal)] aria-[current=page]:text-[var(--harbour-teal)] max-[900px]:py-3 max-[900px]:text-center"
+            className="inline-flex items-center justify-center border-b-2 border-transparent px-1 py-4 text-sm text-muted-foreground transition-colors hover:text-foreground aria-[current=page]:border-navigation aria-[current=page]:text-navigation max-[900px]:py-3 max-[900px]:text-center"
           >
             {label}
           </LinkComponent>

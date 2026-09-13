@@ -1,10 +1,10 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
-  "downloadIntro": "Choisissez votre système et votre paquet pour télécharger poi.",
   "downloadPackage": "Architecture et paquet",
   "selectDownloadPlatform": "Choisissez un système et un paquet pour afficher le téléchargement disponible.",
   "harbourIntro": "Un navigateur et des outils",
   "harbourTools": "extensibles pour KanColle.",
+  "releaseNoteSource": "Notes de version originales",
   "originalReleases": "Versions sur GitHub",
   "releaseLoadError": "Impossible de charger les informations de version. Rechargez la page ou consultez les versions sur GitHub.",
   "language": "français",
@@ -50,5 +50,19 @@
   "kanColleBrowser": "Navigateur KanColle",
   "nightlyBuilds": "Versions nocturnes",
   "mobileHint": "poi est une application pour Windows, macOS et Linux. Consultez cette page sur votre ordinateur pour la télécharger.",
-  "x": "X"
+  "x": "X",
+  "reconstructedReleaseNotes": "Reconstitué à partir des changements de version",
+  "releaseCompare": "Comparer les versions",
+  "releaseUndated": "Date non renseignée",
+  "releaseVersions": "Navigation des versions",
+  "releaseCount": "{count} versions stables",
+  "releaseFrom": "Version de départ",
+  "releaseTo": "Version cible",
+  "releaseCompareAction": "Afficher les mises à jour",
+  "releaseRangeHint": "Inclut la version la plus récente et exclut la plus ancienne. Les versions sont classées automatiquement de la plus ancienne à la plus récente.",
+  "releaseSame": "Il s’agit de la même version. Aucune note de version supplémentaire n’est disponible.",
+  "releaseInvalid": "Choisissez deux versions présentes dans l’archive.",
+  "releaseBack": "Retour au journal des modifications",
+  "releaseMissingDate": "Aucune date de publication fiable n’est disponible pour cette version.",
+  "releaseRangeUnavailable": "L’archive des versions est indisponible. La plage de mise à niveau complète ne peut pas être déterminée."
 }

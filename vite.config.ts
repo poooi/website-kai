@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 
 import { cloudflare } from '@cloudflare/vite-plugin'
@@ -22,6 +23,12 @@ const getCommitHash = async () => {
 }
 
 const commitHash = await getCommitHash()
+const releaseHistoryFixture = process.env.TANSTACK_TEST_RELEASE_HISTORY
+  ? await readFile(
+      new URL('./tests/fixtures/release-history.json', import.meta.url),
+      'utf8',
+    )
+  : ''
 const buildDate = new Date().toISOString()
 const sentryRelease = process.env.SENTRY_RELEASE ?? commitHash
 const sentryUploadEnabled = !!process.env.SENTRY_AUTH_TOKEN
@@ -53,6 +60,9 @@ export default defineConfig({
     'process.env.SENTRY_RELEASE': JSON.stringify(sentryRelease),
     'process.env.TANSTACK_TEST_POI_VERSIONS': JSON.stringify(
       process.env.TANSTACK_TEST_POI_VERSIONS ?? '',
+    ),
+    'process.env.TANSTACK_TEST_RELEASE_HISTORY': JSON.stringify(
+      releaseHistoryFixture,
     ),
   },
   plugins: [

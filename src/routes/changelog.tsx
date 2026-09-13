@@ -1,54 +1,61 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
+import { ArrowRight } from 'lucide-react'
 import { z } from 'zod'
+import { ReleaseTimeline } from '~/components/changelog/release-timeline'
 import { Transition } from '~/components/transition'
 import { PageHeader } from '~/components/page-header'
 import { PageProse } from '~/components/page-prose'
-import { fetchLocalizedChangelog } from '~/lib/changelog.server'
+import { fetchChangelogPage } from '~/lib/release-history.server'
+import { ReleaseNavigation } from '~/components/changelog/release-navigation'
 import { m } from '~/paraglide/messages'
 import { getLocale, locales, localizeHref } from '~/paraglide/runtime'
 
 const loadChangelog = createServerFn({ method: 'GET' })
   .validator(z.enum(locales))
-  .handler(async ({ data: locale }) => {
-    try {
-      return await fetchLocalizedChangelog(locale, 'stable')
-    } catch {
-      return null
-    }
-  })
+  .handler(async ({ data: locale }) => fetchChangelogPage(locale))
 
 export const Route = createFileRoute('/changelog')({
-  loader: () => loadChangelog({ data: getLocale() }),
+  loaderDeps: () => ({ locale: getLocale() }),
+  loader: ({ deps }) => loadChangelog({ data: deps.locale }),
+  staleTime: 5 * 60 * 1000,
   head: () => ({ meta: [{ title: `poi | ${m.changelog()}` }] }),
   component: ChangelogPage,
 })
 
 function ChangelogPage() {
-  const changelog = Route.useLoaderData()
+  const { history, available } = Route.useLoaderData()
   return (
     <Transition>
       <PageHeader title={m.changelog()}>
         <a
-          className="text-base text-[var(--harbour-teal)] underline underline-offset-4"
-          href="https://github.com/poooi/poi/releases"
+          href={localizeHref('/changelog/compare')}
+          className="text-link inline-flex items-center gap-2 text-base font-medium"
         >
-          {m.originalReleases()} ↗
+          {m.releaseCompare()}{' '}
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </a>
       </PageHeader>
-      {changelog ? (
-        // Markdown is sanitized on the server before entering the route data.
-        <PageProse
-          className="prose-h2:border-b prose-h2:pb-4 prose-h2:font-mono prose-h2:text-xl"
-          lang={changelog.language}
-          dangerouslySetInnerHTML={{ __html: changelog.html }}
-        />
-      ) : (
-        <PageProse role="alert">
+      {!available && (
+        <PageProse role="alert" className="mb-8 text-sm">
           <p>{m.releaseLoadError()}</p>
-          <a href={localizeHref('/changelog')}>{m.reload()}</a>
+          <a href={localizeHref('/changelog')} className="text-link">
+            {m.reload()}
+          </a>
         </PageProse>
       )}
+      {!!history.length && (
+        <div className="grid items-start gap-10 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-14">
+          <ReleaseNavigation entries={history} />
+          <ReleaseTimeline entries={history} />
+        </div>
+      )}
+      <a
+        href="https://github.com/poooi/poi/releases"
+        className="text-link mt-14 inline-block text-sm"
+      >
+        {m.originalReleases()} ↗
+      </a>
     </Transition>
   )
 }

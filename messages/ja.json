@@ -1,10 +1,10 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
-  "downloadIntro": "OS とパッケージを選んで poi をダウンロードできます。",
   "downloadPackage": "アーキテクチャとパッケージ",
   "selectDownloadPlatform": "OS とパッケージを選ぶと、ダウンロードできるバージョンが表示されます。",
   "harbourIntro": "拡張可能な「艦隊これくしょん」",
   "harbourTools": "ブラウザーとツール。",
+  "releaseNoteSource": "元のリリースノート",
   "originalReleases": "GitHub のリリース",
   "releaseLoadError": "リリース情報を読み込めませんでした。ページを再読み込みするか、GitHub のリリースをご覧ください。",
   "language": "日本語",
@@ -50,5 +50,19 @@
   "kanColleBrowser": "艦これ専ブラ",
   "nightlyBuilds": "ナイトリービルド",
   "mobileHint": "poi は Windows・macOS・Linux 向けのデスクトップアプリです。パソコンでこのページを開いてダウンロードしてください。",
-  "x": "X"
+  "x": "X",
+  "reconstructedReleaseNotes": "バージョン間の変更から再構成",
+  "releaseCompare": "バージョンを比較",
+  "releaseUndated": "日付の記録なし",
+  "releaseVersions": "バージョン一覧",
+  "releaseCount": "{count} 件の安定版リリース",
+  "releaseFrom": "開始バージョン",
+  "releaseTo": "対象バージョン",
+  "releaseCompareAction": "更新を表示",
+  "releaseRangeHint": "新しい方のバージョンを含み、古い方のバージョンは含みません。バージョンは自動的に古い順から新しい順に並びます。",
+  "releaseSame": "同じバージョンです。追加のリリースノートはありません。",
+  "releaseInvalid": "アーカイブに存在する 2 つのバージョンを選択してください。",
+  "releaseBack": "変更履歴に戻る",
+  "releaseMissingDate": "このバージョンの正確な公開日は不明です。",
+  "releaseRangeUnavailable": "リリースアーカイブを利用できないため、アップグレード範囲を完全に特定できません。"
 }

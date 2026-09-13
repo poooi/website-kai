@@ -1,10 +1,10 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
-  "downloadIntro": "Choose your operating system and package to download poi.",
   "downloadPackage": "Architecture & package",
   "selectDownloadPlatform": "Choose an operating system and package to see the available download.",
   "harbourIntro": "An extensible KanColle",
   "harbourTools": "browser and tool.",
+  "releaseNoteSource": "Original release notes",
   "originalReleases": "Releases on GitHub",
   "releaseLoadError": "Release information could not be loaded. Reload the page or visit GitHub Releases.",
   "language": "English",
@@ -50,5 +50,19 @@
   "kanColleBrowser": "KanColle Browser",
   "nightlyBuilds": "Nightly builds",
   "mobileHint": "poi is a desktop app for Windows, macOS and Linux. Visit this page on your computer to download it.",
-  "x": "X"
+  "x": "X",
+  "reconstructedReleaseNotes": "Reconstructed from version changes",
+  "releaseCompare": "Compare versions",
+  "releaseUndated": "Date not recorded",
+  "releaseVersions": "Version navigation",
+  "releaseCount": "{count} stable releases",
+  "releaseFrom": "Starting version",
+  "releaseTo": "Target version",
+  "releaseCompareAction": "Show updates",
+  "releaseRangeHint": "Includes the newer version and excludes the older one. Versions are ordered from older to newer automatically.",
+  "releaseSame": "These are the same version. There are no additional release notes.",
+  "releaseInvalid": "Choose two versions that exist in the archive.",
+  "releaseBack": "Back to changelog",
+  "releaseMissingDate": "No reliable publication date is available for this version.",
+  "releaseRangeUnavailable": "The release archive is unavailable. The complete upgrade range cannot be determined."
 }

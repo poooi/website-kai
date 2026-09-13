@@ -8,7 +8,12 @@ import {
   stripLocalePrefix,
 } from '~/lib/i18n-routing'
 
-const localizedPageNames = new Set(['download', 'explore', 'changelog'])
+const localizedPageNames = new Set([
+  'download',
+  'explore',
+  'changelog',
+  'changelog/compare',
+])
 const proxyRoots = new Set(['/dist', '/fcd', '/update'])
 const proxyPrefixes = ['/dist/', '/fcd/', '/update/']
 
@@ -60,27 +65,9 @@ export const isPageRequest = (request: Request) => {
 }
 
 const isKnownLocalizedPagePath = (pathname: string) => {
-  const [firstSegment, secondSegment, ...restSegments] = pathname
-    .split('/')
-    .filter(Boolean)
-
-  if (!firstSegment) {
-    return true
-  }
-
-  if (restSegments.length > 0) {
-    return false
-  }
-
-  if (!secondSegment) {
-    return (
-      localizedPageNames.has(firstSegment) || isSupportedLocale(firstSegment)
-    )
-  }
-
-  return (
-    localizedPageNames.has(secondSegment) && isSupportedLocale(firstSegment)
-  )
+  const segments = pathname.split('/').filter(Boolean)
+  if (isSupportedLocale(segments[0] ?? '')) segments.shift()
+  return segments.length === 0 || localizedPageNames.has(segments.join('/'))
 }
 
 const redirectTo = (request: Request, pathname: string, status: 307 | 308) => {
