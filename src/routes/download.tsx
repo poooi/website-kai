@@ -22,11 +22,9 @@ function DownloadPage() {
   const data = Route.useLoaderData()
   return (
     <Transition className="w-full">
-      <PageHeader title={m.download()}>
-        {!data.platform.isMobile && <p>{m.downloadIntro()}</p>}
-      </PageHeader>
+      <PageHeader title={m.download()} />
       {data.platform.isMobile ? (
-        <p className="mb-10 border-l-2 border-[var(--harbour-teal)] pl-5 leading-relaxed text-muted-foreground">
+        <p className="mb-10 border-l-2 border-navigation pl-5 leading-relaxed text-muted-foreground">
           {m.mobileHint()}
         </p>
       ) : (
@@ -51,7 +49,7 @@ function DownloadPage() {
       )}
       <div className="mt-8">
         <a
-          className="inline-flex items-center gap-2 text-sm text-[var(--harbour-teal)] underline decoration-current/40 underline-offset-4 hover:decoration-current"
+          className="text-link inline-flex items-center gap-2 text-sm"
           href="https://github.com/poooi/poi/releases"
         >
           {m.originalReleases()}

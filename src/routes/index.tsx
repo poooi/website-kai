@@ -4,6 +4,7 @@ import { ArrowDownToLine, ArrowRight } from 'lucide-react'
 import poiLogo from '~/assets/poi.svg?url'
 import { DownloadError } from '~/components/download/download-error'
 import { Transition } from '~/components/transition'
+import { buttonVariants } from '~/components/ui/button'
 import { getPlatformSpecLabel } from '~/lib/platform-labels'
 import { loadRequestAwarePageData } from '~/lib/page-data'
 import { m } from '~/paraglide/messages'
@@ -47,16 +48,13 @@ function HomePage() {
             {m.name()}
           </h1>
         </div>
-        <p className="mt-[30px] mb-[38px] max-w-[430px] text-[clamp(23px,2vw,32px)] leading-[1.6] font-medium text-pretty [word-break:auto-phrase] text-[var(--harbour-copy)] max-[700px]:mt-6 max-[700px]:mb-7 max-[700px]:text-[23px] min-[701px]:max-[1100px]:max-w-[360px] min-[701px]:max-[1100px]:text-2xl/[1.6]">
+        <p className="mt-[30px] mb-[38px] max-w-[430px] text-[clamp(23px,2vw,32px)] leading-[1.6] font-medium text-pretty [word-break:auto-phrase] text-copy max-[700px]:mt-6 max-[700px]:mb-7 max-[700px]:text-[23px] min-[701px]:max-[1100px]:max-w-[360px] min-[701px]:max-[1100px]:text-2xl/[1.6]">
           <span className="block">{m.harbourIntro()}</span>
           <span className="block">{m.harbourTools()}</span>
         </p>
         <div className="flex flex-wrap items-center gap-6 max-[700px]:gap-5">
           {!hasDirectDownload ? (
-            <Link
-              className="inline-flex min-h-[62px] max-w-full items-center gap-4 rounded-lg bg-primary px-[28px] py-[17px] text-[23px] text-primary-foreground [transition:background_0.15s,translate_0.15s] hover:-translate-y-0.5 hover:bg-[#89362b] max-[700px]:min-h-[56px] max-[700px]:px-5 max-[700px]:py-[14px] max-[700px]:text-[20px] min-[701px]:max-[1100px]:px-[23px] min-[701px]:max-[1100px]:py-[15px] min-[701px]:max-[1100px]:text-[21px] dark:hover:bg-[#c15a46]"
-              to="/download"
-            >
+            <Link className={buttonVariants({ size: 'hero' })} to="/download">
               <ArrowDownToLine
                 className="h-[26px] w-[26px] shrink-0"
                 aria-hidden="true"
@@ -65,7 +63,7 @@ function HomePage() {
             </Link>
           ) : (
             <a
-              className="inline-flex min-h-[62px] max-w-full items-center gap-4 rounded-lg bg-primary px-[28px] py-[17px] text-[23px] text-primary-foreground [transition:background_0.15s,translate_0.15s] hover:-translate-y-0.5 hover:bg-[#89362b] max-[700px]:min-h-[56px] max-[700px]:px-5 max-[700px]:py-[14px] max-[700px]:text-[20px] min-[701px]:max-[1100px]:px-[23px] min-[701px]:max-[1100px]:py-[15px] min-[701px]:max-[1100px]:text-[21px] dark:hover:bg-[#c15a46]"
+              className={buttonVariants({ size: 'hero' })}
               href={data.stableUrl}
               aria-describedby="download-details"
             >
@@ -77,7 +75,7 @@ function HomePage() {
             </a>
           )}
           <Link
-            className="inline-flex items-center gap-4 text-lg/normal font-semibold text-primary underline underline-offset-8 max-[700px]:text-base min-[701px]:max-[1100px]:text-base dark:text-[#e49a84]"
+            className="text-link inline-flex items-center gap-3 text-base font-medium"
             to="/download"
           >
             {m.downloadOptions()}
@@ -89,14 +87,15 @@ function HomePage() {
             id="download-details"
             className="mt-3 mb-[22px] text-base text-muted-foreground max-[700px]:text-sm/normal"
           >
-            {data.poiVersions.version} · {m.stable()} ·{' '}
+            <span className="font-mono">{data.poiVersions.version}</span> ·{' '}
+            {m.stable()} ·{' '}
             {getPlatformSpecLabel(data.platform.os, data.platform.spec)}
           </p>
         )}
         {hasBetaDownload && (
           <div className="mb-2">
             <a
-              className="inline-flex items-center gap-4 rounded-lg border border-current px-6 py-3 text-xl text-foreground transition-colors hover:bg-secondary"
+              className={buttonVariants({ variant: 'outline', size: 'lg' })}
               href={data.betaUrl}
               aria-describedby="beta-download-details"
             >
@@ -107,18 +106,17 @@ function HomePage() {
               id="beta-download-details"
               className="mt-3 mb-[22px] text-base text-muted-foreground max-[700px]:text-sm/normal"
             >
-              {data.poiVersions.betaVersion} · {m.beta()} ·{' '}
+              <span className="font-mono">{data.poiVersions.betaVersion}</span>{' '}
+              · {m.beta()} ·{' '}
               {getPlatformSpecLabel(data.platform.os, data.platform.spec)}
             </p>
           </div>
         )}
         {data.platform.isMobile && (
-          <p className="mb-5 max-w-[430px] text-[var(--harbour-copy)]">
-            {m.mobileHint()}
-          </p>
+          <p className="mb-5 max-w-[430px] text-copy">{m.mobileHint()}</p>
         )}
         <Link
-          className="self-start border-b border-[var(--harbour-teal)] pb-1.5 text-lg/normal text-[var(--harbour-teal)] max-[700px]:text-base"
+          className="text-link self-start text-base font-medium"
           to="/changelog"
         >
           {m.changelog()} <span aria-hidden="true">→</span>
@@ -133,7 +131,7 @@ function HomePage() {
         </span>
         <a
           href="https://www.openstreetmap.org/copyright"
-          className="rounded bg-background/90 px-2 py-1 text-xs text-foreground underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+          className="rounded bg-background/90 px-2 py-1 text-xs text-foreground underline-offset-4 hover:underline"
         >
           © OpenStreetMap contributors
         </a>
