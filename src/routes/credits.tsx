@@ -1,10 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { ArrowUpRight } from 'lucide-react'
+import type { CSSProperties } from 'react'
 
-import poiCharacterMask from '~/assets/poi-character-mask.svg?url'
 import { PageHeader } from '~/components/page-header'
 import { Transition } from '~/components/transition'
+import { avatarHue, avatarInitial } from '~/lib/avatar-fallback'
 import {
   fetchCreditsManifest,
   type CreditsAvatar,
@@ -17,7 +18,8 @@ const contributionsUrl = 'https://github.com/poooi/poi#development'
 const openCollectiveUrl = 'https://opencollective.com/poi'
 const externalLinkClass = 'text-link inline-flex items-center gap-1'
 const avatarClass = 'shrink-0 rounded-full bg-muted bg-no-repeat'
-const placeholderClass = 'shrink-0 rounded-full bg-muted-foreground/60'
+const placeholderClass =
+  'flex shrink-0 items-center justify-center rounded-full text-xl font-medium bg-[hsl(var(--avatar-hue)_30%_88%)] text-[hsl(var(--avatar-hue)_35%_28%)] dark:bg-[hsl(var(--avatar-hue)_22%_25%)] dark:text-[hsl(var(--avatar-hue)_30%_85%)]'
 const sectionClass =
   'scroll-mt-[calc(var(--sticky-header-offset)+1.5rem)] border-t pt-8'
 const nameGridClass =
@@ -84,7 +86,11 @@ function CreditsPage() {
           <ul className={nameGridClass}>
             {manifest.supporters.map((supporter) => (
               <li key={supporter.id} className="flex min-w-0 flex-col gap-2">
-                <SpriteAvatar manifest={manifest} avatar={supporter.avatar} />
+                <SpriteAvatar
+                  manifest={manifest}
+                  avatar={supporter.avatar}
+                  name={supporter.name}
+                />
                 {supporter.profile ? (
                   <a
                     className="text-link w-full text-sm leading-5 [overflow-wrap:anywhere]"
@@ -138,7 +144,11 @@ function CreditsPage() {
           <ul className={nameGridClass}>
             {manifest.contributors.map((contributor) => (
               <li key={contributor.id} className="flex min-w-0 flex-col gap-2">
-                <SpriteAvatar manifest={manifest} avatar={contributor.avatar} />
+                <SpriteAvatar
+                  manifest={manifest}
+                  avatar={contributor.avatar}
+                  name={contributor.name}
+                />
                 <a
                   className="text-link w-full text-sm leading-5 [overflow-wrap:anywhere]"
                   href={contributor.profile}
@@ -209,9 +219,11 @@ function CreditsPage() {
 function SpriteAvatar({
   manifest,
   avatar,
+  name,
 }: {
   manifest: CreditsManifest
   avatar?: CreditsAvatar
+  name: string
 }) {
   const size = manifest.displaySize
   const sheet = avatar ? manifest.sheets[avatar.sheet] : undefined
@@ -220,17 +232,17 @@ function SpriteAvatar({
       <span
         aria-hidden="true"
         data-sprite-placeholder
-        style={{
-          width: size,
-          height: size,
-          maskImage: `linear-gradient(#fff 0 0), url(${JSON.stringify(poiCharacterMask)})`,
-          maskSize: '100% 100%, 40px 40px',
-          maskPosition: 'center',
-          maskRepeat: 'no-repeat',
-          maskComposite: 'exclude',
-        }}
+        style={
+          {
+            width: size,
+            height: size,
+            '--avatar-hue': String(avatarHue(name)),
+          } as CSSProperties
+        }
         className={placeholderClass}
-      />
+      >
+        {avatarInitial(name)}
+      </span>
     )
 
   const scale = manifest.pixelRatio

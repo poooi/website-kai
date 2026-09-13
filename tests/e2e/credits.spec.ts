@@ -98,28 +98,39 @@ test('renders credits, contributors and the support links', async ({
       .first()
       .evaluate((el) => getComputedStyle(el).backgroundImage),
   )
-  // Missing avatars are a neutral circle with the poi character cut out via a
-  // two-layer CSS mask, never images; fixture: 3 contributors + 3 supporters.
+  // Missing avatars are deterministic name-initial circles, never images;
+  // fixture: 3 contributors + 3 supporters without a sheet.
   await expect(page.locator('#contributors img, #supporters img')).toHaveCount(
     0,
   )
-  const placeholderMasks = await page
-    .locator(
-      '#contributors [data-sprite-placeholder], #supporters [data-sprite-placeholder]',
+  const placeholders = page.locator(
+    '#contributors [data-sprite-placeholder], #supporters [data-sprite-placeholder]',
+  )
+  await expect(placeholders).toHaveCount(6)
+  const readFallbacks = () =>
+    placeholders.evaluateAll((elements) =>
+      elements.map((element) => ({
+        initial: (element.textContent ?? '').trim(),
+        hue: (element as HTMLElement).style.getPropertyValue('--avatar-hue'),
+        background: getComputedStyle(element).backgroundColor,
+      })),
     )
-    .evaluateAll((elements) =>
-      elements.map((element) => {
-        const style = getComputedStyle(element)
-        return (
-          style.getPropertyValue('mask-image') ||
-          style.getPropertyValue('-webkit-mask-image')
-        )
-      }),
-    )
-  expect(placeholderMasks).toHaveLength(6)
-  for (const mask of placeholderMasks) {
-    expect(mask).not.toBe('none')
-    expect(mask).toContain('poi-character-mask')
+  const fallbacks = await readFallbacks()
+  expect(fallbacks.map(({ initial }) => initial).sort()).toEqual([
+    'A',
+    'B',
+    'J',
+    'M',
+    'N',
+    'S',
+  ])
+  for (const { initial, hue, background } of fallbacks) {
+    expect(initial).toHaveLength(1)
+    const value = Number(hue)
+    expect(Number.isInteger(value)).toBe(true)
+    expect(value).toBeGreaterThanOrEqual(0)
+    expect(value).toBeLessThanOrEqual(359)
+    expect(background).not.toBe('rgba(0, 0, 0, 0)')
   }
   expect(
     await page
@@ -196,6 +207,12 @@ test('renders credits, contributors and the support links', async ({
       () => document.documentElement.scrollWidth <= window.innerWidth,
     ),
   ).toBe(true)
+
+  // Reloading produces the same initials and hues: no randomness.
+  await page.reload()
+  expect(
+    (await readFallbacks()).map(({ initial, hue }) => `${initial}:${hue}`),
+  ).toEqual(fallbacks.map(({ initial, hue }) => `${initial}:${hue}`))
 })
 
 test('renders credits without JavaScript', async ({ browser }) => {

@@ -24,6 +24,3 @@ Notes:
 - All logos render in the credits page's uniform 64x64 slots: wide banners are
   left-aligned and clipped by the slot, square marks are contained, and the
   portrait is cover-cropped to the face.
-- `../poi-character-mask.svg` is derived from `../poi.svg` with the
-  `circular-frame` group omitted; the credits page uses it as an alpha mask for
-  the contributors/supporters avatar fallback.
