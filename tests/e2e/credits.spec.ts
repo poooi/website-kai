@@ -3,6 +3,17 @@ import { expect, test } from '@playwright/test'
 test('renders credits, contributors and the support links', async ({
   page,
 }) => {
+  const sheetRequests: string[] = []
+  page.on('request', (request) => {
+    if (request.url().includes('/api/credits-sprite/'))
+      sheetRequests.push(request.url())
+  })
+  const sheetResponse = page.waitForResponse(
+    (response) =>
+      response.url().includes('/api/credits-sprite/avatars-0.') &&
+      response.status() === 200,
+  )
+
   await page.goto('/en/credits')
   await expect(
     page.getByRole('heading', { level: 1, name: 'Credits', exact: true }),
@@ -28,10 +39,25 @@ test('renders credits, contributors and the support links', async ({
   await expect(contributors.getByRole('link', { name: 'noname' })).toBeVisible()
   await expect(contributors.getByRole('link', { name: 'blank' })).toBeVisible()
 
-  const avatar = contributors.locator('img').first()
-  await expect(avatar).toHaveAttribute('loading', 'lazy')
-  await expect(avatar).toHaveAttribute('width', '48')
-  await expect(avatar).toHaveAttribute('height', '48')
+  const contributorSprite = contributors.locator('[data-credits-sprite]')
+  await expect(contributorSprite).toHaveCount(1)
+  await expect(contributors.locator('[data-sprite-placeholder]')).toHaveCount(3)
+  expect(
+    await contributorSprite
+      .first()
+      .evaluate((el) => getComputedStyle(el).backgroundImage),
+  ).toContain('/api/credits-sprite/avatars-0.0123456789abcdef.webp')
+
+  // The sheet is a real, decodable 96x288 webp served by the proxy.
+  expect((await sheetResponse).status()).toBe(200)
+  expect(
+    await page.evaluate(async (src) => {
+      const image = new Image()
+      image.src = src
+      await image.decode()
+      return { width: image.naturalWidth, height: image.naturalHeight }
+    }, '/api/credits-sprite/avatars-0.0123456789abcdef.webp'),
+  ).toEqual({ width: 96, height: 288 })
 
   await expect(
     page.getByRole('link', { name: 'Contribution guide' }),
@@ -59,6 +85,38 @@ test('renders credits, contributors and the support links', async ({
   ).toHaveAttribute('href', 'https://opencollective.com/jenningswu')
   await expect(supporterLinks.filter({ hasText: 'Ada' })).toHaveCount(1)
   await expect(supporters).not.toContainText('Zero Donor')
+
+  // One sprite sheet serves both sections; no per-avatar remote requests.
+  const supporterSprite = supporters.locator('[data-credits-sprite]')
+  await expect(supporterSprite).toHaveCount(1)
+  expect(
+    await supporterSprite
+      .first()
+      .evaluate((el) => getComputedStyle(el).backgroundImage),
+  ).toBe(
+    await contributorSprite
+      .first()
+      .evaluate((el) => getComputedStyle(el).backgroundImage),
+  )
+  await expect(page.locator('#contributors img, #supporters img')).toHaveCount(
+    0,
+  )
+  expect(
+    await page
+      .locator(
+        '#contributors [data-credits-sprite], #supporters [data-credits-sprite]',
+      )
+      .evaluateAll((elements) =>
+        elements.map((element) => (element as HTMLElement).style.width),
+      ),
+  ).toEqual(['48px', '48px'])
+
+  // Both sections share a single network request for the one sheet.
+  expect(
+    sheetRequests.filter((url) =>
+      url.endsWith('avatars-0.0123456789abcdef.webp'),
+    ),
+  ).toHaveLength(1)
 
   const jump = page.locator('[data-credits-jump]')
   await expect(jump.getByRole('link')).toHaveText([
@@ -97,6 +155,17 @@ test('renders credits, contributors and the support links', async ({
   ).toHaveAttribute('href', 'https://www.facebook.com/kensuke.tanaka.790')
   await expect(special).toContainText('enjoyed a lot, sincerely')
 
+  // Six local icons, decorative and never remote.
+  const logos = special.locator('img')
+  await expect(logos).toHaveCount(6)
+  for (const logo of await logos.all()) {
+    await expect(logo).toHaveAttribute('alt', '')
+    await expect(logo).toHaveAttribute('loading', 'lazy')
+    expect((await logo.getAttribute('src')) ?? '').not.toMatch(
+      /^(?:https?:)?\/\//,
+    )
+  }
+
   await expect(
     page.getByRole('banner').getByRole('link', { name: 'Credits' }),
   ).toHaveAttribute('aria-current', 'page')
@@ -125,6 +194,7 @@ test('renders credits without JavaScript', async ({ browser }) => {
     await expect(
       contributors.getByRole('link', { name: 'noname' }),
     ).toBeVisible()
+    await expect(contributors.locator('[data-credits-sprite]')).toHaveCount(1)
     await expect(contributors).not.toContainText('could not be loaded')
     await expect(
       page.locator('#supporters').getByRole('link', { name: 'Sorayama' }),
@@ -139,6 +209,7 @@ test('renders credits without JavaScript', async ({ browser }) => {
         .locator('#special-thanks')
         .getByRole('link', { name: 'Kensuke Tanaka' }),
     ).toHaveAttribute('href', 'https://www.facebook.com/kensuke.tanaka.790')
+    await expect(page.locator('#special-thanks img')).toHaveCount(6)
 
     await expect(
       page.getByRole('link', { name: 'Contribution guide' }),

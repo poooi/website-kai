@@ -42,17 +42,18 @@ const pluginReleasesFixture = process.env.TANSTACK_TEST_PLUGINS
       'utf8',
     )
   : ''
-const contributorsFixture = process.env.TANSTACK_TEST_CREDITS
+const creditsManifestFixture = process.env.TANSTACK_TEST_CREDITS
   ? await readFile(
-      new URL('./tests/fixtures/contributors.json', import.meta.url),
+      new URL('./tests/fixtures/credits-manifest.json', import.meta.url),
       'utf8',
     )
   : ''
-const supportersFixture = process.env.TANSTACK_TEST_CREDITS
-  ? await readFile(
-      new URL('./tests/fixtures/supporters.json', import.meta.url),
-      'utf8',
-    )
+const creditsSheetFixture = process.env.TANSTACK_TEST_CREDITS
+  ? (
+      await readFile(
+        new URL('./tests/fixtures/credits-sheet.webp', import.meta.url),
+      )
+    ).toString('base64')
   : ''
 const sentryRelease = process.env.SENTRY_RELEASE ?? commitHash
 const sentryUploadEnabled = !!process.env.SENTRY_AUTH_TOKEN
@@ -83,9 +84,11 @@ export default defineConfig({
     'process.env.TANSTACK_TEST_PLUGIN_RELEASES': JSON.stringify(
       pluginReleasesFixture,
     ),
-    'process.env.TANSTACK_TEST_CONTRIBUTORS':
-      JSON.stringify(contributorsFixture),
-    'process.env.TANSTACK_TEST_SUPPORTERS': JSON.stringify(supportersFixture),
+    'process.env.TANSTACK_TEST_CREDITS_MANIFEST': JSON.stringify(
+      creditsManifestFixture,
+    ),
+    'process.env.TANSTACK_TEST_CREDITS_SHEET':
+      JSON.stringify(creditsSheetFixture),
     'process.env.BUILD_DATE': JSON.stringify(buildDate),
     'process.env.COMMIT_HASH': JSON.stringify(commitHash),
     'process.env.SENTRY_RELEASE': JSON.stringify(sentryRelease),

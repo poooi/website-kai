@@ -4,26 +4,26 @@ import { ArrowUpRight } from 'lucide-react'
 
 import { PageHeader } from '~/components/page-header'
 import { Transition } from '~/components/transition'
-import { fetchContributors, fetchSupporters } from '~/lib/contributors.server'
+import {
+  fetchCreditsManifest,
+  type CreditsAvatar,
+  type CreditsManifest,
+} from '~/lib/credits-manifest.server'
 import { specialThanks } from '~/lib/special-thanks'
 import { m } from '~/paraglide/messages'
 
 const contributionsUrl = 'https://github.com/poooi/poi#development'
 const openCollectiveUrl = 'https://opencollective.com/poi'
 const externalLinkClass = 'text-link inline-flex items-center gap-1'
-const avatarClass = 'h-12 w-12 rounded-full bg-muted object-cover'
+const avatarClass = 'shrink-0 rounded-full bg-muted bg-no-repeat'
 const sectionClass =
   'scroll-mt-[calc(var(--sticky-header-offset)+1.5rem)] border-t pt-8'
 const nameGridClass =
   'mt-6 grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-x-6 gap-y-6 sm:grid-cols-[repeat(auto-fill,minmax(8rem,1fr))]'
 
-const loadCredits = createServerFn({ method: 'GET' }).handler(async () => {
-  const [contributors, supporters] = await Promise.all([
-    fetchContributors(),
-    fetchSupporters(),
-  ])
-  return { contributors, supporters }
-})
+const loadCredits = createServerFn({ method: 'GET' }).handler(() =>
+  fetchCreditsManifest(),
+)
 
 export const Route = createFileRoute('/credits')({
   loader: () => loadCredits(),
@@ -33,7 +33,7 @@ export const Route = createFileRoute('/credits')({
 })
 
 function CreditsPage() {
-  const { contributors, supporters } = Route.useLoaderData()
+  const { manifest, available } = Route.useLoaderData()
   return (
     <Transition>
       <PageHeader title={m.credits()} />
@@ -78,27 +78,15 @@ function CreditsPage() {
         <p className="mt-3 max-w-2xl text-base leading-7">
           {m.supportersThanks()}
         </p>
-        {supporters.available ? (
+        {available && manifest ? (
           <ul className={nameGridClass}>
-            {supporters.supporters.map((supporter) => (
+            {manifest.supporters.map((supporter) => (
               <li key={supporter.id} className="flex min-w-0 flex-col gap-2">
-                {supporter.avatarUrl ? (
-                  <img
-                    src={supporter.avatarUrl}
-                    alt=""
-                    width={48}
-                    height={48}
-                    loading="lazy"
-                    decoding="async"
-                    className={avatarClass}
-                  />
-                ) : (
-                  <span aria-hidden="true" className={avatarClass} />
-                )}
-                {supporter.profileUrl ? (
+                <SpriteAvatar manifest={manifest} avatar={supporter.avatar} />
+                {supporter.profile ? (
                   <a
                     className="text-link w-full text-sm leading-5 [overflow-wrap:anywhere]"
-                    href={supporter.profileUrl}
+                    href={supporter.profile}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -144,25 +132,14 @@ function CreditsPage() {
         <p className="mt-3 max-w-2xl text-base leading-7">
           {m.contributorsThanks()}
         </p>
-        {contributors.available ? (
+        {available && manifest ? (
           <ul className={nameGridClass}>
-            {contributors.contributors.map((contributor) => (
-              <li
-                key={contributor.login}
-                className="flex min-w-0 flex-col gap-2"
-              >
-                <img
-                  src={contributor.avatarUrl}
-                  alt=""
-                  width={48}
-                  height={48}
-                  loading="lazy"
-                  decoding="async"
-                  className={avatarClass}
-                />
+            {manifest.contributors.map((contributor) => (
+              <li key={contributor.id} className="flex min-w-0 flex-col gap-2">
+                <SpriteAvatar manifest={manifest} avatar={contributor.avatar} />
                 <a
                   className="text-link w-full text-sm leading-5 [overflow-wrap:anywhere]"
-                  href={contributor.profileUrl}
+                  href={contributor.profile}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -191,22 +168,74 @@ function CreditsPage() {
         </h2>
         <ul className="mt-6 grid gap-x-10 gap-y-6 sm:grid-cols-2">
           {specialThanks.map((entry) => (
-            <li key={entry.name} className="border-t pt-4">
-              <a
-                className="text-link text-sm font-medium"
-                href={entry.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {entry.name}
-              </a>
-              <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                {entry.description()}
-              </p>
+            <li
+              key={entry.name}
+              className="flex items-start gap-4 border-t pt-4"
+            >
+              {entry.logo && (
+                <span className={entry.logo.boxClassName} aria-hidden="true">
+                  <img
+                    src={entry.logo.src}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    className={entry.logo.imgClassName}
+                  />
+                </span>
+              )}
+              <div className="min-w-0">
+                <a
+                  className="text-link text-sm font-medium"
+                  href={entry.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {entry.name}
+                </a>
+                <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                  {entry.description()}
+                </p>
+              </div>
             </li>
           ))}
         </ul>
       </section>
     </Transition>
+  )
+}
+
+function SpriteAvatar({
+  manifest,
+  avatar,
+}: {
+  manifest: CreditsManifest
+  avatar?: CreditsAvatar
+}) {
+  const size = manifest.displaySize
+  const sheet = avatar ? manifest.sheets[avatar.sheet] : undefined
+  if (!avatar || !sheet)
+    return (
+      <span
+        aria-hidden="true"
+        data-sprite-placeholder
+        style={{ width: size, height: size }}
+        className={avatarClass}
+      />
+    )
+
+  const scale = manifest.pixelRatio
+  return (
+    <span
+      aria-hidden="true"
+      data-credits-sprite
+      style={{
+        width: size,
+        height: size,
+        backgroundImage: `url(/api/credits-sprite/${sheet.url})`,
+        backgroundPosition: `-${avatar.x / scale}px -${avatar.y / scale}px`,
+        backgroundSize: `${sheet.width / scale}px ${sheet.height / scale}px`,
+      }}
+      className={avatarClass}
+    />
   )
 }
