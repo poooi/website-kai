@@ -85,5 +85,12 @@
   "supportersThanks": "感謝所有過去和現在為 poi 提供資金支援的人。",
   "creditsAnonymousSupporter": "匿名支持者",
   "creditsContributorsUnavailable": "暫時無法載入貢獻者。",
-  "creditsSupportersUnavailable": "暫無法獲取支持者資訊。"
+  "creditsSupportersUnavailable": "暫無法獲取支持者資訊。",
+  "specialThanks": "特別鳴謝",
+  "specialThanksKcwiki": "提供了裝備改修、任務資訊、艦娘語音等資料。",
+  "specialThanksTaoNpm": "為專案提供了中國映象。",
+  "specialThanksKancolleWikia": "提供了英文翻譯。",
+  "specialThanksElectronicObserver": "提供了 KanColle API 參考資料。",
+  "specialThanksWhoCallsTheFleet": "提供了 Who Calls The Fleet 資料庫。",
+  "specialThanksTanaka": "提供了開發上的困難（我們由衷地樂在其中）。"
 }

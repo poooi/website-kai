@@ -85,5 +85,12 @@
   "supportersThanks": "poi を金銭的に支援してくださったすべての方（過去・現在）に感謝します。",
   "creditsAnonymousSupporter": "匿名の支援者",
   "creditsContributorsUnavailable": "コントリビューターを読み込めませんでした。",
-  "creditsSupportersUnavailable": "支援者情報は現在利用できません。"
+  "creditsSupportersUnavailable": "支援者情報は現在利用できません。",
+  "specialThanks": "スペシャルサンクス",
+  "specialThanksKcwiki": "装備改修・任務情報・艦娘ボイスなどのデータを提供してくださっています。",
+  "specialThanksTaoNpm": "中国向けのミラーを提供してくださっています。",
+  "specialThanksKancolleWikia": "英語訳を提供してくださっています。",
+  "specialThanksElectronicObserver": "艦これ API のリファレンスを提供してくださっています。",
+  "specialThanksWhoCallsTheFleet": "Who Calls The Fleet のデータベースを提供してくださっています。",
+  "specialThanksTanaka": "開発上の困難を提供してくださっています（心から楽しませていただきました）。"
 }

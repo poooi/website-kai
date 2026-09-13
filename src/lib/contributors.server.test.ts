@@ -272,6 +272,15 @@ const supportersPage = (start: number, count: number) =>
     totalAmountDonated: 1,
   }))
 
+describe('supportersUrl', () => {
+  it('uses the public rest.opencollective.com members URL', () => {
+    expect(supportersUrl).toBe(
+      'https://rest.opencollective.com/poi/members/all.json',
+    )
+    expect(supportersUrl).not.toContain('/v2/')
+  })
+})
+
 describe('fetchSupporters', () => {
   it('pages with limit/offset until a short page and merges in order', async () => {
     const calls: string[] = []

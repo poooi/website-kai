@@ -60,6 +60,43 @@ test('renders credits, contributors and the support links', async ({
   await expect(supporterLinks.filter({ hasText: 'Ada' })).toHaveCount(1)
   await expect(supporters).not.toContainText('Zero Donor')
 
+  const jump = page.locator('[data-credits-jump]')
+  await expect(jump.getByRole('link')).toHaveText([
+    'Supporters',
+    'Contributors',
+    'Special thanks',
+  ])
+  await expect(
+    jump.getByRole('link', { name: 'Special thanks' }),
+  ).toHaveAttribute('href', '#special-thanks')
+
+  expect(
+    await page
+      .locator('main section[id]')
+      .evaluateAll((elements) => elements.map((element) => element.id)),
+  ).toEqual(['supporters', 'contributors', 'special-thanks'])
+
+  const special = page.locator('#special-thanks')
+  await expect(
+    special.getByRole('heading', { level: 2, name: 'Special thanks' }),
+  ).toBeVisible()
+  await expect(special.locator('ul').getByRole('link')).toHaveText([
+    'KCwiki',
+    'TaoNPM',
+    'Kancolle English Wikia',
+    'Type 74 Electronic Observer',
+    'Who Calls The Fleet',
+    'Kensuke Tanaka',
+  ])
+  await expect(special.getByRole('link', { name: 'KCwiki' })).toHaveAttribute(
+    'href',
+    'https://zh.kcwiki.moe/wiki/%E8%88%B0%E5%A8%98%E7%99%BE%E7%A7%91',
+  )
+  await expect(
+    special.getByRole('link', { name: 'Kensuke Tanaka' }),
+  ).toHaveAttribute('href', 'https://www.facebook.com/kensuke.tanaka.790')
+  await expect(special).toContainText('enjoyed a lot, sincerely')
+
   await expect(
     page.getByRole('banner').getByRole('link', { name: 'Credits' }),
   ).toHaveAttribute('aria-current', 'page')
@@ -93,6 +130,15 @@ test('renders credits without JavaScript', async ({ browser }) => {
       page.locator('#supporters').getByRole('link', { name: 'Sorayama' }),
     ).toHaveAttribute('href', 'https://opencollective.com/sorayama')
     await expect(page.locator('#supporters')).not.toContainText('Zero Donor')
+
+    await expect(
+      page.locator('[data-credits-jump]').getByRole('link'),
+    ).toHaveText(['Supporters', 'Contributors', 'Special thanks'])
+    await expect(
+      page
+        .locator('#special-thanks')
+        .getByRole('link', { name: 'Kensuke Tanaka' }),
+    ).toHaveAttribute('href', 'https://www.facebook.com/kensuke.tanaka.790')
 
     await expect(
       page.getByRole('link', { name: 'Contribution guide' }),

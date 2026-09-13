@@ -6,7 +6,7 @@ import { fetchCachedRelease } from './release-cache.server'
 export const contributorsUrl =
   'https://raw.githubusercontent.com/poooi/contributors/master/dist/contributors.json'
 export const supportersUrl =
-  'https://rest.opencollective.com/v2/poi/members/all.json'
+  'https://rest.opencollective.com/poi/members/all.json'
 export const supportersPageSize = 1000
 
 // Only the fields the credits page renders are required; upstream stats and

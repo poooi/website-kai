@@ -5,12 +5,17 @@ import { ArrowUpRight } from 'lucide-react'
 import { PageHeader } from '~/components/page-header'
 import { Transition } from '~/components/transition'
 import { fetchContributors, fetchSupporters } from '~/lib/contributors.server'
+import { specialThanks } from '~/lib/special-thanks'
 import { m } from '~/paraglide/messages'
 
 const contributionsUrl = 'https://github.com/poooi/poi#development'
 const openCollectiveUrl = 'https://opencollective.com/poi'
 const externalLinkClass = 'text-link inline-flex items-center gap-1'
 const avatarClass = 'h-12 w-12 rounded-full bg-muted object-cover'
+const sectionClass =
+  'scroll-mt-[calc(var(--sticky-header-offset)+1.5rem)] border-t pt-8'
+const nameGridClass =
+  'mt-6 grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-x-6 gap-y-6 sm:grid-cols-[repeat(auto-fill,minmax(8rem,1fr))]'
 
 const loadCredits = createServerFn({ method: 'GET' }).handler(async () => {
   const [contributors, supporters] = await Promise.all([
@@ -33,78 +38,25 @@ function CreditsPage() {
     <Transition>
       <PageHeader title={m.credits()} />
 
-      <p className="mb-10 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+      <p
+        data-credits-jump
+        className="mb-10 flex flex-wrap gap-x-6 gap-y-2 text-sm"
+      >
+        <a className="text-link" href="#supporters">
+          {m.supporters()}
+        </a>
         <a className="text-link" href="#contributors">
           {m.contributors()}
         </a>
-        <a className="text-link" href="#supporters">
-          {m.supporters()}
+        <a className="text-link" href="#special-thanks">
+          {m.specialThanks()}
         </a>
       </p>
 
       <section
-        id="contributors"
-        aria-labelledby="credits-contributors"
-        className="scroll-mt-[calc(var(--sticky-header-offset)+1.5rem)] border-t pt-8"
-      >
-        <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-          <h2
-            id="credits-contributors"
-            className="text-2xl font-medium tracking-tight"
-          >
-            {m.contributors()}
-          </h2>
-          <a
-            className={externalLinkClass}
-            href={contributionsUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {m.creditsContribute()}
-            <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-          </a>
-        </div>
-        <p className="mt-3 max-w-2xl text-base leading-7">
-          {m.contributorsThanks()}
-        </p>
-        {contributors.available ? (
-          <ul className="mt-6 grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-x-6 gap-y-6 sm:grid-cols-[repeat(auto-fill,minmax(8rem,1fr))]">
-            {contributors.contributors.map((contributor) => (
-              <li
-                key={contributor.login}
-                className="flex min-w-0 flex-col gap-2"
-              >
-                <img
-                  src={contributor.avatarUrl}
-                  alt=""
-                  width={48}
-                  height={48}
-                  loading="lazy"
-                  decoding="async"
-                  className={avatarClass}
-                />
-                <a
-                  className="text-link w-full text-sm leading-5 [overflow-wrap:anywhere]"
-                  href={contributor.profileUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {contributor.name}
-                </a>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p role="status" className="mt-6 text-sm text-muted-foreground">
-            {m.creditsContributorsUnavailable()}
-          </p>
-        )}
-      </section>
-
-      <section
         id="supporters"
         aria-labelledby="credits-supporters"
-        className="mt-14 scroll-mt-[calc(var(--sticky-header-offset)+1.5rem)] border-t pt-8"
+        className={sectionClass}
       >
         <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
           <h2
@@ -127,7 +79,7 @@ function CreditsPage() {
           {m.supportersThanks()}
         </p>
         {supporters.available ? (
-          <ul className="mt-6 grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-x-6 gap-y-6 sm:grid-cols-[repeat(auto-fill,minmax(8rem,1fr))]">
+          <ul className={nameGridClass}>
             {supporters.supporters.map((supporter) => (
               <li key={supporter.id} className="flex min-w-0 flex-col gap-2">
                 {supporter.avatarUrl ? (
@@ -165,6 +117,95 @@ function CreditsPage() {
             {m.creditsSupportersUnavailable()}
           </p>
         )}
+      </section>
+
+      <section
+        id="contributors"
+        aria-labelledby="credits-contributors"
+        className={`mt-14 ${sectionClass}`}
+      >
+        <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+          <h2
+            id="credits-contributors"
+            className="text-2xl font-medium tracking-tight"
+          >
+            {m.contributors()}
+          </h2>
+          <a
+            className={externalLinkClass}
+            href={contributionsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {m.creditsContribute()}
+            <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+          </a>
+        </div>
+        <p className="mt-3 max-w-2xl text-base leading-7">
+          {m.contributorsThanks()}
+        </p>
+        {contributors.available ? (
+          <ul className={nameGridClass}>
+            {contributors.contributors.map((contributor) => (
+              <li
+                key={contributor.login}
+                className="flex min-w-0 flex-col gap-2"
+              >
+                <img
+                  src={contributor.avatarUrl}
+                  alt=""
+                  width={48}
+                  height={48}
+                  loading="lazy"
+                  decoding="async"
+                  className={avatarClass}
+                />
+                <a
+                  className="text-link w-full text-sm leading-5 [overflow-wrap:anywhere]"
+                  href={contributor.profileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {contributor.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p role="status" className="mt-6 text-sm text-muted-foreground">
+            {m.creditsContributorsUnavailable()}
+          </p>
+        )}
+      </section>
+
+      <section
+        id="special-thanks"
+        aria-labelledby="credits-special-thanks"
+        className={`mt-14 ${sectionClass}`}
+      >
+        <h2
+          id="credits-special-thanks"
+          className="text-2xl font-medium tracking-tight"
+        >
+          {m.specialThanks()}
+        </h2>
+        <ul className="mt-6 grid gap-x-10 gap-y-6 sm:grid-cols-2">
+          {specialThanks.map((entry) => (
+            <li key={entry.name} className="border-t pt-4">
+              <a
+                className="text-link text-sm font-medium"
+                href={entry.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {entry.name}
+              </a>
+              <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                {entry.description()}
+              </p>
+            </li>
+          ))}
+        </ul>
       </section>
     </Transition>
   )

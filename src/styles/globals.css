@@ -131,13 +131,7 @@
 
 @media (max-width: 1099px) {
   :root {
-    --sticky-header-offset: 7rem;
-  }
-}
-
-@media (max-width: 640px) {
-  :root {
-    --sticky-header-offset: 7.5rem;
+    --sticky-header-offset: 9rem;
   }
 }
 
