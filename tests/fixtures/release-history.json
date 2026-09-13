@@ -342,19 +342,19 @@
         "reconstructed": false
       },
       "zh-CN": {
-        "markdown": "### 功能\n\n- 升级至 electron@7 (Chromium@78)\n- 更新喷进炮改二发动率公式\n- 增加亚特兰大 AACI 支持\n- 增加泊地维修支持\n- 增加新型基地空袭 API 支持\n- 增加选择截图方式选项\n- 增加网络连接测试\n- 恢复性能监视器的内存监视\n- 增加小地图的固定显示功能\n- 增加 `特殊攻击` 舰队面板指示器\n- 部分 UI/UE 改进\n- [macOS] 增加自动更新支持\n\n### 修复\n\n- 修复 `耗资记录` 插件无法正确保存记录的问题\n- 修复截图 / 缓存文件夹无法设置的问题\n- 修复季常更新倒计时",
-        "source": "https://github.com/poooi/website/blob/3e89b2904f1e5fbc3dd4bba967051611cb93ff69/public/update/zh-CN.md",
+        "markdown": "### 功能\n\n- 升级至 electron@6 (Chromium@76)\n- 舰队面版现在显示总火力值和总对潜值\n- 重新设计舰娘面版\n- 增加新的对空 CI 和开幕对潜数据\n\n### 修复\n\n- 修复新开发 API 导致的错误",
+        "source": "https://github.com/poooi/website/blob/eabeed42d64882534d5ad0f9f5b75211c105155e/public/update/zh-CN.md",
         "reconstructed": false
       },
       "zh-TW": {
-        "markdown": "### 功能\n\n- 升級至 electron@7 (Chromium@78)\n- 更新噴進炮改二發動率公式\n- 增加亞特蘭大 AACI 支援\n- 增加泊地維修支援\n- 增加新型基地空襲 API 支援\n- 增加選擇截圖方式選項\n- 增加網路連線測試\n- 恢復效能監視器的記憶體監視\n- 增加小地圖的固定顯示功能\n- 增加 `特殊攻擊` 艦隊面板指示器\n- 部分 UI/UE 改進\n- [macOS] 增加自動更新支援\n\n### 修復\n\n- 修復 `耗資記錄` 外掛無法正確儲存記錄的問題\n- 修復截圖 / 快取資料夾無法設定的問題\n- 修復季常更新倒計時",
-        "source": "https://github.com/poooi/website/blob/3e89b2904f1e5fbc3dd4bba967051611cb93ff69/public/update/zh-CN.md",
+        "markdown": "### 功能\n\n- 升級至 electron@6 (Chromium@76)\n- 艦隊面版現在顯示總火力值和總對潛值\n- 重新設計艦娘面版\n- 增加新的對空 CI 和開幕對潛資料\n\n### 修復\n\n- 修復新開發 API 導致的錯誤",
+        "source": "https://github.com/poooi/website/blob/eabeed42d64882534d5ad0f9f5b75211c105155e/public/update/zh-CN.md",
         "reconstructed": false,
         "translatedFrom": "zh-CN"
       },
       "ja-JP": {
-        "markdown": "### 新機能\n- electron@7 (Chromium@78) に更新\n- 噴進砲改二の発動率の計算式を更新\n- Atlanta の対空 CI に対応\n- 泊地修理に対応\n- 新しい基地空襲 API に対応\n- スクリーンショットの撮影方式を選択する設定を追加\n- ネットワーク接続テストを追加\n- パフォーマンスモニターのメモリー使用量表示を復活\n- ミニマップの固定表示機能を追加\n- 艦隊パネルに `特殊攻撃` インジケーターを追加\n- 一部の UI・操作性を改善\n- [macOS] 自動更新に対応\n\n### 修正\n- `耗资记录` プラグインが記録を正しく保存できない問題を修正\n- スクリーンショット・キャッシュの保存先フォルダーを設定できない問題を修正\n- クォータリー任務の更新までのカウントダウンを修正",
-        "source": "https://github.com/poooi/website/blob/3e89b2904f1e5fbc3dd4bba967051611cb93ff69/public/update/zh-CN.md",
+        "markdown": "### 新機能\n- electron@6 (Chromium@76) に更新\n- 艦隊パネルに火力と対潜の合計値を表示\n- 艦娘パネルを再設計\n- 新しい対空 CI と先制対潜のデータを追加\n\n### 修正\n- 新しい開発 API によるエラーを修正",
+        "source": "https://github.com/poooi/website/blob/eabeed42d64882534d5ad0f9f5b75211c105155e/public/update/zh-CN.md",
         "reconstructed": false,
         "translatedFrom": "zh-CN"
       }
@@ -901,19 +901,19 @@
         "reconstructed": false
       },
       "zh-CN": {
-        "markdown": "### 修复\n- 修复了未能以最大化状态启动的问题\n- 修复了插件加载进程\n- 修复了插件安装可能由于不完整导致出错的问题\n- 修复 E6 贴条无法显示的问题",
-        "source": "https://github.com/poooi/poi-server/blob/a0018c919d819049883e762db23f4fbeaf21fab1/public/update/zh-CN.md",
+        "markdown": "### 功能\n- [Windows] [Linux] 使用定制标题栏代替原有系统标题栏\n- [Windows] 安装包支持选择安装路径\n- [macOS] 增加 TouchBar 支持\n- [macOS] 增加透明窗口模式\n- 支持自定义背景\n- 在设置-关于中加入性能监视器\n- 大幅优化启动速度\n- 在新窗口插件单独设置下追加是否常驻后台选项\n  - 如果禁止具有记录功能的新窗口插件常驻后台, 记录功能将会失效\n- 增加设置缓存大小功能\n- 部分性能优化\n\n### 修复\n- 修复了设定自定义缩放倍率时新窗口插件缩放显示不正常的 bug",
+        "source": "https://github.com/poooi/poi-server/blob/379796c22bf37f8eff55ef4876e91dbfd5c4165c/public/update/zh-CN.md",
         "reconstructed": false
       },
       "zh-TW": {
-        "markdown": "### 修復\n- 修復了未能以最大化狀態啟動的問題\n- 修復了外掛載入程序\n- 修復了外掛安裝可能由於不完整導致出錯的問題\n- 修復 E6 貼條無法顯示的問題",
-        "source": "https://github.com/poooi/poi-server/blob/a0018c919d819049883e762db23f4fbeaf21fab1/public/update/zh-CN.md",
+        "markdown": "### 功能\n- [Windows] [Linux] 使用定製標題欄代替原有系統標題欄\n- [Windows] 安裝包支援選擇安裝路徑\n- [macOS] 增加 TouchBar 支援\n- [macOS] 增加透明視窗模式\n- 支援自定義背景\n- 在設定-關於中加入效能監視器\n- 大幅最佳化啟動速度\n- 在新視窗外掛單獨設定下追加是否常駐後臺選項\n  - 如果禁止具有記錄功能的新視窗外掛常駐後臺, 記錄功能將會失效\n- 增加設定快取大小功能\n- 部分效能最佳化\n\n### 修復\n- 修復了設定自定義縮放倍率時新視窗外掛縮放顯示不正常的 bug",
+        "source": "https://github.com/poooi/poi-server/blob/379796c22bf37f8eff55ef4876e91dbfd5c4165c/public/update/zh-CN.md",
         "reconstructed": false,
         "translatedFrom": "zh-CN"
       },
       "ja-JP": {
-        "markdown": "### 修正\n- 最大化状態で起動できない問題を修正\n- プラグインの読み込み処理を修正\n- プラグインのインストールが不完全なために発生するエラーを修正\n- E6 の札が表示されない問題を修正",
-        "source": "https://github.com/poooi/poi-server/blob/a0018c919d819049883e762db23f4fbeaf21fab1/public/update/zh-CN.md",
+        "markdown": "### 新機能\n- [Windows] [Linux] システムのタイトルバーを独自のタイトルバーに変更\n- [Windows] インストーラーでインストール先を選択できるように変更\n- [macOS] TouchBar に対応\n- [macOS] 透明ウィンドウモードを追加\n- 背景のカスタマイズに対応\n- 「設定 → このアプリについて」にパフォーマンスモニターを追加\n- 起動速度を大幅に改善\n- 別ウィンドウで動作するプラグインの個別設定に、バックグラウンドに常駐させるかどうかのオプションを追加\n  - 記録機能を持つ別ウィンドウプラグインのバックグラウンド常駐を禁止すると、記録機能が動作しなくなります\n- キャッシュサイズを設定する機能を追加\n- 一部のパフォーマンスを改善\n\n### 修正\n- 独自の拡大率を設定したとき、別ウィンドウのプラグインが正しい倍率で表示されない問題を修正",
+        "source": "https://github.com/poooi/poi-server/blob/379796c22bf37f8eff55ef4876e91dbfd5c4165c/public/update/zh-CN.md",
         "reconstructed": false,
         "translatedFrom": "zh-CN"
       }
