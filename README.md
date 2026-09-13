@@ -8,6 +8,14 @@ Production website for poi, built with TanStack Start and deployed to Cloudflare
 - `pnpm run build` creates the Cloudflare Worker build output under `dist/`.
 - `pnpm run test:e2e` runs the Playwright end-to-end suite.
 
+Cloudflare binding types are committed in `cloudflare-env.d.ts`. Run
+`pnpm run cf-typegen` after changing `wrangler.toml` bindings, triggers or the
+compatibility date, and commit the regenerated file; do not hand-edit it.
+`pnpm run typecheck` runs `pnpm run cf-typegen:check` (the same Wrangler command
+with `--check`) so a stale generated file fails before `tsc`, and CI typechecks
+before linting and building. Because the file is committed, lint and typecheck
+work on a clean checkout without regenerating it.
+
 ## Repository layout
 
 UI conventions and component usage are defined in [the website VI guide](docs/visual-identity.md).

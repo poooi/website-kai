@@ -43,19 +43,61 @@ vi.mock('~/lib/plugin-releases.server', () => ({
 
 import worker, { handleWorkerRequest } from './worker'
 
-type WorkerEnvForTest = Parameters<typeof handleWorkerRequest>[1]
-type AssetsFetchForTest = NonNullable<WorkerEnvForTest['ASSETS']>['fetch']
+type AssetEnvForTest = Parameters<typeof handleWorkerRequest>[1]
+type AssetsFetchForTest = NonNullable<AssetEnvForTest['ASSETS']>['fetch']
 
 const makeRequest = (path: string, init?: RequestInit) =>
   new Request(`https://poi.moe${path}`, init)
 
-const makeEnv = (fetch?: AssetsFetchForTest): WorkerEnvForTest => ({
+const makeEnv = (fetch?: AssetsFetchForTest): AssetEnvForTest => ({
   ASSETS: fetch
     ? {
         fetch,
       }
     : undefined,
 })
+
+const unexpected = (what: string) => (): never => {
+  throw new Error(`unexpected ${what} call`)
+}
+
+/** Throwing KV double; production bindings still come from the generated type. */
+const makeKv = (): KVNamespace => ({
+  get: unexpected('KV get'),
+  getWithMetadata: unexpected('KV getWithMetadata'),
+  list: unexpected('KV list'),
+  put: unexpected('KV put'),
+  delete: unexpected('KV delete'),
+})
+
+const unusedAssets: Fetcher = {
+  fetch: unexpected('ASSETS.fetch'),
+  connect: unexpected('ASSETS.connect'),
+}
+
+const makeScheduledEnv = (pluginReleases: KVNamespace): CloudflareEnv => ({
+  ASSETS: unusedAssets,
+  PLUGIN_RELEASES: pluginReleases,
+})
+
+const scheduledController: ScheduledController = {
+  scheduledTime: 0,
+  cron: '0 * * * *',
+  noRetry: () => undefined,
+}
+
+const executionContext: ExecutionContext = {
+  waitUntil: () => undefined,
+  passThroughOnException: () => undefined,
+  props: undefined,
+  abort: () => undefined,
+  get exports(): Cloudflare.Exports {
+    throw new Error('unexpected ctx.exports access')
+  },
+  get tracing(): Tracing {
+    throw new Error('unexpected ctx.tracing access')
+  },
+}
 
 beforeEach(() => {
   mocks.paraglideMiddleware.mockReset()
@@ -300,26 +342,24 @@ describe('handleWorkerRequest', () => {
 })
 
 describe('scheduled', () => {
-  const makeStore = () => ({
-    get: vi.fn(async () => null),
-    put: vi.fn(async () => undefined),
-  })
-  const runScheduled = (env: WorkerEnvForTest) =>
-    worker.scheduled!(
-      null as unknown as ScheduledController,
-      env,
-      null as unknown as ExecutionContext,
-    )
+  const runScheduled = (env: CloudflareEnv) => {
+    const scheduled = worker.scheduled
+    expect(scheduled).toBeDefined()
+    if (!scheduled) throw new Error('missing scheduled handler')
+    return scheduled(scheduledController, env, executionContext)
+  }
 
   it('refreshes plugin releases from the KV binding', async () => {
-    const store = makeStore()
-    await runScheduled({ ...makeEnv(), PLUGIN_RELEASES: store })
+    const pluginReleases = makeKv()
+    await runScheduled(makeScheduledEnv(pluginReleases))
     expect(mocks.refreshPluginReleases).toHaveBeenCalledOnce()
-    expect(mocks.refreshPluginReleases).toHaveBeenCalledWith(store)
+    expect(mocks.refreshPluginReleases).toHaveBeenCalledWith(pluginReleases)
   })
 
   it('propagates refresh failures through the exported wrapped handler', async () => {
     mocks.refreshPluginReleases.mockRejectedValue(new Error('refresh failed'))
-    await expect(runScheduled(makeEnv())).rejects.toThrow('refresh failed')
+    await expect(runScheduled(makeScheduledEnv(makeKv()))).rejects.toThrow(
+      'refresh failed',
+    )
   })
 })
