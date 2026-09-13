@@ -1,0 +1,69 @@
+[
+  {
+    "MemberId": 1,
+    "role": "ADMIN",
+    "name": "Sorayama",
+    "image": "https://example.com/sorayama.png",
+    "profile": "https://opencollective.com/sorayama",
+    "totalAmountDonated": 50,
+    "isActive": false
+  },
+  {
+    "MemberId": 2,
+    "role": "ADMIN",
+    "name": "magica",
+    "image": "https://example.com/magica.png",
+    "profile": "https://opencollective.com/magicae",
+    "totalAmountDonated": 120
+  },
+  {
+    "MemberId": 3,
+    "role": "ADMIN",
+    "name": "Jennings Wu",
+    "image": null,
+    "profile": "https://opencollective.com/jenningswu",
+    "totalAmountDonated": 30
+  },
+  {
+    "MemberId": 4,
+    "role": "BACKER",
+    "name": "Ada",
+    "image": "https://example.com/ada.png",
+    "profile": "https://opencollective.com/ada",
+    "totalAmountDonated": 100
+  },
+  {
+    "MemberId": 5,
+    "role": "BACKER",
+    "name": null,
+    "company": null,
+    "image": null,
+    "profile": null,
+    "totalAmountDonated": 5
+  },
+  {
+    "MemberId": 6,
+    "role": "BACKER",
+    "name": "Zero Donor",
+    "image": null,
+    "profile": "https://opencollective.com/zero",
+    "totalAmountDonated": 0
+  },
+  {
+    "MemberId": 4,
+    "role": "BACKER",
+    "name": "Ada",
+    "image": "https://example.com/ada.png",
+    "profile": "https://opencollective.com/ada",
+    "totalAmountDonated": 100
+  },
+  {
+    "MemberId": 5,
+    "role": "BACKER",
+    "name": null,
+    "company": null,
+    "image": null,
+    "profile": null,
+    "totalAmountDonated": 5
+  }
+]

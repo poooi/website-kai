@@ -74,5 +74,16 @@
   "pluginsNoResults": "Aucun plugin trouvé. Essayez un autre nom, une autre fonction ou un autre auteur.",
   "pluginsLoadError": "Impossible de charger le catalogue des plugins. Rechargez la page pour réessayer.",
   "pluginsReleasePublished": "Publié le {date}",
-  "backToTop": "Retour en haut"
+  "backToTop": "Retour en haut",
+  "credits": "Crédits",
+  "menu": "Menu",
+  "contributors": "Contributeurs",
+  "supporters": "Soutiens",
+  "contributorsThanks": "Merci à toutes les personnes qui contribuent au code, aux traductions, aux données et aux designs.",
+  "creditsContribute": "Guide de contribution",
+  "creditsSupport": "Soutenir poi",
+  "supportersThanks": "Merci à toutes les personnes qui ont soutenu poi financièrement, passées comme actuelles.",
+  "creditsAnonymousSupporter": "Soutien anonyme",
+  "creditsContributorsUnavailable": "Les contributeurs n’ont pas pu être chargés pour le moment.",
+  "creditsSupportersUnavailable": "Les informations sur les soutiens ne sont pas disponibles pour le moment."
 }

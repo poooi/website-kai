@@ -74,5 +74,16 @@
   "pluginsNoResults": "該当するプラグインがありません。別の名前・機能・作者で検索してください。",
   "pluginsLoadError": "プラグイン一覧を読み込めませんでした。ページを再読み込みしてください。",
   "pluginsReleasePublished": "公開日 {date}",
-  "backToTop": "ページ上部へ戻る"
+  "backToTop": "ページ上部へ戻る",
+  "credits": "クレジット",
+  "menu": "メニュー",
+  "contributors": "コントリビューター",
+  "supporters": "支援者",
+  "contributorsThanks": "コード、翻訳、データ、デザインなどに貢献してくださったすべての方に感謝します。",
+  "creditsContribute": "コントリビューションガイド",
+  "creditsSupport": "poi を支援",
+  "supportersThanks": "poi を金銭的に支援してくださったすべての方（過去・現在）に感謝します。",
+  "creditsAnonymousSupporter": "匿名の支援者",
+  "creditsContributorsUnavailable": "コントリビューターを読み込めませんでした。",
+  "creditsSupportersUnavailable": "支援者情報は現在利用できません。"
 }

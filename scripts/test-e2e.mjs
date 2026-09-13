@@ -14,6 +14,7 @@ const env = {
   }),
   TANSTACK_TEST_RELEASE_HISTORY: '1',
   TANSTACK_TEST_PLUGINS: '1',
+  TANSTACK_TEST_CREDITS: '1',
 }
 
 await execa('vite', ['build', '--config', 'vite.config.ts'], {

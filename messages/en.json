@@ -74,5 +74,16 @@
   "pluginsNoResults": "No plugins match. Try another name, feature or author.",
   "pluginsLoadError": "The plugin catalog could not be loaded. Reload to try again.",
   "pluginsReleasePublished": "Published {date}",
-  "backToTop": "Back to top"
+  "backToTop": "Back to top",
+  "credits": "Credits",
+  "menu": "Menu",
+  "contributors": "Contributors",
+  "supporters": "Supporters",
+  "contributorsThanks": "Thank you to everyone who contributes code, translations, data and designs.",
+  "creditsContribute": "Contribution guide",
+  "creditsSupport": "Support poi",
+  "supportersThanks": "Thank you to everyone who has supported poi financially, past and present.",
+  "creditsAnonymousSupporter": "Anonymous supporter",
+  "creditsContributorsUnavailable": "Contributors could not be loaded right now.",
+  "creditsSupportersUnavailable": "Supporter information is not available right now."
 }

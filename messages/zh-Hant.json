@@ -74,5 +74,16 @@
   "pluginsNoResults": "沒有符合的插件，請嘗試其他名稱、功能或作者。",
   "pluginsLoadError": "插件列表載入失敗，請重新整理頁面重試。",
   "pluginsReleasePublished": "發佈於 {date}",
-  "backToTop": "回到頂部"
+  "backToTop": "回到頂部",
+  "credits": "致謝",
+  "menu": "選單",
+  "contributors": "貢獻者",
+  "supporters": "支持者",
+  "contributorsThanks": "感謝所有貢獻程式碼、翻譯、資料和設計的人。",
+  "creditsContribute": "貢獻指南",
+  "creditsSupport": "支援 poi",
+  "supportersThanks": "感謝所有過去和現在為 poi 提供資金支援的人。",
+  "creditsAnonymousSupporter": "匿名支持者",
+  "creditsContributorsUnavailable": "暫時無法載入貢獻者。",
+  "creditsSupportersUnavailable": "暫無法獲取支持者資訊。"
 }

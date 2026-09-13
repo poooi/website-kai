@@ -14,6 +14,7 @@ const localizedPageNames = new Set([
   'plugins',
   'changelog',
   'changelog/compare',
+  'credits',
 ])
 const proxyRoots = new Set(['/dist', '/fcd', '/update'])
 const proxyPrefixes = ['/dist/', '/fcd/', '/update/']

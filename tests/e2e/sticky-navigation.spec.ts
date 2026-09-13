@@ -71,10 +71,13 @@ test('keeps the sticky header usable at 320px in French', async ({ page }) => {
     ),
   ).toBe(true)
 
-  const navigation = header.getByRole('navigation')
+  const details = header.locator('[data-mobile-nav]')
+  await details.locator('summary').click()
+  const navigation = details.getByRole('navigation')
   await expect(
     navigation.getByRole('link', { name: 'Journal des modifications' }),
   ).toBeVisible()
+  await expect(navigation.getByRole('link', { name: 'Crédits' })).toBeVisible()
   for (const link of await navigation.getByRole('link').all())
     expect(
       await link.evaluate(

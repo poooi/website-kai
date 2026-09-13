@@ -74,5 +74,16 @@
   "pluginsNoResults": "没有匹配的插件，请尝试其他名称、功能或作者。",
   "pluginsLoadError": "插件列表加载失败，请刷新页面重试。",
   "pluginsReleasePublished": "发布于 {date}",
-  "backToTop": "回到顶部"
+  "backToTop": "回到顶部",
+  "credits": "致谢",
+  "menu": "菜单",
+  "contributors": "贡献者",
+  "supporters": "支持者",
+  "contributorsThanks": "感谢所有贡献代码、翻译、数据和设计的人。",
+  "creditsContribute": "贡献指南",
+  "creditsSupport": "支持 poi",
+  "supportersThanks": "感谢所有过去和现在为 poi 提供资金支持的人。",
+  "creditsAnonymousSupporter": "匿名支持者",
+  "creditsContributorsUnavailable": "暂时无法加载贡献者。",
+  "creditsSupportersUnavailable": "暂无法获取支持者信息。"
 }
