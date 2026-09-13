@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { ReleaseTimeline } from '~/components/changelog/release-timeline'
 import { PageHeader } from '~/components/page-header'
 import { Transition } from '~/components/transition'
+import { Button } from '~/components/ui/button'
 import { fetchChangelogPage } from '~/lib/release-history.server'
 import { releaseRange } from '~/lib/release-range'
 import { m } from '~/paraglide/messages'
@@ -31,13 +32,12 @@ function ComparePage() {
   const from = search.from ?? history[1]?.version ?? history[0]?.version ?? ''
   const to = search.to ?? history[0]?.version ?? ''
   const range = releaseRange(history, from, to)
-  const selectClass =
-    'mt-2 block w-full rounded-none border border-[var(--harbour-teal)]/40 bg-background px-3 py-3 font-mono text-base text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--harbour-teal)]'
+  const selectClass = 'field-control mt-2 block w-full font-mono'
   return (
     <Transition>
       <a
         href={localizeHref('/changelog')}
-        className="mb-7 inline-block text-sm text-muted-foreground underline underline-offset-4"
+        className="text-link mb-7 inline-block text-sm"
       >
         ← {m.releaseBack()}
       </a>
@@ -45,7 +45,7 @@ function ComparePage() {
       <form
         method="get"
         action={localizeHref('/changelog/compare')}
-        className="mb-12 border-y border-[var(--harbour-teal)]/30 py-7"
+        className="mb-12 border-b pb-7"
       >
         <div className="grid items-end gap-5 sm:grid-cols-[1fr_1fr_auto]">
           {(
@@ -54,7 +54,7 @@ function ComparePage() {
               ['to', to, m.releaseTo()],
             ] as const
           ).map(([name, value, label]) => (
-            <label key={name} className="min-w-0 text-sm font-medium">
+            <label key={name} className="field-label min-w-0">
               {label}
               <select
                 key={`${name}-${value}`}
@@ -74,13 +74,9 @@ function ComparePage() {
               </select>
             </label>
           ))}
-          <button
-            type="submit"
-            disabled={!archiveAvailable}
-            className="border border-[var(--harbour-teal)] bg-[var(--harbour-teal)] px-5 py-3 font-medium text-background transition-opacity hover:opacity-85 disabled:opacity-40 motion-reduce:transition-none"
-          >
+          <Button type="submit" size="lg" disabled={!archiveAvailable}>
             {m.releaseCompareAction()}
-          </button>
+          </Button>
         </div>
         <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
           {m.releaseRangeHint()}

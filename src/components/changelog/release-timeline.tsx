@@ -6,7 +6,7 @@ import { ArrowUpRight } from 'lucide-react'
 
 export function ReleaseTimeline({ entries }: { entries: ReleaseEntry[] }) {
   return (
-    <div className="min-w-0 border-l border-[var(--harbour-teal)]/30 pl-6 sm:pl-10">
+    <div className="min-w-0 border-l border-navigation/30 pl-6 sm:pl-10">
       {entries.map((entry) => (
         <section
           key={entry.version}
@@ -15,7 +15,7 @@ export function ReleaseTimeline({ entries }: { entries: ReleaseEntry[] }) {
         >
           <span
             aria-hidden="true"
-            className="absolute top-3 -left-[29px] h-2 w-2 rounded-full bg-[var(--harbour-teal)] sm:-left-[45px]"
+            className="absolute top-3 -left-[29px] h-2 w-2 rounded-full bg-navigation sm:-left-[45px]"
           />
           <header className="mb-6 border-b pb-5">
             <p className="mb-2 font-mono text-xs tracking-wide text-muted-foreground">
@@ -33,7 +33,7 @@ export function ReleaseTimeline({ entries }: { entries: ReleaseEntry[] }) {
             >
               <a
                 href={`https://github.com/poooi/poi/releases/tag/${entry.version}`}
-                className="inline-flex items-center gap-2 hover:text-[var(--harbour-teal)]"
+                className="inline-flex items-center gap-2 hover:text-navigation"
               >
                 POI {entry.version}
                 <ArrowUpRight

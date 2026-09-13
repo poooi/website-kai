@@ -10,6 +10,8 @@ Production website for poi, built with TanStack Start and deployed to Cloudflare
 
 ## Repository layout
 
+UI conventions and component usage are defined in [the website VI guide](docs/visual-identity.md).
+
 - `src/routes/`: page loaders, pages, and public HTTP endpoints.
 - `src/worker.ts`: Cloudflare entry point and request dispatch.
 - `src/server/`: locale routing, asset serving, and response header policies.

@@ -61,10 +61,7 @@ export const PlatformSelect = ({
   return (
     <div className="flex min-w-0 flex-col gap-7" data-testid="platform-select">
       <div className="flex flex-col gap-3">
-        <span
-          id="download-os-label"
-          className="text-sm font-medium text-muted-foreground"
-        >
+        <span id="download-os-label" className="field-label">
           {m.operatingSystem()}
         </span>
         <ComboBox
@@ -79,10 +76,7 @@ export const PlatformSelect = ({
         />
       </div>
       <div className="flex flex-col gap-3">
-        <span
-          id="download-package-label"
-          className="text-sm font-medium text-muted-foreground"
-        >
+        <span id="download-package-label" className="field-label">
           {m.downloadPackage()}
         </span>
         <ComboBox
@@ -124,8 +118,9 @@ const ComboBox = ({
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
+          size="lg"
           disabled={disabled}
-          className="h-auto min-h-12 w-full justify-between gap-3 bg-background px-4 py-3 text-base font-normal"
+          className="field-control w-full justify-between gap-3 px-4 font-normal"
           aria-labelledby={labelledBy + ' ' + labelledBy + '-value'}
           title={currentLabel}
         >

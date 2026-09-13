@@ -30,7 +30,7 @@ function ChangelogPage() {
       <PageHeader title={m.changelog()}>
         <a
           href={localizeHref('/changelog/compare')}
-          className="inline-flex items-center gap-3 border-b border-[var(--harbour-teal)] pb-1 text-base font-medium text-[var(--harbour-teal)]"
+          className="text-link inline-flex items-center gap-2 text-base font-medium"
         >
           {m.releaseCompare()}{' '}
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -43,7 +43,9 @@ function ChangelogPage() {
               ? m.changelogPartialError()
               : m.releaseLoadError()}
           </p>
-          <a href={localizeHref('/changelog')}>{m.reload()}</a>
+          <a href={localizeHref('/changelog')} className="text-link">
+            {m.reload()}
+          </a>
         </PageProse>
       )}
       {current && (
@@ -61,7 +63,7 @@ function ChangelogPage() {
       )}
       <a
         href="https://github.com/poooi/poi/releases"
-        className="mt-14 inline-block text-sm text-muted-foreground underline underline-offset-4"
+        className="text-link mt-14 inline-block text-sm"
       >
         {m.originalReleases()} ↗
       </a>

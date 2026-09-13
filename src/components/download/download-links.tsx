@@ -76,13 +76,11 @@ export const DownloadLinks = ({
         return (
           <section
             key={channel}
-            className="flex flex-col items-start gap-4 border-t-2 border-primary/50 bg-card p-6 first:border-primary"
+            className="flex flex-col items-start gap-4 border-t bg-card p-6"
             aria-labelledby={channel + '-version'}
           >
             <div>
-              <p className="mb-2 text-sm font-medium text-[var(--harbour-teal)]">
-                {label}
-              </p>
+              <p className="field-label mb-2">{label}</p>
               <h2
                 id={channel + '-version'}
                 className="font-mono text-2xl font-medium tracking-tight break-all"
@@ -95,7 +93,8 @@ export const DownloadLinks = ({
             </div>
             <Button
               variant={channel === 'stable' ? 'default' : 'outline'}
-              className="mt-auto h-auto gap-3 rounded-sm px-6 py-3 text-base shadow-none"
+              size="lg"
+              className="mt-auto gap-3"
               asChild
             >
               <a
@@ -115,7 +114,7 @@ export const DownloadLinks = ({
       })}
       <Link
         to="/changelog"
-        className="col-span-full inline-flex w-fit items-center gap-2 text-sm text-primary underline decoration-current/40 underline-offset-4 hover:decoration-current"
+        className="text-link col-span-full inline-flex w-fit items-center gap-2 text-sm"
       >
         {m.changelog()}
         <ArrowRight className="h-4 w-4" aria-hidden="true" />

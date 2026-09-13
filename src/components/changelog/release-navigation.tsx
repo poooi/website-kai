@@ -57,7 +57,7 @@ export function ReleaseNavigation({ entries }: { entries: ReleaseEntry[] }) {
           key={year}
           name={`release-years-${id}`}
           open={expanded === year}
-          className="group border-b border-[var(--harbour-teal)]/15"
+          className="group border-b border-navigation/15"
         >
           <summary
             onClick={(event) => {
@@ -90,7 +90,7 @@ export function ReleaseNavigation({ entries }: { entries: ReleaseEntry[] }) {
                       .closest('details[data-mobile-directory]')
                       ?.removeAttribute('open')
                   }}
-                  className="block border-l-2 border-transparent py-1 pl-2 font-mono text-xs text-muted-foreground hover:text-[var(--harbour-teal)] aria-[current=location]:border-[var(--harbour-teal)] aria-[current=location]:bg-[var(--harbour-teal)]/10 aria-[current=location]:text-[var(--harbour-teal)]"
+                  className="block border-l-2 border-transparent py-1 pl-2 font-mono text-xs text-muted-foreground hover:text-navigation aria-[current=location]:border-navigation aria-[current=location]:bg-navigation/10 aria-[current=location]:text-navigation"
                 >
                   {entry.version}
                 </a>
