@@ -16,6 +16,7 @@ const mocks = vi.hoisted(() => ({
   withSentry: vi.fn<(_options: unknown, handler: unknown) => unknown>(
     (_options, handler) => handler,
   ),
+  refreshPluginReleases: vi.fn<(store: unknown) => Promise<unknown>>(),
 }))
 
 vi.mock('@sentry/cloudflare', () => ({
@@ -36,7 +37,11 @@ vi.mock('~/lib/social-image', () => ({
   createSocialImageResponse: mocks.createSocialImageResponse,
 }))
 
-import { handleWorkerRequest } from './worker'
+vi.mock('~/lib/plugin-releases.server', () => ({
+  refreshPluginReleases: mocks.refreshPluginReleases,
+}))
+
+import worker, { handleWorkerRequest } from './worker'
 
 type WorkerEnvForTest = Parameters<typeof handleWorkerRequest>[1]
 type AssetsFetchForTest = NonNullable<WorkerEnvForTest['ASSETS']>['fetch']
@@ -75,6 +80,8 @@ beforeEach(() => {
       },
     })
   })
+  mocks.refreshPluginReleases.mockReset()
+  mocks.refreshPluginReleases.mockResolvedValue({})
 })
 
 describe('handleWorkerRequest', () => {
@@ -289,5 +296,30 @@ describe('handleWorkerRequest', () => {
     await expect(response.text()).resolves.toBe('start:/dist/en')
     expect(mocks.startFetch).toHaveBeenCalledOnce()
     expect(mocks.paraglideMiddleware).not.toHaveBeenCalled()
+  })
+})
+
+describe('scheduled', () => {
+  const makeStore = () => ({
+    get: vi.fn(async () => null),
+    put: vi.fn(async () => undefined),
+  })
+  const runScheduled = (env: WorkerEnvForTest) =>
+    worker.scheduled!(
+      null as unknown as ScheduledController,
+      env,
+      null as unknown as ExecutionContext,
+    )
+
+  it('refreshes plugin releases from the KV binding', async () => {
+    const store = makeStore()
+    await runScheduled({ ...makeEnv(), PLUGIN_RELEASES: store })
+    expect(mocks.refreshPluginReleases).toHaveBeenCalledOnce()
+    expect(mocks.refreshPluginReleases).toHaveBeenCalledWith(store)
+  })
+
+  it('propagates refresh failures through the exported wrapped handler', async () => {
+    mocks.refreshPluginReleases.mockRejectedValue(new Error('refresh failed'))
+    await expect(runScheduled(makeEnv())).rejects.toThrow('refresh failed')
   })
 })

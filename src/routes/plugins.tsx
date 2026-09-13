@@ -8,13 +8,25 @@ import { PageProse } from '~/components/page-prose'
 import { PluginIcon } from '~/components/plugin-icon'
 import { Transition } from '~/components/transition'
 import { Button } from '~/components/ui/button'
+import {
+  parsePluginReleaseSnapshot,
+  readPluginReleases,
+} from '~/lib/plugin-releases.server'
 import { fetchPlugins } from '~/lib/plugins.server'
 import { m } from '~/paraglide/messages'
 import { getLocale, locales, localizeHref } from '~/paraglide/runtime'
 
 const loadPlugins = createServerFn({ method: 'GET' })
   .validator(z.enum(locales))
-  .handler(async ({ data }) => fetchPlugins(data))
+  .handler(async ({ data }) => {
+    const fixture = process.env.TANSTACK_TEST_PLUGIN_RELEASES
+    const releases = fixture
+      ? parsePluginReleaseSnapshot(fixture)
+      : await readPluginReleases(
+          (await import('cloudflare:workers')).env.PLUGIN_RELEASES,
+        )
+    return fetchPlugins(data, { releases })
+  })
 
 export const Route = createFileRoute('/plugins')({
   validateSearch: z.object({ q: z.coerce.string().optional() }),
@@ -125,6 +137,20 @@ function PluginsPage() {
                     <p className="mt-2 font-mono text-xs leading-5 [overflow-wrap:anywhere] text-muted-foreground">
                       {plugin.id}
                     </p>
+                    {plugin.release && (
+                      <p className="mt-1 font-mono text-xs leading-5 text-muted-foreground">
+                        {plugin.release.version}
+                        {' · '}
+                        <time
+                          dateTime={plugin.release.publishedAt}
+                          title={m.pluginsReleasePublished({
+                            date: plugin.release.date,
+                          })}
+                        >
+                          {plugin.release.date}
+                        </time>
+                      </p>
+                    )}
                     <PageProse
                       lang={plugin.descriptionLanguage}
                       className="mt-4 text-base prose-p:my-0 prose-p:leading-7"

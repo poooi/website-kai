@@ -82,11 +82,22 @@ entry links to its real npm package and author page. Plugin icons render the
 catalog's Font Awesome class directly through Font Awesome 7's packaged CSS and
 official v4 shims, matching poi without a per-plugin icon map.
 
+An hourly Worker Cron refreshes one compact snapshot of each plugin's npm
+`dist-tags.latest` version and that version's publication time into the
+`PLUGIN_RELEASES` KV namespace, stored at the single key
+`official-plugin-releases:v1`. Page requests only read that key and never call
+the npm registry. Per-package npm failures keep the previous entry; a failed
+catalog fetch or an unreadable prior snapshot aborts the refresh before any
+write; entries removed from the catalog drop out. Missing or unreadable KV still
+renders the catalog with the version and date omitted. Dates are formatted in
+UTC.
+
 A GET search form filters by package id, name, description or author and works
 without JavaScript; the same filter is keyboard accessible. The directory is a
 simple two-column list on desktop and one column on mobile. The E2E runner sets
 `TANSTACK_TEST_PLUGINS=1` so Vite reads and injects `tests/fixtures/plugins.json`
-at build time instead of contacting GitHub.
+and `tests/fixtures/plugin-releases.json` at build time instead of contacting
+GitHub or the npm registry.
 
 ## Deploy
 

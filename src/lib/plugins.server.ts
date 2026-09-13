@@ -2,27 +2,16 @@ import sanitize from 'rehype-sanitize'
 import stringify from 'rehype-stringify'
 import { remark } from 'remark'
 import rehype from 'remark-rehype'
-import { z } from 'zod'
 
+import { catalogSchema, pluginCatalogUrl } from './plugin-catalog'
 import { type FetchLike, UpstreamResponseError } from './fetch-poi-versions'
+import {
+  formatPluginReleaseDate,
+  type PluginReleaseSnapshot,
+} from './plugin-releases.server'
 import { fetchCachedRelease } from './release-cache.server'
 
-export const pluginCatalogUrl =
-  'https://raw.githubusercontent.com/poooi/poi/master/assets/data/plugin.json'
-
-const localizedText = z
-  .object({ 'en-US': z.string().min(1) })
-  .catchall(z.string().min(1))
-export const catalogSchema = z.record(
-  z.string().regex(/^poi-plugin-[a-z0-9-]+$/),
-  z.object({
-    name: localizedText,
-    description: localizedText,
-    icon: z.string(),
-    author: z.string(),
-    link: z.url({ protocol: /^https?$/ }),
-  }),
-)
+export { catalogSchema, pluginCatalogUrl }
 
 const languages: Record<string, string> = {
   en: 'en-US',
@@ -35,7 +24,10 @@ const languages: Record<string, string> = {
 
 export async function fetchPlugins(
   locale: string,
-  { fetcher = fetch }: { fetcher?: FetchLike } = {},
+  {
+    fetcher = fetch,
+    releases = {},
+  }: { fetcher?: FetchLike; releases?: PluginReleaseSnapshot } = {},
 ) {
   try {
     let payload: unknown
@@ -62,6 +54,7 @@ export async function fetchPlugins(
           ? language
           : 'en-US'
         const description = plugin.description[descriptionLanguage]
+        const release = releases[id]
         return {
           id,
           name: plugin.name[nameLanguage],
@@ -72,6 +65,13 @@ export async function fetchPlugins(
           authorUrl: plugin.link,
           icon: plugin.icon,
           url: `https://www.npmjs.com/package/${id}`,
+          release: release
+            ? {
+                version: release.version,
+                publishedAt: release.publishedAt,
+                date: formatPluginReleaseDate(release.publishedAt, locale),
+              }
+            : undefined,
           searchText: [
             id,
             ...Object.values(plugin.name),

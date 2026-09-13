@@ -34,6 +34,22 @@ test('renders the official plugin directory and filters without JavaScript', asy
       'https://github.com/Chibaheit',
     )
 
+    const akashic = page
+      .getByRole('article')
+      .filter({ hasText: 'poi-plugin-akashic-records' })
+    await expect(akashic).toContainText('1.2.3')
+    await expect(akashic.locator('time')).toHaveAttribute(
+      'datetime',
+      '2024-01-02T23:30:00.000Z',
+    )
+    await expect(akashic.locator('time')).toContainText('2024')
+    await expect(
+      page
+        .getByRole('article')
+        .filter({ hasText: 'poi-plugin-quest-info-2' })
+        .locator('time'),
+    ).toHaveCount(0)
+
     const improvement = page
       .getByRole('article')
       .filter({ hasText: 'poi-plugin-item-improvement' })

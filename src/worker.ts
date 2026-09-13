@@ -8,8 +8,16 @@ import {
   isProxyRootPath,
 } from '~/server/request-routing'
 import { withGlobalHeaders } from '~/server/response-headers'
+import {
+  refreshPluginReleases,
+  type PluginReleaseStore,
+} from '~/lib/plugin-releases.server'
 import { sentryDsn, sentryRelease } from '~/lib/sentry'
 import { paraglideMiddleware } from '~/paraglide/server'
+
+type WorkerEnv = AssetEnv & {
+  PLUGIN_RELEASES?: PluginReleaseStore
+}
 
 const handleStartRequest = (request: Request) => {
   if (!isPageRequest(request)) {
@@ -25,7 +33,7 @@ const handleStartRequest = (request: Request) => {
   )
 }
 
-export const handleWorkerRequest = async (request: Request, env: AssetEnv) => {
+export const handleWorkerRequest = async (request: Request, env: WorkerEnv) => {
   const { pathname } = new URL(request.url)
 
   if (isProxyRootPath(pathname)) {
@@ -44,13 +52,16 @@ export const handleWorkerRequest = async (request: Request, env: AssetEnv) => {
 }
 
 const worker = {
-  async fetch(request: Request, env: AssetEnv) {
+  async fetch(request: Request, env: WorkerEnv) {
     const response = await handleWorkerRequest(request, env)
     return withGlobalHeaders(response, request)
   },
+  async scheduled(_controller: ScheduledController, env: WorkerEnv) {
+    await refreshPluginReleases(env.PLUGIN_RELEASES)
+  },
 }
 
-export default withSentry<AssetEnv>(
+export default withSentry<WorkerEnv>(
   () => ({
     dsn: sentryDsn,
     release: sentryRelease,

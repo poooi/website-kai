@@ -112,6 +112,24 @@ describe('plugin catalog', () => {
     expect(beta.html).toContain('bad')
   })
 
+  it('merges a release version and an explicit UTC date', async () => {
+    const result = await fetchPlugins('en', {
+      fetcher: mockFetch(catalog),
+      releases: {
+        'poi-plugin-alpha': {
+          version: '1.2.3',
+          publishedAt: '2024-01-02T23:30:00.000Z',
+        },
+      },
+    })
+    expect(find(result, 'poi-plugin-alpha').release).toEqual({
+      version: '1.2.3',
+      publishedAt: '2024-01-02T23:30:00.000Z',
+      date: 'Jan 2, 2024',
+    })
+    expect(find(result, 'poi-plugin-beta').release).toBeUndefined()
+  })
+
   it('builds searchable text from the package id, all names, description and author', async () => {
     const result = await fetchPlugins('en', { fetcher: mockFetch(catalog) })
     const alpha = find(result, 'poi-plugin-alpha')

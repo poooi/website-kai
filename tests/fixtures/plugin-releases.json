@@ -1,0 +1,10 @@
+{
+  "poi-plugin-akashic-records": {
+    "version": "1.2.3",
+    "publishedAt": "2024-01-02T23:30:00.000Z"
+  },
+  "poi-plugin-prophet": {
+    "version": "0.9.0",
+    "publishedAt": "2023-06-15T09:10:11.000Z"
+  }
+}
