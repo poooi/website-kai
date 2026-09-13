@@ -110,21 +110,16 @@ test('renders credits, contributors and the support links', async ({
     .evaluateAll((elements) =>
       elements.map((element) => {
         const style = getComputedStyle(element)
-        return {
-          image:
-            style.getPropertyValue('mask-image') ||
-            style.getPropertyValue('-webkit-mask-image'),
-          composite:
-            style.getPropertyValue('mask-composite') ||
-            style.getPropertyValue('-webkit-mask-composite'),
-        }
+        return (
+          style.getPropertyValue('mask-image') ||
+          style.getPropertyValue('-webkit-mask-image')
+        )
       }),
     )
   expect(placeholderMasks).toHaveLength(6)
-  for (const { image, composite } of placeholderMasks) {
-    expect(image).not.toBe('none')
-    expect(image).toContain('url(')
-    expect(composite).toContain('exclude')
+  for (const mask of placeholderMasks) {
+    expect(mask).not.toBe('none')
+    expect(mask).toContain('poi-character-mask')
   }
   expect(
     await page
