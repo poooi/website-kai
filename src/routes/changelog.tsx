@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { ArrowRight } from 'lucide-react'
 import { z } from 'zod'
@@ -28,13 +28,13 @@ function ChangelogPage() {
   return (
     <Transition>
       <PageHeader title={m.changelog()}>
-        <a
-          href={localizeHref('/changelog/compare')}
+        <Link
+          to="/changelog/compare"
           className="text-link inline-flex items-center gap-2 text-base font-medium"
         >
           {m.releaseCompare()}{' '}
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
-        </a>
+        </Link>
       </PageHeader>
       {!available && (
         <PageProse role="alert" className="mb-8 text-sm">

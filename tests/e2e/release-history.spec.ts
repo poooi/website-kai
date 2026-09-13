@@ -289,6 +289,56 @@ test('compares the full upgrade range with shareable selections and useful empty
   ).toBe(true)
 })
 
+for (const { locale, prefix, compareLabel } of [
+  { locale: 'ja', prefix: '', compareLabel: 'バージョンを比較' },
+  { locale: 'en', prefix: '/en', compareLabel: 'Compare versions' },
+] as const) {
+  test(`navigates ${locale} changelog and comparison without a document reload`, async ({
+    page,
+  }) => {
+    await page
+      .context()
+      .addCookies([
+        { name: 'NEXT_LOCALE', value: locale, url: 'http://127.0.0.1:3002' },
+      ])
+
+    const documentNavigations: string[] = []
+    page.on('request', (request) => {
+      if (
+        request.isNavigationRequest() &&
+        request.resourceType() === 'document' &&
+        request.frame() === page.mainFrame()
+      )
+        documentNavigations.push(request.url())
+    })
+
+    await page.goto(`${prefix}/changelog`, { waitUntil: 'networkidle' })
+    await expect(page.getByRole('main')).toHaveCSS('opacity', '1')
+    documentNavigations.length = 0
+    const timeOrigin = await page.evaluate(() => performance.timeOrigin)
+
+    const compareLink = page.getByRole('link', { name: compareLabel })
+    await expect(compareLink).toHaveAttribute(
+      'href',
+      `${prefix}/changelog/compare`,
+    )
+    await compareLink.click()
+    await expect(page).toHaveURL(`${prefix}/changelog/compare`)
+    await expect(
+      page.getByRole('heading', { level: 1, name: compareLabel }),
+    ).toBeVisible()
+    expect(await page.evaluate(() => performance.timeOrigin)).toBe(timeOrigin)
+
+    const backLink = page.getByRole('link', { name: /←/ })
+    await expect(backLink).toHaveAttribute('href', `${prefix}/changelog`)
+    await backLink.click()
+    await expect(page).toHaveURL(`${prefix}/changelog`)
+    expect(await page.evaluate(() => performance.timeOrigin)).toBe(timeOrigin)
+
+    expect(documentNavigations).toHaveLength(0)
+  })
+}
+
 test('comparison form works without JavaScript', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false })
   try {
