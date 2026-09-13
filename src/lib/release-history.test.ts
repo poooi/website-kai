@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import {
   fetchChangelogPage,
   fetchReleaseHistory,
@@ -38,24 +38,16 @@ const history = [
   },
 ]
 const mockFetch =
-  (
-    current: Response | Error = new Response(
-      '## POI v12.0.1 changelog\n\nLatest correction',
-    ),
-    archived: Response | Error = Response.json(history),
-  ): FetchLike =>
-  async (input) => {
-    const url = input instanceof Request ? input.url : input.toString()
-    const result = url === releaseHistoryUrl ? archived : current
-    if (result instanceof Error) throw result
-    return result.clone()
+  (archived: Response | Error = Response.json(history)): FetchLike =>
+  async () => {
+    if (archived instanceof Error) throw archived
+    return archived.clone()
   }
 
 describe('release history', () => {
   it('renders recovered Weibo main notes without archived plugin updates', async () => {
     const entries = await fetchReleaseHistory('zh-Hans', {
       fetcher: mockFetch(
-        undefined,
         Response.json([
           {
             ...history[0],
@@ -120,44 +112,24 @@ describe('release history', () => {
     expect(french.every((entry) => entry.language === 'en-US')).toBe(true)
   })
 
-  it('prefers current notes when versions overlap with the archive', async () => {
-    const result = await fetchChangelogPage('en', { fetcher: mockFetch() })
-    expect(result.current).toBeNull()
+  it('loads the page exclusively from the archive', async () => {
+    const fetcher = vi.fn(mockFetch())
+    const result = await fetchChangelogPage('en', { fetcher })
+    expect(fetcher).toHaveBeenCalledTimes(1)
+    expect(fetcher.mock.calls[0]![0]).toBe(releaseHistoryUrl)
     expect(result.history[0]).toMatchObject({
       version: 'v12.0.1',
       publishedAt: '2026-08-29T16:26:18Z',
-      html: '<p>Latest correction</p>',
+      html: '<p>Archived copy</p>',
     })
-    expect(result.history.map((entry) => entry.version)).toEqual([
-      'v12.0.1',
-      'v11.0.0',
-      'v1.0.0',
-    ])
-    expect(result.incomplete).toBe(false)
+    expect(result.available).toBe(true)
   })
 
-  it('retains history and marks partial failure when current notes are unavailable', async () => {
-    const result = await fetchChangelogPage('en', {
-      fetcher: mockFetch(new Error('offline')),
-    })
-    expect(result.current).toBeNull()
-    expect(result.history).toHaveLength(3)
-    expect(result.incomplete).toBe(true)
-  })
-
-  it('retains current notes and marks an unavailable archive', async () => {
-    const result = await fetchChangelogPage('en', {
-      fetcher: mockFetch(undefined, new Response('', { status: 404 })),
-    })
-    expect(result.current).toBeNull()
-    expect(result.history).toHaveLength(1)
-    expect(result.history[0]).toMatchObject({
-      version: 'v12.0.1',
-      publishedAt: null,
-      html: '<p>Latest correction</p>',
-    })
-    expect(result.archiveAvailable).toBe(false)
-    expect(result.incomplete).toBe(true)
+  it('reports unavailable data without fetching channel files as a fallback', async () => {
+    const fetcher = vi.fn(mockFetch(new Response('', { status: 404 })))
+    const result = await fetchChangelogPage('en', { fetcher })
+    expect(result).toEqual({ history: [], available: false })
+    expect(fetcher).toHaveBeenCalledTimes(1)
   })
 
   it('rejects prereleases, special tags, duplicate versions and unsafe source URLs', () => {
@@ -191,7 +163,7 @@ describe('release history', () => {
       },
     ]
     const entries = await fetchReleaseHistory('en', {
-      fetcher: mockFetch(undefined, Response.json(reconstructed)),
+      fetcher: mockFetch(Response.json(reconstructed)),
     })
     expect(entries[0]!.reconstructed).toBe(true)
   })

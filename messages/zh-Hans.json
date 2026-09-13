@@ -51,7 +51,6 @@
   "nightlyBuilds": "每夜构建",
   "mobileHint": "poi 是适用于 Windows、macOS 和 Linux 的桌面应用。请在电脑上访问此页面下载。",
   "x": "X",
-  "changelogPartialError": "部分更新日志暂时无法加载，以下显示已取得的历史记录。",
   "reconstructedReleaseNotes": "根据版本间变更重建",
   "releaseCompare": "比较版本",
   "releaseUndated": "日期未记录",

@@ -51,7 +51,6 @@
   "nightlyBuilds": "Nightly builds",
   "mobileHint": "poi is a desktop app for Windows, macOS and Linux. Visit this page on your computer to download it.",
   "x": "X",
-  "changelogPartialError": "Some release notes could not be loaded. The available history is shown below.",
   "reconstructedReleaseNotes": "Reconstructed from version changes",
   "releaseCompare": "Compare versions",
   "releaseUndated": "Date not recorded",

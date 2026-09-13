@@ -6,7 +6,6 @@ import rehype from 'remark-rehype'
 import { z } from 'zod'
 
 import { changelogLanguageCandidates } from './changelog'
-import { fetchLocalizedChangelog } from './changelog.server'
 import { fetchCachedRelease } from './release-cache.server'
 import { type FetchLike, UpstreamResponseError } from './fetch-poi-versions'
 
@@ -113,41 +112,12 @@ export async function fetchChangelogPage(
   locale: string,
   options: FetchOptions = {},
 ) {
-  const [currentResult, historyResult] = await Promise.allSettled([
-    fetchLocalizedChangelog(locale, 'stable', options),
-    fetchReleaseHistory(locale, options),
-  ])
-  const current =
-    currentResult.status === 'fulfilled' ? currentResult.value : null
-  const history =
-    historyResult.status === 'fulfilled' ? historyResult.value : []
-  const entries = new Map(history.map((entry) => [entry.version, entry]))
-  const headings = [
-    ...(current?.html ?? '').matchAll(
-      /<h2>\s*POI\s+(v\d+\.\d+\.\d+)\b[^<]*<\/h2>/gi,
-    ),
-  ]
-  for (const [index, heading] of headings.entries()) {
-    const version = heading[1]!
-    entries.set(version, {
-      version,
-      publishedAt: entries.get(version)?.publishedAt ?? null,
-      language: current!.language,
-      source: `https://github.com/poooi/poi-release/blob/main/${current!.language}.md`,
-      reconstructed: false,
-      html: current!.html
-        .slice(heading.index + heading[0].length, headings[index + 1]?.index)
-        .trim(),
-    })
-  }
-  return {
-    current: headings.length ? null : current,
-    history: [...entries.values()].sort((a, b) =>
-      compareVersions(b.version, a.version),
-    ),
-    archiveAvailable: historyResult.status === 'fulfilled',
-    incomplete:
-      currentResult.status === 'rejected' ||
-      historyResult.status === 'rejected',
+  try {
+    return {
+      history: await fetchReleaseHistory(locale, options),
+      available: true,
+    }
+  } catch {
+    return { history: [], available: false }
   }
 }

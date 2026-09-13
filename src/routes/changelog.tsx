@@ -24,7 +24,7 @@ export const Route = createFileRoute('/changelog')({
 })
 
 function ChangelogPage() {
-  const { current, history, incomplete } = Route.useLoaderData()
+  const { history, available } = Route.useLoaderData()
   return (
     <Transition>
       <PageHeader title={m.changelog()}>
@@ -36,24 +36,13 @@ function ChangelogPage() {
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </a>
       </PageHeader>
-      {incomplete && (
+      {!available && (
         <PageProse role="alert" className="mb-8 text-sm">
-          <p>
-            {current || history.length
-              ? m.changelogPartialError()
-              : m.releaseLoadError()}
-          </p>
+          <p>{m.releaseLoadError()}</p>
           <a href={localizeHref('/changelog')} className="text-link">
             {m.reload()}
           </a>
         </PageProse>
-      )}
-      {current && (
-        <PageProse
-          className="mb-12"
-          lang={current.language}
-          dangerouslySetInnerHTML={{ __html: current.html }}
-        />
       )}
       {!!history.length && (
         <div className="grid items-start gap-10 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-14">

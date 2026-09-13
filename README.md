@@ -26,20 +26,23 @@ The E2E runner builds with fixed release versions before starting preview.
 
 ## Release history
 
-The changelog page combines the current stable Markdown in `poooi/poi-release`
-with its permanent `history/stable.json` archive. Current notes take precedence
-for overlapping versions. Archived entries fall back to English individually
-when a translation is unavailable, and link version headings directly to their GitHub Release.
-Original sources and reconstruction metadata remain in the archive. Beta and special compatibility builds are excluded from this history.
-Historical beta announcements are combined into stable notes in the archive.
-Recovered Weibo images and plugin updates remain in `poi-release`; this page
-renders only the main application notes, with version links to GitHub Releases.
+The changelog and comparison pages read only `poooi/poi-release/main/history/stable.json`.
+This complete archive includes the latest stable release; the website does not
+fetch, merge or give precedence to root channel Markdown. Entries fall back to
+English individually when a translation is unavailable, and version headings
+link to GitHub Releases. Original sources and reconstruction metadata remain in
+the archive. Beta and special compatibility builds are excluded. Historical
+beta announcements are combined into stable notes during archive generation.
+Recovered Weibo images and plugin updates remain in `poi-release`; the website
+renders only main application notes.
 
 Archive maintenance and reconstruction instructions live in
 [`poi-release/history/README.md`](https://github.com/poooi/poi-release/blob/main/history/README.md).
-Publish the archive there before deploying this consumer. If either upstream is
-unavailable, the page still renders the notes it could load and provides a retry
-link.
+Publish the archive there before deploying this consumer. Its CI checks that
+current stable channel notes are included in the archive. If the archive cannot
+be loaded and no valid cached snapshot is available, the page shows an error and
+a retry link. Root stable/beta Markdown remains available through the existing
+application update endpoints, independently of website history rendering.
 
 The history page shows a continuous timeline with a sticky version directory,
 grouped by publication year. Scrolling highlights the current version and opens

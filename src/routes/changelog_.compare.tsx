@@ -27,7 +27,7 @@ export const Route = createFileRoute('/changelog_/compare')({
 })
 
 function ComparePage() {
-  const { history, incomplete, archiveAvailable } = Route.useLoaderData()
+  const { history, available } = Route.useLoaderData()
   const search = Route.useSearch()
   const from = search.from ?? history[1]?.version ?? history[0]?.version ?? ''
   const to = search.to ?? history[0]?.version ?? ''
@@ -61,7 +61,7 @@ function ComparePage() {
                 name={name}
                 defaultValue={value}
                 className={selectClass}
-                disabled={!archiveAvailable}
+                disabled={!available}
               >
                 {!history.some((e) => e.version === value) && (
                   <option value={value}>{value || '—'}</option>
@@ -74,7 +74,7 @@ function ComparePage() {
               </select>
             </label>
           ))}
-          <Button type="submit" size="lg" disabled={!archiveAvailable}>
+          <Button type="submit" size="lg" disabled={!available}>
             {m.releaseCompareAction()}
           </Button>
         </div>
@@ -82,7 +82,7 @@ function ComparePage() {
           {m.releaseRangeHint()}
         </p>
       </form>
-      {!archiveAvailable ? (
+      {!available ? (
         <p role="alert">
           {m.releaseRangeUnavailable()}{' '}
           <a href={localizeHref('/changelog/compare')} className="underline">
@@ -91,11 +91,6 @@ function ComparePage() {
         </p>
       ) : (
         <>
-          {incomplete && (
-            <p role="alert" className="mb-6 text-sm text-muted-foreground">
-              {m.changelogPartialError()}
-            </p>
-          )}
           {range.status === 'invalid' ? (
             <p role="alert">{m.releaseInvalid()}</p>
           ) : range.status === 'same' ? (

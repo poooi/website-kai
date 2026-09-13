@@ -51,7 +51,6 @@
   "nightlyBuilds": "ナイトリービルド",
   "mobileHint": "poi は Windows・macOS・Linux 向けのデスクトップアプリです。パソコンでこのページを開いてダウンロードしてください。",
   "x": "X",
-  "changelogPartialError": "一部の更新履歴を読み込めませんでした。取得できた履歴を以下に表示しています。",
   "reconstructedReleaseNotes": "バージョン間の変更から再構成",
   "releaseCompare": "バージョンを比較",
   "releaseUndated": "日付の記録なし",

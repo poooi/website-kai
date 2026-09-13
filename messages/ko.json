@@ -51,7 +51,6 @@
   "nightlyBuilds": "나이트리 빌드",
   "mobileHint": "poi는 Windows, macOS, Linux용 데스크톱 앱입니다. 컴퓨터에서 이 페이지를 열어 다운로드하세요.",
   "x": "X",
-  "changelogPartialError": "일부 릴리스 노트를 불러오지 못했습니다. 확인 가능한 기록을 아래에 표시합니다.",
   "reconstructedReleaseNotes": "버전 간 변경 사항으로 재구성",
   "releaseCompare": "버전 비교",
   "releaseUndated": "날짜 미기록",
