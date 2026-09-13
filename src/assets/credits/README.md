@@ -24,6 +24,10 @@ Notes:
 - All logos render in the credits page's uniform 64x64 slots: wide banners are
   left-aligned and clipped by the slot, square marks are contained, and the
   portrait is cover-cropped to the face.
-- `../poi-character-mask.svg` is derived from `../poi.svg` with the
-  `circular-frame` group omitted; the credits page uses it as an alpha mask for
-  the contributors/supporters avatar fallback.
+- `../poi-character-mask.svg` is a simplified monochrome poi head used as the
+  avatar fallback alpha mask. It reuses the original `hair-silhouette` (filled),
+  `face-silhouette` (open `fill="none"` outline), `bow-lines`, upper eye
+  contours and `mouth` geometry from `../poi.svg` in a head-only
+  `viewBox="0 80 760 510"`; the body, arms, shading, eye interiors, `defs` and
+  `circular-frame` are omitted. It is a square 40×40 intrinsic asset so the
+  48px avatar's `mask-size: 40px 40px` scales it without distortion.
