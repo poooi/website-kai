@@ -51,6 +51,12 @@ Do not style noninteractive information as clickable pills. Before adding a stat
 - Selected menu option: selection indicator, teal text and subtle background. Keyboard focus also has a background treatment.
 - Year groups use neutral headings, counts and disclosure arrows. The desktop directory is sticky; the mobile directory is collapsible. Neither has internal scrollbars.
 
+## Sticky header and navigation aids
+
+- The site header is a full-width `position: sticky` surface with an opaque `background`; the existing fine border stays on the inset inner container. Scrolled content never shows through the side gutters, and floating menus render above the header.
+- `--sticky-header-offset` is the single source for the header height. `globals.css` supplies conservative SSR defaults (with mobile breakpoints) and the header measures itself with `ResizeObserver`. Anchor targets use `scroll-margin-top: var(--sticky-header-offset)` and sticky sidebars offset from the same value; do not also set `scroll-padding` for the same offset.
+- A back-to-top control appears after meaningful scrolling in the lower corner, safe-area aware, using the outline `Button` with an up arrow, a localized accessible name and a 44px target. It scrolls smoothly unless `prefers-reduced-motion` is set and moves focus to the page `main` landmark as it hides. Do not enable global smooth scrolling for hash links.
+
 ## Typography, layout and copy
 
 - Keep the brand mark and map. Use IBM Plex Sans and its JP / SC / TC / KR families for interface text; use the system monospace stack for versions and dates.

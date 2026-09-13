@@ -11,6 +11,7 @@ import { forwardRef, useEffect, useState, type MouseEvent } from 'react'
 
 import '~/styles/globals.css'
 import poiLogo from '~/assets/poi.svg?url'
+import { BackToTop } from '~/components/back-to-top'
 import { Footer } from '~/components/footer'
 import { HarbourMap } from '~/components/harbour-map'
 import { Header, type HeaderLinkProps } from '~/components/header'
@@ -219,6 +220,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             </div>
             <Footer />
           </div>
+          <BackToTop />
         </JotaiRootProvider>
         <Scripts />
       </body>

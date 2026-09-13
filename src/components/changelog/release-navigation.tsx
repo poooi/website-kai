@@ -3,6 +3,13 @@ import { useEffect, useRef, useState } from 'react'
 import { type ReleaseEntry, releaseYear } from '~/lib/release-range'
 import { m } from '~/paraglide/messages'
 
+const readHeaderOffset = () => {
+  const header = document.querySelector('[data-site-header]')
+  return header instanceof HTMLElement
+    ? Math.ceil(header.getBoundingClientRect().height)
+    : 0
+}
+
 export function ReleaseNavigation({ entries }: { entries: ReleaseEntry[] }) {
   const groups = new Map<string, ReleaseEntry[]>()
   for (const entry of entries) {
@@ -21,9 +28,10 @@ export function ReleaseNavigation({ entries }: { entries: ReleaseEntry[] }) {
     let frame = 0
     const sync = () => {
       frame = 0
+      const headerOffset = readHeaderOffset()
       let current = headings[0]?.entry
       for (const { entry, element } of headings) {
-        if (element && element.getBoundingClientRect().top <= 128)
+        if (element && element.getBoundingClientRect().top <= headerOffset + 8)
           current = entry
       }
       if (
@@ -102,7 +110,7 @@ export function ReleaseNavigation({ entries }: { entries: ReleaseEntry[] }) {
     </nav>
   )
   return (
-    <aside className="min-w-0 lg:sticky lg:top-6">
+    <aside className="min-w-0 lg:sticky lg:top-[calc(var(--sticky-header-offset)+1.5rem)]">
       <div className="hidden lg:block">
         <h2 className="mb-4 text-xs text-muted-foreground">
           {m.releaseVersions()}

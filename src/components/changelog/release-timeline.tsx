@@ -11,7 +11,7 @@ export function ReleaseTimeline({ entries }: { entries: ReleaseEntry[] }) {
         <section
           key={entry.version}
           aria-labelledby={`release-${entry.version}`}
-          className="relative scroll-mt-24 pb-14 last:pb-0 sm:pb-20"
+          className="relative pb-14 last:pb-0 sm:pb-20"
         >
           <span
             aria-hidden="true"
@@ -29,7 +29,7 @@ export function ReleaseTimeline({ entries }: { entries: ReleaseEntry[] }) {
             </p>
             <h2
               id={`release-${entry.version}`}
-              className="scroll-mt-24 font-mono text-2xl font-medium tracking-tight sm:text-3xl"
+              className="scroll-mt-[var(--sticky-header-offset)] font-mono text-2xl font-medium tracking-tight sm:text-3xl"
             >
               <a
                 href={`https://github.com/poooi/poi/releases/tag/${entry.version}`}

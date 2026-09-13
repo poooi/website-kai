@@ -73,5 +73,6 @@
   "pluginsClearSearch": "Clear search",
   "pluginsNoResults": "No plugins match. Try another name, feature or author.",
   "pluginsLoadError": "The plugin catalog could not be loaded. Reload to try again.",
-  "pluginsReleasePublished": "Published {date}"
+  "pluginsReleasePublished": "Published {date}",
+  "backToTop": "Back to top"
 }

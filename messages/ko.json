@@ -73,5 +73,6 @@
   "pluginsClearSearch": "검색 지우기",
   "pluginsNoResults": "일치하는 플러그인이 없습니다. 다른 이름, 기능 또는 제작자로 검색해 보세요.",
   "pluginsLoadError": "플러그인 목록을 불러올 수 없습니다. 페이지를 새로고침해 주세요.",
-  "pluginsReleasePublished": "게시일 {date}"
+  "pluginsReleasePublished": "게시일 {date}",
+  "backToTop": "맨 위로"
 }
