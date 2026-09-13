@@ -2,7 +2,6 @@ import { withSentry } from '@sentry/cloudflare'
 import startHandler from '@tanstack/react-start/server-entry'
 
 import { handleAsset, handleSocialImage, type AssetEnv } from '~/server/assets'
-import { handleCreditsSprite } from '~/server/credits-sprite'
 import {
   handleLocaleRedirects,
   isPageRequest,
@@ -34,6 +33,12 @@ export const handleWorkerRequest = async (request: Request, env: AssetEnv) => {
     return new Response('', { status: 404 })
   }
 
+  if (pathname.startsWith('/api/credits-sprite/')) {
+    const { handleCreditsSprite } = await import('~/server/credits-sprite')
+    const sprite = await handleCreditsSprite(request)
+    if (sprite) return sprite
+  }
+
   const workerResponse =
     handleLocaleRedirects(request) ??
     (await handleSocialImage(request, env)) ??
@@ -47,9 +52,7 @@ export const handleWorkerRequest = async (request: Request, env: AssetEnv) => {
 
 const worker: ExportedHandler<CloudflareEnv> = {
   async fetch(request, env) {
-    const response =
-      (await handleCreditsSprite(request)) ??
-      (await handleWorkerRequest(request, env))
+    const response = await handleWorkerRequest(request, env)
     return withGlobalHeaders(response, request)
   },
   async scheduled(_controller, env) {
