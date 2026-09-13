@@ -2,7 +2,7 @@ import { type FetchLike } from '~/lib/fetch-poi-versions'
 
 export const creditsSpritePath = '/api/credits-sprite/'
 
-const sheetFilePattern = /^avatars-\d+\.[0-9a-f]{6,64}\.webp$/
+const sheetFilePattern = /^avatars-\d+\.[0-9a-f]{6,64}\.(png|webp)$/
 const upstreamBase =
   'https://raw.githubusercontent.com/poooi/contributors/master/dist/avatars/'
 const cacheName = 'poi-credits-sprite-v1'
@@ -116,15 +116,32 @@ const respond = (response: Response, method: string) =>
     ? new Response(null, { status: response.status, headers: response.headers })
     : response
 
-const riff = [0x52, 0x49, 0x46, 0x46]
-const webp = [0x57, 0x45, 0x42, 0x50]
+/** A sheet is only cacheable when the bytes really match the format implied by
+ * its hashed extension, so a mislabeled or empty 200 never becomes a
+ * long-lived broken image. */
+const pngSignature = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]
+const webpRiff = [0x52, 0x49, 0x46, 0x46]
+const webpTag = [0x57, 0x45, 0x42, 0x50]
 
-/** A webp sheet is only cacheable when the bytes really are RIFF/WEBP, so a
- * mislabeled or empty 200 never becomes a long-lived broken image. */
-const hasWebpSignature = (bytes: Uint8Array) =>
-  bytes.byteLength >= 12 &&
-  riff.every((byte, index) => bytes[index] === byte) &&
-  webp.every((byte, index) => bytes[8 + index] === byte)
+const matches = (bytes: Uint8Array, signature: number[], offset = 0) =>
+  signature.every((byte, index) => bytes[offset + index] === byte)
+
+const sheetFormats = {
+  png: {
+    contentType: 'image/png',
+    isSignature: (bytes: Uint8Array) =>
+      bytes.byteLength >= 8 && matches(bytes, pngSignature),
+  },
+  webp: {
+    contentType: 'image/webp',
+    isSignature: (bytes: Uint8Array) =>
+      bytes.byteLength >= 12 &&
+      matches(bytes, webpRiff) &&
+      matches(bytes, webpTag, 8),
+  },
+} as const
+
+type SheetExtension = keyof typeof sheetFormats
 
 export async function handleCreditsSprite(
   request: Request,
@@ -143,6 +160,9 @@ export async function handleCreditsSprite(
     return notFound()
   }
   if (!sheetFilePattern.test(filename)) return notFound()
+  const extension = filename.slice(filename.lastIndexOf('.') + 1)
+  const format = sheetFormats[extension as SheetExtension]
+  if (!format) return notFound()
 
   // Cloudflare's Cache API only accepts absolute URLs as keys.
   const cacheKey = new URL(
@@ -165,7 +185,7 @@ export async function handleCreditsSprite(
           Uint8Array.from(atob(fixture), (c) => c.charCodeAt(0)),
           {
             status: 200,
-            headers: { 'Content-Type': 'image/webp' },
+            headers: { 'Content-Type': format.contentType },
           },
         )
       : await (options.fetcher ?? fetch)(`${upstreamBase}${filename}`, {
@@ -173,16 +193,18 @@ export async function handleCreditsSprite(
         })
     if (!upstream.ok) return badGateway()
 
-    const contentType = upstream.headers.get('Content-Type') ?? ''
-    if (!contentType.toLowerCase().startsWith('image/webp')) return badGateway()
+    const contentType = (
+      upstream.headers.get('Content-Type') ?? ''
+    ).toLowerCase()
+    if (!contentType.startsWith(format.contentType)) return badGateway()
 
     const body = await readBounded(upstream, maxBytes)
-    if (!body || !hasWebpSignature(body)) return badGateway()
+    if (!body || !format.isSignature(body)) return badGateway()
 
     const response = new Response(body.buffer as ArrayBuffer, {
       status: 200,
       headers: {
-        'Content-Type': 'image/webp',
+        'Content-Type': format.contentType,
         'Cache-Control': immutableCacheControl,
         'Content-Length': String(body.byteLength),
       },

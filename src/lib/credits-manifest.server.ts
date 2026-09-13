@@ -7,7 +7,7 @@ export const creditsManifestUrl =
   'https://raw.githubusercontent.com/poooi/contributors/master/dist/avatars/manifest.json'
 
 const httpUrl = z.url({ protocol: /^https?$/ })
-const sheetFilePattern = /^avatars-\d+\.[0-9a-f]{6,64}\.webp$/
+const sheetFilePattern = /^avatars-\d+\.[0-9a-f]{6,64}\.(png|webp)$/
 
 export const creditsManifestSchema = z
   .object({

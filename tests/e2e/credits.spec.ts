@@ -46,7 +46,7 @@ test('renders credits, contributors and the support links', async ({
     await contributorSprite
       .first()
       .evaluate((el) => getComputedStyle(el).backgroundImage),
-  ).toContain('/api/credits-sprite/avatars-0.0123456789abcdef.webp')
+  ).toContain('/api/credits-sprite/avatars-0.0123456789abcdef.png')
 
   // The sheet is a real, decodable 96x288 webp served by the proxy.
   expect((await sheetResponse).status()).toBe(200)
@@ -56,7 +56,7 @@ test('renders credits, contributors and the support links', async ({
       image.src = src
       await image.decode()
       return { width: image.naturalWidth, height: image.naturalHeight }
-    }, '/api/credits-sprite/avatars-0.0123456789abcdef.webp'),
+    }, '/api/credits-sprite/avatars-0.0123456789abcdef.png'),
   ).toEqual({ width: 96, height: 288 })
 
   await expect(
@@ -114,7 +114,7 @@ test('renders credits, contributors and the support links', async ({
   // Both sections share a single network request for the one sheet.
   expect(
     sheetRequests.filter((url) =>
-      url.endsWith('avatars-0.0123456789abcdef.webp'),
+      url.endsWith('avatars-0.0123456789abcdef.png'),
     ),
   ).toHaveLength(1)
 

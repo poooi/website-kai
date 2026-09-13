@@ -133,15 +133,34 @@ describe('fetchCreditsManifest', () => {
     expect(available).toBe(false)
   })
 
-  it('rejects sheet filenames that are not relative hashed webp', async () => {
-    const { available } = await fetchCreditsManifest({
+  it('accepts hashed png sheet names', async () => {
+    const { manifest, available } = await fetchCreditsManifest({
       fetcher: jsonFetcher({
         ...validPayload,
-        sheets: [{ url: 'avatars-0.webp', width: 96, height: 192 }],
+        sheets: [{ url: 'avatars-0.deadbeef.png', width: 96, height: 192 }],
       }),
     })
 
-    expect(available).toBe(false)
+    expect(available).toBe(true)
+    expect(manifest?.sheets[0]?.url).toBe('avatars-0.deadbeef.png')
+  })
+
+  it('rejects sheet filenames that are not relative hashed images', async () => {
+    for (const url of [
+      'avatars-0.webp',
+      'avatars-0.deadbeef.gif',
+      'https://cdn.example/avatars-0.deadbeef.webp',
+    ])
+      expect(
+        (
+          await fetchCreditsManifest({
+            fetcher: jsonFetcher({
+              ...validPayload,
+              sheets: [{ url, width: 96, height: 192 }],
+            }),
+          })
+        ).available,
+      ).toBe(false)
   })
 
   it('reports unavailable when the source fails', async () => {

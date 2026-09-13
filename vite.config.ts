@@ -51,7 +51,7 @@ const creditsManifestFixture = process.env.TANSTACK_TEST_CREDITS
 const creditsSheetFixture = process.env.TANSTACK_TEST_CREDITS
   ? (
       await readFile(
-        new URL('./tests/fixtures/credits-sheet.webp', import.meta.url),
+        new URL('./tests/fixtures/credits-sheet.png', import.meta.url),
       )
     ).toString('base64')
   : ''
