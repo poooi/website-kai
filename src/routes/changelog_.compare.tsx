@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 import { ReleaseTimeline } from '~/components/changelog/release-timeline'
@@ -35,12 +35,9 @@ function ComparePage() {
   const selectClass = 'field-control mt-2 block w-full font-mono'
   return (
     <Transition>
-      <a
-        href={localizeHref('/changelog')}
-        className="text-link mb-7 inline-block text-sm"
-      >
+      <Link to="/changelog" className="text-link mb-7 inline-block text-sm">
         ← {m.releaseBack()}
-      </a>
+      </Link>
       <PageHeader title={m.releaseCompare()} />
       <form
         method="get"

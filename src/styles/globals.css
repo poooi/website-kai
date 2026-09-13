@@ -2,6 +2,7 @@
 @import 'tw-animate-css';
 
 @source '../**/*.tsx';
+@source '../lib/special-thanks.ts';
 @plugin '@tailwindcss/typography';
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -129,15 +130,9 @@
   --sticky-header-offset: 4.5rem;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1099px) {
   :root {
-    --sticky-header-offset: 8rem;
-  }
-}
-
-@media (max-width: 640px) {
-  :root {
-    --sticky-header-offset: 12rem;
+    --sticky-header-offset: 9rem;
   }
 }
 

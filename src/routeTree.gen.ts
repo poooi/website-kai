@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ChangelogRouteImport } from './routes/changelog'
+import { Route as CreditsRouteImport } from './routes/credits'
 import { Route as DownloadRouteImport } from './routes/download'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as OpengraphImageRouteImport } from './routes/opengraph-image'
@@ -32,6 +33,11 @@ const IndexRoute = IndexRouteImport.update({
 const ChangelogRoute = ChangelogRouteImport.update({
   id: '/changelog',
   path: '/changelog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CreditsRoute = CreditsRouteImport.update({
+  id: '/credits',
+  path: '/credits',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DownloadRoute = DownloadRouteImport.update({
@@ -98,6 +104,7 @@ const ApiChangelogChannelRoute = ApiChangelogChannelRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/changelog': typeof ChangelogRoute
+  '/credits': typeof CreditsRoute
   '/download': typeof DownloadRoute
   '/explore': typeof ExploreRoute
   '/opengraph-image': typeof OpengraphImageRoute
@@ -114,6 +121,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/changelog': typeof ChangelogRoute
+  '/credits': typeof CreditsRoute
   '/download': typeof DownloadRoute
   '/explore': typeof ExploreRoute
   '/opengraph-image': typeof OpengraphImageRoute
@@ -131,6 +139,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/changelog': typeof ChangelogRoute
+  '/credits': typeof CreditsRoute
   '/download': typeof DownloadRoute
   '/explore': typeof ExploreRoute
   '/opengraph-image': typeof OpengraphImageRoute
@@ -149,6 +158,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/changelog'
+    | '/credits'
     | '/download'
     | '/explore'
     | '/opengraph-image'
@@ -165,6 +175,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/changelog'
+    | '/credits'
     | '/download'
     | '/explore'
     | '/opengraph-image'
@@ -181,6 +192,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/changelog'
+    | '/credits'
     | '/download'
     | '/explore'
     | '/opengraph-image'
@@ -198,6 +210,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ChangelogRoute: typeof ChangelogRoute
+  CreditsRoute: typeof CreditsRoute
   DownloadRoute: typeof DownloadRoute
   ExploreRoute: typeof ExploreRoute
   OpengraphImageRoute: typeof OpengraphImageRoute
@@ -226,6 +239,13 @@ declare module '@tanstack/react-router' {
       path: '/changelog'
       fullPath: '/changelog'
       preLoaderRoute: typeof ChangelogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/credits': {
+      id: '/credits'
+      path: '/credits'
+      fullPath: '/credits'
+      preLoaderRoute: typeof CreditsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/download': {
@@ -318,6 +338,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ChangelogRoute: ChangelogRoute,
+  CreditsRoute: CreditsRoute,
   DownloadRoute: DownloadRoute,
   ExploreRoute: ExploreRoute,
   OpengraphImageRoute: OpengraphImageRoute,

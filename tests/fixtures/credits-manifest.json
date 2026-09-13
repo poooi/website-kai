@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "version": "test-manifest",
+  "cellSize": 96,
+  "displaySize": 48,
+  "pixelRatio": 2,
+  "sheets": [
+    {
+      "url": "avatars-0.0123456789abcdef.png",
+      "width": 96,
+      "height": 288
+    }
+  ],
+  "avatars": {
+    "github:hanzhao": { "sheet": 0, "x": 0, "y": 0, "width": 96, "height": 96 },
+    "oc:sorayama": { "sheet": 0, "x": 0, "y": 96, "width": 96, "height": 96 }
+  },
+  "contributors": [
+    {
+      "id": "pixiv:3991162",
+      "login": "Season千",
+      "name": "Season千",
+      "profile": "http://www.pixiv.net/member.php?id=3991162"
+    },
+    {
+      "id": "github:hanzhao",
+      "login": "hanzhao",
+      "name": "Maggie",
+      "profile": "https://github.com/hanzhao"
+    },
+    {
+      "id": "github:noname",
+      "login": "noname",
+      "name": "noname",
+      "profile": "https://github.com/noname"
+    },
+    {
+      "id": "github:blank",
+      "login": "blank",
+      "name": "blank",
+      "profile": "https://github.com/blank"
+    }
+  ],
+  "supporters": [
+    {
+      "id": "oc:sorayama",
+      "memberId": 1,
+      "name": "Sorayama",
+      "profile": "https://opencollective.com/sorayama"
+    },
+    {
+      "id": "oc:magicae",
+      "memberId": 2,
+      "name": "magica",
+      "profile": "https://opencollective.com/magicae"
+    },
+    {
+      "id": "oc:jenningswu",
+      "memberId": 3,
+      "name": "Jennings Wu",
+      "profile": "https://opencollective.com/jenningswu"
+    },
+    {
+      "id": "oc:ada",
+      "memberId": 4,
+      "name": "Ada",
+      "profile": "https://opencollective.com/ada"
+    }
+  ]
+}

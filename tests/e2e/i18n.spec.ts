@@ -162,29 +162,59 @@ test('serves framework-neutral header navigation controls', async ({
     'href',
     '/en/changelog',
   )
+  await expect(header.getByRole('link', { name: 'Credits' })).toHaveAttribute(
+    'href',
+    '/en/credits',
+  )
   await expect(page.getByRole('main').locator('img')).toHaveAttribute('alt', '')
 })
 
-test('keeps the header navigation readable at 320px in French', async ({
+test('keeps the compact header navigation readable at 320px in French', async ({
   page,
 }) => {
   await page.setViewportSize({ width: 320, height: 844 })
   await page.goto('/fr')
-  const navigation = page.getByRole('banner').getByRole('navigation')
+  const header = page.getByRole('banner')
+  const details = header.locator('[data-mobile-nav]')
+  await details.locator('summary').click()
+  await expect(details).toHaveAttribute('open', '')
+
+  const navigation = details.getByRole('navigation')
   await expect(
     navigation.getByRole('link', { name: 'Journal des modifications' }),
   ).toBeVisible()
+  await expect(navigation.getByRole('link', { name: 'Crédits' })).toBeVisible()
   for (const link of await navigation.getByRole('link').all())
     expect(
       await link.evaluate(
         (element) => element.scrollWidth <= element.clientWidth + 1,
       ),
     ).toBe(true)
+  // The chevron rotation transitions the summary; poll until it settles so
+  // fractional/sub-pixel movement does not fail the no-overflow bound.
+  await expect
+    .poll(() =>
+      details.evaluate((element) => element.scrollWidth - element.clientWidth),
+    )
+    .toBeLessThanOrEqual(1)
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= window.innerWidth,
     ),
   ).toBe(true)
+
+  await page.keyboard.press('Escape')
+  await expect(details).not.toHaveAttribute('open', '')
+  expect(
+    await details
+      .locator('summary')
+      .evaluate((element) => element === document.activeElement),
+  ).toBe(true)
+
+  await details.locator('summary').click()
+  await navigation.getByRole('link', { name: 'Plugins' }).click()
+  await expect(page).toHaveURL(/\/fr\/plugins$/)
+  await expect(details).not.toHaveAttribute('open', '')
 })
 
 test('keeps harbour map present through client navigation without a reload', async ({
