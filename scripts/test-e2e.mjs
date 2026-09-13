@@ -1,5 +1,4 @@
 import { execa } from 'execa'
-import { readFile } from 'node:fs/promises'
 
 const env = {
   ...process.env,
@@ -13,10 +12,7 @@ const env = {
     betaVersion: 'v10.10.0-beta.1',
     version: 'v10.9.2',
   }),
-  TANSTACK_TEST_RELEASE_HISTORY: await readFile(
-    new URL('../tests/fixtures/release-history.json', import.meta.url),
-    'utf8',
-  ),
+  TANSTACK_TEST_RELEASE_HISTORY: '1',
 }
 
 await execa('vite', ['build', '--config', 'vite.config.ts'], {

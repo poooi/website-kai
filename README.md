@@ -67,9 +67,10 @@ not visitor-specific page HTML. Cache availability is per Cloudflare location
 and entries may be evicted; cold misses still contact GitHub. There is no
 claim of a globally persistent copy or a guaranteed cache hit.
 
-The E2E runner injects `tests/fixtures/release-history.json` at build time through
-`TANSTACK_TEST_RELEASE_HISTORY`, alongside the existing fixed release-version
-fixture. Production builds leave this variable unset and fetch the archive.
+The E2E runner sets `TANSTACK_TEST_RELEASE_HISTORY=1` so Vite reads and injects
+`tests/fixtures/release-history.json` at build time, alongside the existing fixed
+release-version fixture. The JSON stays out of child process environments.
+Production builds leave this variable unset and fetch the archive.
 
 ## Deploy
 
