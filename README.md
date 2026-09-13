@@ -22,6 +22,48 @@ source checks. After `pnpm run build`, run `pnpm run check:imports` and
 `pnpm run check:build` to validate runtime compatibility and bundle budgets.
 The E2E runner builds with fixed release versions before starting preview.
 
+## Release history
+
+The changelog page combines the current stable Markdown in `poooi/poi-release`
+with its permanent `history/stable.json` archive. Current notes take precedence
+for overlapping versions. Archived entries fall back to English individually
+when a translation is unavailable, and show their original or reconstructed
+source. Beta and special compatibility builds are excluded from this history.
+Historical beta announcements are combined into stable notes in the archive.
+Recovered Weibo images and plugin updates remain in `poi-release`; this page
+renders only the main application notes, with links to their original sources.
+
+Archive maintenance and reconstruction instructions live in
+[`poi-release/history/README.md`](https://github.com/poooi/poi-release/blob/main/history/README.md).
+Publish the archive there before deploying this consumer. If either upstream is
+unavailable, the page still renders the notes it could load and provides a retry
+link.
+
+The history page opens on the latest publication year. Its year selector and
+version directory link to individual notes on a timeline; `?year=all` shows the
+full archive and `?year=undated` keeps versions with unknown dates accessible.
+`/changelog/compare?from=v6.0.1&to=v6.1.3` summarizes the upgrade range, including
+the newer endpoint and excluding the older one. Reversed selections are
+normalized. Comparison requires the archive to be available so an incomplete
+range is never presented as complete. Both year navigation and the comparison
+form work without JavaScript.
+
+Public release source documents use the Cloudflare Workers Cache API (no KV
+binding required). Freshness follows upstream `s-maxage`/`max-age` or `Expires`,
+accounting for `Age` and `Date`; the fallback when no lifetime is supplied is
+five minutes. ETags are revalidated with `If-None-Match`. A validated snapshot
+is retained for up to seven days for upstream errors, with a one-minute retry
+backoff; `no-store`, `private`, `no-cache` and revalidation requirements are
+respected. Missing-language 404s are cached for at most one minute. Invalid
+responses do not replace a valid snapshot. The cache stores public source text,
+not visitor-specific page HTML. Cache availability is per Cloudflare location
+and entries may be evicted; cold misses still contact GitHub. There is no
+claim of a globally persistent copy or a guaranteed cache hit.
+
+The E2E runner injects `tests/fixtures/release-history.json` at build time through
+`TANSTACK_TEST_RELEASE_HISTORY`, alongside the existing fixed release-version
+fixture. Production builds leave this variable unset and fetch the archive.
+
 ## Deploy
 
 `pnpm run deploy` builds and deploys the TanStack Worker using the generated

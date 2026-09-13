@@ -54,6 +54,9 @@ export default defineConfig({
     'process.env.TANSTACK_TEST_POI_VERSIONS': JSON.stringify(
       process.env.TANSTACK_TEST_POI_VERSIONS ?? '',
     ),
+    'process.env.TANSTACK_TEST_RELEASE_HISTORY': JSON.stringify(
+      process.env.TANSTACK_TEST_RELEASE_HISTORY ?? '',
+    ),
   },
   plugins: [
     tailwindcss(),

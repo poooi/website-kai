@@ -17,6 +17,7 @@ import { Route as OpengraphImageRouteImport } from './routes/opengraph-image'
 import { Route as StatusRouteImport } from './routes/status'
 import { Route as TwitterImageRouteImport } from './routes/twitter-image'
 import { Route as ApiMonitoringRouteImport } from './routes/api.monitoring'
+import { Route as ChangelogCompareRouteImport } from './routes/changelog_.compare'
 import { Route as DistFilenameRouteImport } from './routes/dist.$filename'
 import { Route as FcdFilenameRouteImport } from './routes/fcd.$filename'
 import { Route as UpdateFilenameRouteImport } from './routes/update.$filename'
@@ -62,6 +63,11 @@ const ApiMonitoringRoute = ApiMonitoringRouteImport.update({
   path: '/api/monitoring',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChangelogCompareRoute = ChangelogCompareRouteImport.update({
+  id: '/changelog_/compare',
+  path: '/changelog/compare',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DistFilenameRoute = DistFilenameRouteImport.update({
   id: '/dist/$filename',
   path: '/dist/$filename',
@@ -92,6 +98,7 @@ export interface FileRoutesByFullPath {
   '/status': typeof StatusRoute
   '/twitter-image': typeof TwitterImageRoute
   '/api/monitoring': typeof ApiMonitoringRoute
+  '/changelog/compare': typeof ChangelogCompareRoute
   '/dist/$filename': typeof DistFilenameRoute
   '/fcd/$filename': typeof FcdFilenameRoute
   '/update/$filename': typeof UpdateFilenameRoute
@@ -106,6 +113,7 @@ export interface FileRoutesByTo {
   '/status': typeof StatusRoute
   '/twitter-image': typeof TwitterImageRoute
   '/api/monitoring': typeof ApiMonitoringRoute
+  '/changelog/compare': typeof ChangelogCompareRoute
   '/dist/$filename': typeof DistFilenameRoute
   '/fcd/$filename': typeof FcdFilenameRoute
   '/update/$filename': typeof UpdateFilenameRoute
@@ -121,6 +129,7 @@ export interface FileRoutesById {
   '/status': typeof StatusRoute
   '/twitter-image': typeof TwitterImageRoute
   '/api/monitoring': typeof ApiMonitoringRoute
+  '/changelog_/compare': typeof ChangelogCompareRoute
   '/dist/$filename': typeof DistFilenameRoute
   '/fcd/$filename': typeof FcdFilenameRoute
   '/update/$filename': typeof UpdateFilenameRoute
@@ -137,6 +146,7 @@ export interface FileRouteTypes {
     | '/status'
     | '/twitter-image'
     | '/api/monitoring'
+    | '/changelog/compare'
     | '/dist/$filename'
     | '/fcd/$filename'
     | '/update/$filename'
@@ -151,6 +161,7 @@ export interface FileRouteTypes {
     | '/status'
     | '/twitter-image'
     | '/api/monitoring'
+    | '/changelog/compare'
     | '/dist/$filename'
     | '/fcd/$filename'
     | '/update/$filename'
@@ -165,6 +176,7 @@ export interface FileRouteTypes {
     | '/status'
     | '/twitter-image'
     | '/api/monitoring'
+    | '/changelog_/compare'
     | '/dist/$filename'
     | '/fcd/$filename'
     | '/update/$filename'
@@ -180,6 +192,7 @@ export interface RootRouteChildren {
   StatusRoute: typeof StatusRoute
   TwitterImageRoute: typeof TwitterImageRoute
   ApiMonitoringRoute: typeof ApiMonitoringRoute
+  ChangelogCompareRoute: typeof ChangelogCompareRoute
   DistFilenameRoute: typeof DistFilenameRoute
   FcdFilenameRoute: typeof FcdFilenameRoute
   UpdateFilenameRoute: typeof UpdateFilenameRoute
@@ -244,6 +257,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiMonitoringRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/changelog_/compare': {
+      id: '/changelog_/compare'
+      path: '/changelog/compare'
+      fullPath: '/changelog/compare'
+      preLoaderRoute: typeof ChangelogCompareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dist/$filename': {
       id: '/dist/$filename'
       path: '/dist/$filename'
@@ -284,6 +304,7 @@ const rootRouteChildren: RootRouteChildren = {
   StatusRoute: StatusRoute,
   TwitterImageRoute: TwitterImageRoute,
   ApiMonitoringRoute: ApiMonitoringRoute,
+  ChangelogCompareRoute: ChangelogCompareRoute,
   DistFilenameRoute: DistFilenameRoute,
   FcdFilenameRoute: FcdFilenameRoute,
   UpdateFilenameRoute: UpdateFilenameRoute,
