@@ -37,6 +37,7 @@ export const Header = ({ LinkComponent = AnchorLink }: HeaderProps) => {
 
   const links = [
     { path: '/explore', label: m.explore() },
+    { path: '/plugins', label: m.plugins() },
     { path: '/download', label: m.download() },
     { path: '/changelog', label: m.changelog() },
   ]
@@ -51,7 +52,7 @@ export const Header = ({ LinkComponent = AnchorLink }: HeaderProps) => {
       >
         <span className="text-2xl font-bold tracking-tight">poi</span>
       </LinkComponent>
-      <nav className="flex items-stretch gap-6 self-stretch max-[900px]:order-3 max-[900px]:col-span-2 max-[900px]:grid max-[900px]:grid-cols-3 max-[900px]:gap-2">
+      <nav className="flex grid-cols-2 items-stretch gap-6 self-stretch max-[900px]:order-3 max-[900px]:col-span-2 max-[900px]:grid max-[900px]:gap-2 sm:grid-cols-4">
         {links.map(({ path, label }) => (
           <LinkComponent
             key={path}

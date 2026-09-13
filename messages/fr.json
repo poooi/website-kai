@@ -64,5 +64,13 @@
   "releaseInvalid": "Choisissez deux versions présentes dans l’archive.",
   "releaseBack": "Retour au journal des modifications",
   "releaseMissingDate": "Aucune date de publication fiable n’est disponible pour cette version.",
-  "releaseRangeUnavailable": "L’archive des versions est indisponible. La plage de mise à niveau complète ne peut pas être déterminée."
+  "releaseRangeUnavailable": "L’archive des versions est indisponible. La plage de mise à niveau complète ne peut pas être déterminée.",
+  "plugins": "Plugins",
+  "pluginsSearchLabel": "Rechercher par nom, fonction ou auteur",
+  "pluginsSearch": "Rechercher",
+  "pluginsInstallHint": "Installation dans poi → Paramètres → Plugins.",
+  "pluginsCount": "{count} plugins officiels sur {total}",
+  "pluginsClearSearch": "Effacer la recherche",
+  "pluginsNoResults": "Aucun plugin trouvé. Essayez un autre nom, une autre fonction ou un autre auteur.",
+  "pluginsLoadError": "Impossible de charger le catalogue des plugins. Rechargez la page pour réessayer."
 }

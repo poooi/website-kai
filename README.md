@@ -72,6 +72,20 @@ The E2E runner sets `TANSTACK_TEST_RELEASE_HISTORY=1` so Vite reads and injects
 release-version fixture. The JSON stays out of child process environments.
 Production builds leave this variable unset and fetch the archive.
 
+## Plugins
+
+The plugins page server-renders the official catalog from
+`poooi/poi/master/assets/data/plugin.json` through the same public-document cache
+as the release sources. Names and descriptions are localized per field with an
+English fallback, Markdown descriptions are sanitized before rendering, and each
+entry links to its real npm package and author page.
+
+A GET search form filters by package id, name, description or author and works
+without JavaScript; the same filter is keyboard accessible. The directory is a
+simple two-column list on desktop and one column on mobile. The E2E runner sets
+`TANSTACK_TEST_PLUGINS=1` so Vite reads and injects `tests/fixtures/plugins.json`
+at build time instead of contacting GitHub.
+
 ## Deploy
 
 `pnpm run deploy` builds and deploys the TanStack Worker using the generated

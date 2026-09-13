@@ -64,5 +64,13 @@
   "releaseInvalid": "아카이브에 존재하는 두 버전을 선택하세요.",
   "releaseBack": "변경 사항으로 돌아가기",
   "releaseMissingDate": "이 버전의 신뢰할 수 있는 공개 날짜가 없습니다.",
-  "releaseRangeUnavailable": "릴리스 아카이브를 사용할 수 없어 전체 업그레이드 범위를 확인할 수 없습니다."
+  "releaseRangeUnavailable": "릴리스 아카이브를 사용할 수 없어 전체 업그레이드 범위를 확인할 수 없습니다.",
+  "plugins": "플러그인",
+  "pluginsSearchLabel": "이름, 기능 또는 제작자로 검색",
+  "pluginsSearch": "검색",
+  "pluginsInstallHint": "poi → 설정 → 플러그인에서 설치하세요.",
+  "pluginsCount": "공식 플러그인 {total}개 중 {count}개",
+  "pluginsClearSearch": "검색 지우기",
+  "pluginsNoResults": "일치하는 플러그인이 없습니다. 다른 이름, 기능 또는 제작자로 검색해 보세요.",
+  "pluginsLoadError": "플러그인 목록을 불러올 수 없습니다. 페이지를 새로고침해 주세요."
 }

@@ -14,6 +14,7 @@ import { Route as ChangelogRouteImport } from './routes/changelog'
 import { Route as DownloadRouteImport } from './routes/download'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as OpengraphImageRouteImport } from './routes/opengraph-image'
+import { Route as PluginsRouteImport } from './routes/plugins'
 import { Route as StatusRouteImport } from './routes/status'
 import { Route as TwitterImageRouteImport } from './routes/twitter-image'
 import { Route as ApiMonitoringRouteImport } from './routes/api.monitoring'
@@ -46,6 +47,11 @@ const ExploreRoute = ExploreRouteImport.update({
 const OpengraphImageRoute = OpengraphImageRouteImport.update({
   id: '/opengraph-image',
   path: '/opengraph-image',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PluginsRoute = PluginsRouteImport.update({
+  id: '/plugins',
+  path: '/plugins',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StatusRoute = StatusRouteImport.update({
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/download': typeof DownloadRoute
   '/explore': typeof ExploreRoute
   '/opengraph-image': typeof OpengraphImageRoute
+  '/plugins': typeof PluginsRoute
   '/status': typeof StatusRoute
   '/twitter-image': typeof TwitterImageRoute
   '/api/monitoring': typeof ApiMonitoringRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByTo {
   '/download': typeof DownloadRoute
   '/explore': typeof ExploreRoute
   '/opengraph-image': typeof OpengraphImageRoute
+  '/plugins': typeof PluginsRoute
   '/status': typeof StatusRoute
   '/twitter-image': typeof TwitterImageRoute
   '/api/monitoring': typeof ApiMonitoringRoute
@@ -126,6 +134,7 @@ export interface FileRoutesById {
   '/download': typeof DownloadRoute
   '/explore': typeof ExploreRoute
   '/opengraph-image': typeof OpengraphImageRoute
+  '/plugins': typeof PluginsRoute
   '/status': typeof StatusRoute
   '/twitter-image': typeof TwitterImageRoute
   '/api/monitoring': typeof ApiMonitoringRoute
@@ -143,6 +152,7 @@ export interface FileRouteTypes {
     | '/download'
     | '/explore'
     | '/opengraph-image'
+    | '/plugins'
     | '/status'
     | '/twitter-image'
     | '/api/monitoring'
@@ -158,6 +168,7 @@ export interface FileRouteTypes {
     | '/download'
     | '/explore'
     | '/opengraph-image'
+    | '/plugins'
     | '/status'
     | '/twitter-image'
     | '/api/monitoring'
@@ -173,6 +184,7 @@ export interface FileRouteTypes {
     | '/download'
     | '/explore'
     | '/opengraph-image'
+    | '/plugins'
     | '/status'
     | '/twitter-image'
     | '/api/monitoring'
@@ -189,6 +201,7 @@ export interface RootRouteChildren {
   DownloadRoute: typeof DownloadRoute
   ExploreRoute: typeof ExploreRoute
   OpengraphImageRoute: typeof OpengraphImageRoute
+  PluginsRoute: typeof PluginsRoute
   StatusRoute: typeof StatusRoute
   TwitterImageRoute: typeof TwitterImageRoute
   ApiMonitoringRoute: typeof ApiMonitoringRoute
@@ -234,6 +247,13 @@ declare module '@tanstack/react-router' {
       path: '/opengraph-image'
       fullPath: '/opengraph-image'
       preLoaderRoute: typeof OpengraphImageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/plugins': {
+      id: '/plugins'
+      path: '/plugins'
+      fullPath: '/plugins'
+      preLoaderRoute: typeof PluginsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/status': {
@@ -301,6 +321,7 @@ const rootRouteChildren: RootRouteChildren = {
   DownloadRoute: DownloadRoute,
   ExploreRoute: ExploreRoute,
   OpengraphImageRoute: OpengraphImageRoute,
+  PluginsRoute: PluginsRoute,
   StatusRoute: StatusRoute,
   TwitterImageRoute: TwitterImageRoute,
   ApiMonitoringRoute: ApiMonitoringRoute,

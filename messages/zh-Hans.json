@@ -64,5 +64,13 @@
   "releaseInvalid": "请选择归档中存在的两个版本。",
   "releaseBack": "返回更新日志",
   "releaseMissingDate": "此版本没有可靠的发布日期。",
-  "releaseRangeUnavailable": "历史日志暂时不可用，无法确认完整的升级范围。"
+  "releaseRangeUnavailable": "历史日志暂时不可用，无法确认完整的升级范围。",
+  "plugins": "插件",
+  "pluginsSearchLabel": "搜索名称、功能或作者",
+  "pluginsSearch": "搜索",
+  "pluginsInstallHint": "在 poi → 设置 → 插件中安装。",
+  "pluginsCount": "{count} / {total} 个官方插件",
+  "pluginsClearSearch": "清除搜索",
+  "pluginsNoResults": "没有匹配的插件，请尝试其他名称、功能或作者。",
+  "pluginsLoadError": "插件列表加载失败，请刷新页面重试。"
 }

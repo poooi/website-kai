@@ -64,5 +64,13 @@
   "releaseInvalid": "Choose two versions that exist in the archive.",
   "releaseBack": "Back to changelog",
   "releaseMissingDate": "No reliable publication date is available for this version.",
-  "releaseRangeUnavailable": "The release archive is unavailable. The complete upgrade range cannot be determined."
+  "releaseRangeUnavailable": "The release archive is unavailable. The complete upgrade range cannot be determined.",
+  "plugins": "Plugins",
+  "pluginsSearchLabel": "Search by name, feature or author",
+  "pluginsSearch": "Search",
+  "pluginsInstallHint": "Install in poi → Settings → Plugins.",
+  "pluginsCount": "{count} of {total} official plugins",
+  "pluginsClearSearch": "Clear search",
+  "pluginsNoResults": "No plugins match. Try another name, feature or author.",
+  "pluginsLoadError": "The plugin catalog could not be loaded. Reload to try again."
 }
