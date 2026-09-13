@@ -2,6 +2,8 @@
 
 import {
   forwardRef,
+  useEffect,
+  useRef,
   type ComponentType,
   type ComponentPropsWithoutRef,
 } from 'react'
@@ -34,6 +36,7 @@ interface HeaderProps {
 export const Header = ({ LinkComponent = AnchorLink }: HeaderProps) => {
   const pathname = useI18nPathname()
   const locale = getLocale()
+  const headerRef = useRef<HTMLElement>(null)
 
   const links = [
     { path: '/explore', label: m.explore() },
@@ -42,39 +45,61 @@ export const Header = ({ LinkComponent = AnchorLink }: HeaderProps) => {
     { path: '/changelog', label: m.changelog() },
   ]
 
+  useEffect(() => {
+    const header = headerRef.current
+    if (!header) return
+    const update = () => {
+      const height = Math.ceil(header.getBoundingClientRect().height)
+      document.documentElement.style.setProperty(
+        '--sticky-header-offset',
+        `${height}px`,
+      )
+    }
+    update()
+    const observer = new ResizeObserver(update)
+    observer.observe(header)
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    <header className="relative z-10 mx-[2.7%] grid min-h-[72px] grid-cols-[auto_1fr_auto] items-center gap-x-8 border-b px-[2.2%] font-semibold max-[900px]:grid-cols-[auto_1fr] max-[900px]:gap-y-1 max-[900px]:pt-3 max-[700px]:mx-[6%] max-[700px]:px-0">
-      <LinkComponent
-        href={localizeHref('/', { locale })}
-        aria-label={m.returnToHomepage()}
-        aria-current={pathname === '/' ? 'page' : undefined}
-        className="inline-flex w-fit items-center py-2 transition-colors hover:text-navigation"
-      >
-        <span className="text-2xl font-bold tracking-tight">poi</span>
-      </LinkComponent>
-      <nav className="flex grid-cols-2 items-stretch gap-6 self-stretch max-[900px]:order-3 max-[900px]:col-span-2 max-[900px]:grid max-[900px]:gap-2 sm:grid-cols-4">
-        {links.map(({ path, label }) => (
-          <LinkComponent
-            key={path}
-            href={localizeHref(path, { locale })}
-            aria-current={pathname === path ? 'page' : undefined}
-            className="inline-flex items-center justify-center border-b-2 border-transparent px-1 py-4 text-sm text-muted-foreground transition-colors hover:text-foreground aria-[current=page]:border-navigation aria-[current=page]:text-navigation max-[900px]:py-3 max-[900px]:text-center"
-          >
-            {label}
-          </LinkComponent>
-        ))}
-      </nav>
-      <div className="ml-auto flex shrink-0 items-center gap-6 max-[700px]:gap-1">
-        <a
-          className="whitespace-nowrap hover:underline hover:underline-offset-[5px] max-[700px]:hidden"
-          href="https://github.com/poooi/poi"
-          target="_blank"
-          rel="noopener noreferrer"
+    <header
+      ref={headerRef}
+      data-site-header
+      className="sticky top-0 z-40 bg-background"
+    >
+      <div className="mx-[2.7%] grid min-h-[72px] grid-cols-[auto_1fr_auto] items-center gap-x-8 border-b px-[2.2%] font-semibold max-[900px]:grid-cols-[auto_1fr] max-[900px]:gap-y-1 max-[900px]:pt-3 max-[700px]:mx-[6%] max-[700px]:px-0">
+        <LinkComponent
+          href={localizeHref('/', { locale })}
+          aria-label={m.returnToHomepage()}
+          aria-current={pathname === '/' ? 'page' : undefined}
+          className="inline-flex w-fit items-center py-2 transition-colors hover:text-navigation"
         >
-          GitHub ↗
-        </a>
-        <LanguageChooser />
-        <ThemeChooser />
+          <span className="text-2xl font-bold tracking-tight">poi</span>
+        </LinkComponent>
+        <nav className="flex grid-cols-2 items-stretch gap-6 self-stretch max-[900px]:order-3 max-[900px]:col-span-2 max-[900px]:grid max-[900px]:gap-2 sm:grid-cols-4">
+          {links.map(({ path, label }) => (
+            <LinkComponent
+              key={path}
+              href={localizeHref(path, { locale })}
+              aria-current={pathname === path ? 'page' : undefined}
+              className="inline-flex items-center justify-center border-b-2 border-transparent px-1 py-4 text-sm text-muted-foreground transition-colors hover:text-foreground aria-[current=page]:border-navigation aria-[current=page]:text-navigation max-[900px]:py-3 max-[900px]:text-center"
+            >
+              {label}
+            </LinkComponent>
+          ))}
+        </nav>
+        <div className="ml-auto flex shrink-0 items-center gap-6 max-[700px]:gap-1">
+          <a
+            className="whitespace-nowrap hover:underline hover:underline-offset-[5px] max-[700px]:hidden"
+            href="https://github.com/poooi/poi"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub ↗
+          </a>
+          <LanguageChooser />
+          <ThemeChooser />
+        </div>
       </div>
     </header>
   )

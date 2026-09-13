@@ -19,6 +19,7 @@ export const Transition = ({
 }: TransitionProps) => {
   return (
     <main
+      tabIndex={-1}
       className={cn('page-enter', variant === 'page' && pageLayout, className)}
       {...props}
     >

@@ -73,5 +73,6 @@
   "pluginsClearSearch": "検索をクリア",
   "pluginsNoResults": "該当するプラグインがありません。別の名前・機能・作者で検索してください。",
   "pluginsLoadError": "プラグイン一覧を読み込めませんでした。ページを再読み込みしてください。",
-  "pluginsReleasePublished": "公開日 {date}"
+  "pluginsReleasePublished": "公開日 {date}",
+  "backToTop": "ページ上部へ戻る"
 }

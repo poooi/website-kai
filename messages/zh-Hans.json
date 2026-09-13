@@ -73,5 +73,6 @@
   "pluginsClearSearch": "清除搜索",
   "pluginsNoResults": "没有匹配的插件，请尝试其他名称、功能或作者。",
   "pluginsLoadError": "插件列表加载失败，请刷新页面重试。",
-  "pluginsReleasePublished": "发布于 {date}"
+  "pluginsReleasePublished": "发布于 {date}",
+  "backToTop": "回到顶部"
 }

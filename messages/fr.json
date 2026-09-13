@@ -73,5 +73,6 @@
   "pluginsClearSearch": "Effacer la recherche",
   "pluginsNoResults": "Aucun plugin trouvé. Essayez un autre nom, une autre fonction ou un autre auteur.",
   "pluginsLoadError": "Impossible de charger le catalogue des plugins. Rechargez la page pour réessayer.",
-  "pluginsReleasePublished": "Publié le {date}"
+  "pluginsReleasePublished": "Publié le {date}",
+  "backToTop": "Retour en haut"
 }

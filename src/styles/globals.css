@@ -124,6 +124,23 @@
   }
 }
 
+/* Shared sticky-header offset: measured in JS, with conservative no-JS defaults. */
+:root {
+  --sticky-header-offset: 4.5rem;
+}
+
+@media (max-width: 900px) {
+  :root {
+    --sticky-header-offset: 8rem;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --sticky-header-offset: 12rem;
+  }
+}
+
 @layer components {
   .text-link {
     @apply text-navigation underline decoration-current/40 underline-offset-4 hover:decoration-current;
