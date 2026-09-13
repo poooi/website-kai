@@ -24,9 +24,9 @@ export interface SpecialThanksEntry {
 // are contained, with the portrait cover-cropped to the face. No copied
 // percentage margins or clip paths from the old layout.
 const cropBox =
-  'relative flex h-16 w-16 shrink-0 items-center justify-start overflow-hidden rounded bg-muted'
+  'relative flex h-16 w-16 shrink-0 items-center justify-start overflow-hidden rounded'
 const containBox =
-  'relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded bg-muted'
+  'relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded'
 const bannerImage = 'h-full w-auto max-w-none'
 // KCwiki's banner keeps a stray word at its right edge; clip past it and nudge
 // the emblem toward the slot centre.

@@ -98,9 +98,16 @@ test('renders credits, contributors and the support links', async ({
       .first()
       .evaluate((el) => getComputedStyle(el).backgroundImage),
   )
-  await expect(page.locator('#contributors img, #supporters img')).toHaveCount(
-    0,
-  )
+  // Missing avatars fall back to the local poi logo (fixture: 3 contributors
+  // + 3 supporters without a sheet); no remote avatar images.
+  const fallbackImages = page.locator('#contributors img, #supporters img')
+  await expect(fallbackImages).toHaveCount(6)
+  for (const image of await fallbackImages.all()) {
+    await expect(image).toHaveAttribute('alt', '')
+    expect((await image.getAttribute('src')) ?? '').not.toMatch(
+      /^(?:https?:)?\/\//,
+    )
+  }
   expect(
     await page
       .locator(
