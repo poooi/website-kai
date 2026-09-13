@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { ArrowUpRight } from 'lucide-react'
 
-import poiLogo from '~/assets/poi.svg?url'
+import poiCharacterMask from '~/assets/poi-character-mask.svg?url'
 import { PageHeader } from '~/components/page-header'
 import { Transition } from '~/components/transition'
 import {
@@ -17,8 +17,7 @@ const contributionsUrl = 'https://github.com/poooi/poi#development'
 const openCollectiveUrl = 'https://opencollective.com/poi'
 const externalLinkClass = 'text-link inline-flex items-center gap-1'
 const avatarClass = 'shrink-0 rounded-full bg-muted bg-no-repeat'
-const placeholderClass =
-  'inline-flex shrink-0 items-center justify-center rounded-full border border-border bg-muted'
+const placeholderClass = 'shrink-0 rounded-full bg-muted-foreground/60'
 const sectionClass =
   'scroll-mt-[calc(var(--sticky-header-offset)+1.5rem)] border-t pt-8'
 const nameGridClass =
@@ -221,15 +220,17 @@ function SpriteAvatar({
       <span
         aria-hidden="true"
         data-sprite-placeholder
-        style={{ width: size, height: size }}
+        style={{
+          width: size,
+          height: size,
+          maskImage: `linear-gradient(#fff 0 0), url(${JSON.stringify(poiCharacterMask)})`,
+          maskSize: '100% 100%, 40px 40px',
+          maskPosition: 'center',
+          maskRepeat: 'no-repeat',
+          maskComposite: 'exclude',
+        }}
         className={placeholderClass}
-      >
-        <img
-          src={poiLogo}
-          alt=""
-          className="h-10 w-10 object-contain opacity-70 grayscale dark:opacity-80"
-        />
-      </span>
+      />
     )
 
   const scale = manifest.pixelRatio

@@ -98,15 +98,28 @@ test('renders credits, contributors and the support links', async ({
       .first()
       .evaluate((el) => getComputedStyle(el).backgroundImage),
   )
-  // Missing avatars fall back to the local poi logo (fixture: 3 contributors
-  // + 3 supporters without a sheet); no remote avatar images.
-  const fallbackImages = page.locator('#contributors img, #supporters img')
-  await expect(fallbackImages).toHaveCount(6)
-  for (const image of await fallbackImages.all()) {
-    await expect(image).toHaveAttribute('alt', '')
-    expect((await image.getAttribute('src')) ?? '').not.toMatch(
-      /^(?:https?:)?\/\//,
+  // Missing avatars are a neutral circle with the poi character cut out via a
+  // two-layer CSS mask, never images; fixture: 3 contributors + 3 supporters.
+  await expect(page.locator('#contributors img, #supporters img')).toHaveCount(
+    0,
+  )
+  const placeholderMasks = await page
+    .locator(
+      '#contributors [data-sprite-placeholder], #supporters [data-sprite-placeholder]',
     )
+    .evaluateAll((elements) =>
+      elements.map((element) => {
+        const style = getComputedStyle(element)
+        return (
+          style.getPropertyValue('mask-image') ||
+          style.getPropertyValue('-webkit-mask-image')
+        )
+      }),
+    )
+  expect(placeholderMasks).toHaveLength(6)
+  for (const mask of placeholderMasks) {
+    expect(mask).not.toBe('none')
+    expect(mask).toContain('poi-character-mask')
   }
   expect(
     await page
