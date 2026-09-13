@@ -78,7 +78,9 @@ The plugins page server-renders the official catalog from
 `poooi/poi/master/assets/data/plugin.json` through the same public-document cache
 as the release sources. Names and descriptions are localized per field with an
 English fallback, Markdown descriptions are sanitized before rendering, and each
-entry links to its real npm package and author page.
+entry links to its real npm package and author page. Plugin icons render the
+catalog's Font Awesome class directly through Font Awesome 7's packaged CSS and
+official v4 shims, matching poi without a per-plugin icon map.
 
 A GET search form filters by package id, name, description or author and works
 without JavaScript; the same filter is keyboard accessible. The directory is a
