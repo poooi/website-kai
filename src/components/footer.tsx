@@ -7,9 +7,10 @@ import {
   SiTelegram,
   SiX,
 } from '@icons-pack/react-simple-icons'
+import { Link } from '@tanstack/react-router'
 
 import { m } from '~/paraglide/messages'
-import { getLocale, localizeHref, type Locale } from '~/paraglide/runtime'
+import { getLocale, type Locale } from '~/paraglide/runtime'
 
 interface FooterItem {
   url: string
@@ -59,12 +60,12 @@ export const Footer = () => {
   const language = getLocale()
   return (
     <footer className="mx-[2.7%] flex min-h-[62px] items-center justify-between gap-5 border-t border-border py-4 text-sm/normal text-muted-foreground max-[700px]:mx-[6%] max-[700px]:flex-wrap max-[700px]:gap-3 max-[700px]:text-xs/normal">
-      <a
+      <Link
         className="shrink-0 hover:underline hover:underline-offset-[5px]"
-        href={localizeHref('/credits')}
+        to="/credits"
       >
         © {new Date().getFullYear()} poi Contributors
-      </a>
+      </Link>
       <div className="flex flex-wrap items-center gap-6 max-[700px]:gap-4">
         {footerItems
           .filter(({ applyLocales, skipLocales }) => {

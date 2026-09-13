@@ -7,6 +7,9 @@ export function getRouter() {
   return createRouter({
     routeTree,
     defaultPreload: 'intent',
+    defaultPreloadDelay: 120,
+    defaultPreloadStaleTime: 5 * 60_000,
+    defaultPreloadGcTime: 10 * 60_000,
     scrollRestoration: true,
     rewrite: {
       input: ({ url }) => deLocalizeUrl(url),

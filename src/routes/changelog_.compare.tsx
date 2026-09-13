@@ -82,9 +82,14 @@ function ComparePage() {
       {!available ? (
         <p role="alert">
           {m.releaseRangeUnavailable()}{' '}
-          <a href={localizeHref('/changelog/compare')} className="underline">
+          <Link
+            reloadDocument
+            preload={false}
+            to="/changelog/compare"
+            className="underline"
+          >
             {m.reload()}
-          </a>
+          </Link>
         </p>
       ) : (
         <>

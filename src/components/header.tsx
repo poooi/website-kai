@@ -13,17 +13,30 @@ import { ChevronDown } from 'lucide-react'
 import { LanguageChooser } from '~/components/language-chooser'
 import { ThemeChooser } from '~/components/theme-chooser'
 import { useI18nPathname } from '~/hooks/use-i18n-pathname'
-import { getLocale, localizeHref } from '~/paraglide/runtime'
+import { localizeHref } from '~/paraglide/runtime'
 import { m } from '~/paraglide/messages'
 
-export interface HeaderLinkProps extends ComponentPropsWithoutRef<'a'> {
-  href: string
+const navigationEntries = [
+  { path: '/explore', label: m.explore },
+  { path: '/plugins', label: m.plugins },
+  { path: '/download', label: m.download },
+  { path: '/changelog', label: m.changelog },
+  { path: '/credits', label: m.credits },
+] as const
+
+export type HeaderPath = '/' | (typeof navigationEntries)[number]['path']
+
+export interface HeaderLinkProps extends Omit<
+  ComponentPropsWithoutRef<'a'>,
+  'href'
+> {
+  href: HeaderPath
 }
 
 const AnchorLink = forwardRef<HTMLAnchorElement, HeaderLinkProps>(
-  ({ children, ...props }, ref) => {
+  ({ children, href, ...props }, ref) => {
     return (
-      <a ref={ref} {...props}>
+      <a ref={ref} href={localizeHref(href)} {...props}>
         {children}
       </a>
     )
@@ -37,18 +50,9 @@ interface HeaderProps {
 
 export const Header = ({ LinkComponent = AnchorLink }: HeaderProps) => {
   const pathname = useI18nPathname()
-  const locale = getLocale()
   const headerRef = useRef<HTMLElement>(null)
   const mobileNavRef = useRef<HTMLDetailsElement>(null)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
-
-  const links = [
-    { path: '/explore', label: m.explore() },
-    { path: '/plugins', label: m.plugins() },
-    { path: '/download', label: m.download() },
-    { path: '/changelog', label: m.changelog() },
-    { path: '/credits', label: m.credits() },
-  ]
 
   useEffect(() => {
     const header = headerRef.current
@@ -80,7 +84,7 @@ export const Header = ({ LinkComponent = AnchorLink }: HeaderProps) => {
     >
       <div className="mx-[2.7%] grid min-h-[72px] grid-cols-[auto_1fr_auto] items-center gap-x-8 border-b px-[2.2%] font-semibold max-[1099px]:grid-cols-[auto_1fr] max-[1099px]:gap-y-1 max-[1099px]:pt-3 max-[700px]:mx-[6%] max-[700px]:px-0">
         <LinkComponent
-          href={localizeHref('/', { locale })}
+          href="/"
           aria-label={m.returnToHomepage()}
           aria-current={pathname === '/' ? 'page' : undefined}
           className="inline-flex w-fit items-center py-2 transition-colors hover:text-navigation"
@@ -88,14 +92,14 @@ export const Header = ({ LinkComponent = AnchorLink }: HeaderProps) => {
           <span className="text-2xl font-bold tracking-tight">poi</span>
         </LinkComponent>
         <nav className="hidden items-stretch gap-6 self-stretch min-[1100px]:flex">
-          {links.map(({ path, label }) => (
+          {navigationEntries.map(({ path, label }) => (
             <LinkComponent
               key={path}
-              href={localizeHref(path, { locale })}
+              href={path}
               aria-current={pathname === path ? 'page' : undefined}
               className="inline-flex items-center justify-center border-b-2 border-transparent px-1 py-4 text-sm text-muted-foreground transition-colors hover:text-foreground aria-[current=page]:border-navigation aria-[current=page]:text-navigation"
             >
-              {label}
+              {label()}
             </LinkComponent>
           ))}
         </nav>
@@ -120,18 +124,18 @@ export const Header = ({ LinkComponent = AnchorLink }: HeaderProps) => {
           </summary>
           <nav className="pb-3">
             <ul className="grid grid-cols-1">
-              {links.map(({ path, label }) => (
+              {navigationEntries.map(({ path, label }) => (
                 <li
                   key={path}
                   className="border-b border-border/60 last:border-b-0"
                 >
                   <LinkComponent
-                    href={localizeHref(path, { locale })}
+                    href={path}
                     aria-current={pathname === path ? 'page' : undefined}
                     onClick={closeMobileNav}
                     className="flex items-center border-l-2 border-transparent py-3 pl-3 text-sm text-muted-foreground transition-colors hover:text-foreground aria-[current=page]:border-navigation aria-[current=page]:text-navigation"
                   >
-                    {label}
+                    {label()}
                   </LinkComponent>
                 </li>
               ))}

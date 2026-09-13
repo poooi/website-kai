@@ -1,13 +1,13 @@
 import {
   HeadContent,
+  Link,
   Scripts,
   createRootRoute,
-  useNavigate,
   useRouterState,
 } from '@tanstack/react-router'
 import { createServerOnlyFn } from '@tanstack/react-start'
 import { getRequestHeaders } from '@tanstack/react-start/server'
-import { forwardRef, useEffect, useState, type MouseEvent } from 'react'
+import { forwardRef, useEffect, useState } from 'react'
 
 import '~/styles/globals.css'
 import poiLogo from '~/assets/poi.svg?url'
@@ -41,32 +41,11 @@ const openGraphImageUrl = `${siteUrl}/opengraph-image`
 const twitterImageUrl = `${siteUrl}/twitter-image`
 
 const HeaderLink = forwardRef<HTMLAnchorElement, HeaderLinkProps>(
-  ({ href, children, onClick, target, ...props }, ref) => {
-    const navigate = useNavigate()
-    const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
-      onClick?.(event)
-      if (
-        event.defaultPrevented ||
-        event.button !== 0 ||
-        target === '_blank' ||
-        event.metaKey ||
-        event.altKey ||
-        event.ctrlKey ||
-        event.shiftKey
-      ) {
-        return
-      }
-
-      event.preventDefault()
-      void navigate({ to: href })
-    }
-
-    return (
-      <a ref={ref} href={href} target={target} onClick={handleClick} {...props}>
-        {children}
-      </a>
-    )
-  },
+  ({ href, children, ...props }, ref) => (
+    <Link to={href} ref={ref} activeOptions={{ exact: true }} {...props}>
+      {children}
+    </Link>
+  ),
 )
 HeaderLink.displayName = 'HeaderLink'
 

@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { ArrowUpRight } from 'lucide-react'
 import { z } from 'zod'
@@ -52,9 +52,14 @@ function PluginsPage() {
       {!available ? (
         <p role="alert" className="leading-8">
           {m.pluginsLoadError()}{' '}
-          <a href={localizeHref('/plugins')} className="text-link">
+          <Link
+            reloadDocument
+            preload={false}
+            to="/plugins"
+            className="text-link"
+          >
             {m.reload()}
-          </a>
+          </Link>
         </p>
       ) : (
         <>
@@ -101,9 +106,14 @@ function PluginsPage() {
               {m.pluginsCount({ count: results.length, total: plugins.length })}
             </p>
             {q && (
-              <a href={localizeHref('/plugins')} className="text-link text-sm">
+              <Link
+                to="/plugins"
+                search={{}}
+                resetScroll={false}
+                className="text-link text-sm"
+              >
                 {m.pluginsClearSearch()}
-              </a>
+              </Link>
             )}
           </div>
           {results.length === 0 ? (

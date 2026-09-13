@@ -11,6 +11,8 @@ import { m } from '~/paraglide/messages'
 
 export const Route = createFileRoute('/download')({
   loader: () => loadRequestAwarePageData(),
+  staleTime: 60_000,
+  preloadStaleTime: 60_000,
   head: () => ({
     meta: [{ title: `poi | ${m.kanColleBrowser()} | ${m.download()}` }],
   }),
