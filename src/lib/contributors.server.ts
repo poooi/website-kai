@@ -186,7 +186,12 @@ export async function fetchSupporters({
       }
     }
     return { supporters: selectSupporters(entries), available: true }
-  } catch {
+  } catch (error) {
+    console.warn(
+      `Open Collective supporters unavailable: ${
+        error instanceof Error ? error.message : 'unknown error'
+      }`,
+    )
     return { supporters: [], available: false }
   }
 }
