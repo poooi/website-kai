@@ -27,11 +27,11 @@ The E2E runner builds with fixed release versions before starting preview.
 The changelog page combines the current stable Markdown in `poooi/poi-release`
 with its permanent `history/stable.json` archive. Current notes take precedence
 for overlapping versions. Archived entries fall back to English individually
-when a translation is unavailable, and show their original or reconstructed
-source. Beta and special compatibility builds are excluded from this history.
+when a translation is unavailable, and link version headings directly to their GitHub Release.
+Original sources and reconstruction metadata remain in the archive. Beta and special compatibility builds are excluded from this history.
 Historical beta announcements are combined into stable notes in the archive.
 Recovered Weibo images and plugin updates remain in `poi-release`; this page
-renders only the main application notes, with links to their original sources.
+renders only the main application notes, with version links to GitHub Releases.
 
 Archive maintenance and reconstruction instructions live in
 [`poi-release/history/README.md`](https://github.com/poooi/poi-release/blob/main/history/README.md).
@@ -39,13 +39,15 @@ Publish the archive there before deploying this consumer. If either upstream is
 unavailable, the page still renders the notes it could load and provides a retry
 link.
 
-The history page opens on the latest publication year. Its year selector and
-version directory link to individual notes on a timeline; `?year=all` shows the
-full archive and `?year=undated` keeps versions with unknown dates accessible.
+The history page shows a continuous timeline with a sticky version directory,
+grouped by publication year. Scrolling highlights the current version and opens
+its year group; anchor links work without JavaScript. The directory collapses
+into a disclosure on mobile and has no internal scrollbars. v10.2.1 uses its
+annotated tag timestamp from the archive.
 `/changelog/compare?from=v6.0.1&to=v6.1.3` summarizes the upgrade range, including
 the newer endpoint and excluding the older one. Reversed selections are
 normalized. Comparison requires the archive to be available so an incomplete
-range is never presented as complete. Both year navigation and the comparison
+range is never presented as complete. Both directory links and the comparison
 form work without JavaScript.
 
 Public release source documents use the Cloudflare Workers Cache API (no KV

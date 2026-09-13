@@ -1,6 +1,5 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
-  "downloadIntro": "选择你的操作系统和安装包，下载 poi。",
   "downloadPackage": "架构与安装包",
   "selectDownloadPlatform": "选择操作系统和安装包后，即可查看对应的下载版本。",
   "harbourIntro": "可扩展的《舰队 Collection》",
@@ -54,11 +53,7 @@
   "x": "X",
   "changelogPartialError": "部分更新日志暂时无法加载，以下显示已取得的历史记录。",
   "reconstructedReleaseNotes": "根据版本间变更重建",
-  "releaseHistoryIntro": "从最早的 poi 到今天，按年回看每次更新。",
   "releaseCompare": "比较版本",
-  "releaseCompareIntro": "选择正在使用的版本和准备升级的版本，查看两者之间的全部更新。",
-  "releaseYears": "发布年份",
-  "releaseAll": "全部版本",
   "releaseUndated": "日期未记录",
   "releaseVersions": "版本目录",
   "releaseCount": "{count} 个正式版",
@@ -68,9 +63,7 @@
   "releaseRangeHint": "包含较新版本，不包含较早版本；自动按较早到较新版本排列。",
   "releaseSame": "两个版本相同，没有新增更新记录。",
   "releaseInvalid": "请选择归档中存在的两个版本。",
-  "releaseEmpty": "这一年没有发布记录。",
   "releaseBack": "返回更新日志",
-  "releaseClear": "查看全部版本",
   "releaseMissingDate": "此版本没有可靠的发布日期。",
   "releaseRangeUnavailable": "历史日志暂时不可用，无法确认完整的升级范围。"
 }

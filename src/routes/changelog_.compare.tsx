@@ -41,9 +41,7 @@ function ComparePage() {
       >
         ← {m.releaseBack()}
       </a>
-      <PageHeader title={m.releaseCompare()}>
-        <p>{m.releaseCompareIntro()}</p>
-      </PageHeader>
+      <PageHeader title={m.releaseCompare()} />
       <form
         method="get"
         action={localizeHref('/changelog/compare')}

@@ -1,12 +1,12 @@
 import { expect, test } from '@playwright/test'
 
-test('renders stable release history and source links without JavaScript', async ({
+test('renders stable release history and GitHub Release links without JavaScript', async ({
   browser,
 }) => {
   const context = await browser.newContext({ javaScriptEnabled: false })
   try {
     const page = await context.newPage()
-    await page.goto('http://127.0.0.1:3002/en/changelog?year=all')
+    await page.goto('http://127.0.0.1:3002/en/changelog')
     await expect(
       page.getByRole('heading', { level: 2, name: /^POI v12\.0\.1\b/ }),
     ).toHaveCount(1)
@@ -42,11 +42,20 @@ test('renders stable release history and source links without JavaScript', async
     )
     await expect(recovered.getByRole('link')).toHaveAttribute(
       'href',
-      /^https:\/\/github\.com\/poooi\/website\/blob\/[a-f0-9]{40}\//,
+      'https://github.com/poooi/poi/releases/tag/v10.6.0',
     )
     await expect(recovered).not.toContainText(
       'Reconstructed from version changes',
     )
+    await expect(page.getByRole('main')).toHaveCSS('opacity', '1')
+    const directory = page.getByRole('navigation', {
+      name: 'Version navigation',
+    })
+    await directory.locator('summary').filter({ hasText: '2016' }).click()
+    await directory.getByRole('link', { name: 'v6.1.3', exact: true }).click()
+    await expect(
+      page.getByRole('heading', { name: 'POI v6.1.3', exact: true }),
+    ).toBeInViewport()
   } finally {
     await context.close()
   }
@@ -55,7 +64,7 @@ test('renders stable release history and source links without JavaScript', async
 test('renders recovered and newly translated Chinese history', async ({
   page,
 }) => {
-  await page.goto('/zh-Hans/changelog?year=all')
+  await page.goto('/zh-Hans/changelog')
   const recovered = page.getByRole('region', {
     name: 'POI v6.0.0',
     exact: true,
@@ -65,8 +74,8 @@ test('renders recovered and newly translated Chinese history', async ({
   await expect(recovered).not.toContainText('kcwiki 语音字幕')
   await expect(recovered.locator('.prose')).toHaveAttribute('lang', 'zh-CN')
   await expect(
-    recovered.getByRole('link', { name: '原始发布日志' }),
-  ).toHaveAttribute('href', 'https://m.weibo.cn/detail/3955412493460287')
+    recovered.getByRole('link', { name: 'POI v6.0.0', exact: true }),
+  ).toHaveAttribute('href', 'https://github.com/poooi/poi/releases/tag/v6.0.0')
   const applicationNotes = page.getByRole('region', {
     name: 'POI v7.4.0',
     exact: true,
@@ -91,7 +100,7 @@ test('renders recovered and newly translated Chinese history', async ({
   )
   await expect(oldServerNotes.getByRole('link')).toHaveAttribute(
     'href',
-    /^https:\/\/github\.com\/poooi\/poi-server\/blob\/[a-f0-9]{40}\//,
+    'https://github.com/poooi/poi/releases/tag/v7.7.0',
   )
   await page.setViewportSize({ width: 390, height: 844 })
   expect(
@@ -113,7 +122,7 @@ for (const [locale, language, historyText, pluginName] of [
       .addCookies([
         { name: 'NEXT_LOCALE', value: locale, url: 'http://127.0.0.1:3002' },
       ])
-    await page.goto(`/${locale}/changelog?year=all`)
+    await page.goto(`/${locale}/changelog`)
     const recovered = page.getByRole('region', {
       name: 'POI v6.0.0',
       exact: true,
@@ -129,7 +138,7 @@ for (const [locale, language, historyText, pluginName] of [
     await expect(first).toBeVisible()
     await expect(recovered.getByRole('link')).toHaveAttribute(
       'href',
-      'https://m.weibo.cn/detail/3955412493460287',
+      'https://github.com/poooi/poi/releases/tag/v6.0.0',
     )
     await page.setViewportSize({ width: 390, height: 844 })
     expect(
@@ -140,46 +149,69 @@ for (const [locale, language, historyText, pluginName] of [
   })
 }
 
-test('navigates by year and version and keeps undated releases accessible', async ({
+test('groups versions by year and synchronizes navigation with scrolling', async ({
   page,
 }) => {
   await page.goto('/zh-Hans/changelog')
-  await expect(
-    page.getByRole('region', { name: 'POI v12.0.1', exact: true }),
-  ).toBeVisible()
-  await expect(
-    page.getByRole('region', { name: 'POI v6.1.3', exact: true }),
-  ).toHaveCount(0)
-  await page
-    .getByRole('navigation', { name: '发布年份' })
-    .getByRole('link', { name: /2016/ })
-    .click()
-  await expect(page).toHaveURL(/year=2016/)
-  await page
-    .getByRole('navigation', { name: '版本目录' })
-    .getByRole('link', { name: 'v6.1.3', exact: true })
-    .click()
+  const directory = page.getByRole('navigation', { name: '版本目录' })
+  await expect(page.getByRole('main').getByRole('region')).toHaveCount(79)
+  await expect(page.getByRole('main')).toHaveCSS('opacity', '1')
+  await directory.locator('summary').filter({ hasText: '2016' }).click()
+  const versionLink = directory.getByRole('link', {
+    name: 'v6.1.3',
+    exact: true,
+  })
+  await versionLink.click()
   await expect(page).toHaveURL(/#release-v6\.1\.3$/)
   await expect(
     page.getByRole('heading', { name: 'POI v6.1.3', exact: true }),
   ).toBeInViewport()
-  await page.evaluate(() => window.scrollTo(0, 0))
+  await expect(versionLink).toHaveAttribute('aria-current', 'location')
+  const tagged = page.getByRole('region', { name: 'POI v10.2.1', exact: true })
+  await tagged
+    .getByRole('heading')
+    .evaluate((element) => element.scrollIntoView())
+  await expect(
+    directory.getByRole('link', { name: 'v10.2.1', exact: true }),
+  ).toHaveAttribute('aria-current', 'location')
+  await expect(
+    directory
+      .locator('details')
+      .filter({ has: page.locator('summary').filter({ hasText: '2019' }) }),
+  ).toHaveAttribute('open', '')
+  await expect(tagged).toContainText('更新内容与 v10.2.2 相同')
+  await expect(tagged.locator('time')).toHaveAttribute(
+    'datetime',
+    '2019-02-10T18:07:39Z',
+  )
   await page.screenshot({
     path: 'artifacts/changelog-timeline-desktop.png',
     animations: 'disabled',
   })
-  await page
-    .getByRole('navigation', { name: '发布年份' })
-    .getByRole('link', { name: /日期未记录/ })
-    .click()
-  const missing = page.getByRole('region', { name: 'POI v10.2.1', exact: true })
-  await expect(missing).toContainText('更新内容与 v10.2.2 相同')
-  await expect(missing.locator('time')).toHaveCount(0)
+  expect(
+    await directory.evaluate(
+      (nav) =>
+        nav.scrollHeight === nav.clientHeight &&
+        nav.scrollWidth === nav.clientWidth,
+    ),
+  ).toBe(true)
   await page.setViewportSize({ width: 390, height: 844 })
+  await page.evaluate(() => window.scrollTo(0, 0))
+  await page.locator('details[data-mobile-directory] > summary').click()
+  const mobileDirectory = page.getByRole('navigation', { name: '版本目录' })
+  await mobileDirectory.locator('summary').filter({ hasText: '2016' }).click()
+  await mobileDirectory
+    .getByRole('link', { name: 'v6.1.3', exact: true })
+    .click()
+  await expect(
+    page.locator('details[data-mobile-directory]'),
+  ).not.toHaveAttribute('open', '')
+  await expect(
+    page.getByRole('heading', { name: 'POI v6.1.3', exact: true }),
+  ).toBeInViewport()
   await page.screenshot({
     path: 'artifacts/changelog-timeline-mobile.png',
     animations: 'disabled',
-    fullPage: true,
   })
   expect(
     await page.evaluate(

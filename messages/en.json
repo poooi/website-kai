@@ -1,6 +1,5 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
-  "downloadIntro": "Choose your operating system and package to download poi.",
   "downloadPackage": "Architecture & package",
   "selectDownloadPlatform": "Choose an operating system and package to see the available download.",
   "harbourIntro": "An extensible KanColle",
@@ -54,11 +53,7 @@
   "x": "X",
   "changelogPartialError": "Some release notes could not be loaded. The available history is shown below.",
   "reconstructedReleaseNotes": "Reconstructed from version changes",
-  "releaseHistoryIntro": "Follow poi's development, one release at a time.",
   "releaseCompare": "Compare versions",
-  "releaseCompareIntro": "Choose your current version and the version you want to upgrade to. See every release in between.",
-  "releaseYears": "Release years",
-  "releaseAll": "All versions",
   "releaseUndated": "Date not recorded",
   "releaseVersions": "Version navigation",
   "releaseCount": "{count} stable releases",
@@ -68,9 +63,7 @@
   "releaseRangeHint": "Includes the newer version and excludes the older one. Versions are ordered from older to newer automatically.",
   "releaseSame": "These are the same version. There are no additional release notes.",
   "releaseInvalid": "Choose two versions that exist in the archive.",
-  "releaseEmpty": "There are no releases for this year.",
   "releaseBack": "Back to changelog",
-  "releaseClear": "View all versions",
   "releaseMissingDate": "No reliable publication date is available for this version.",
   "releaseRangeUnavailable": "The release archive is unavailable. The complete upgrade range cannot be determined."
 }

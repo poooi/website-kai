@@ -1,6 +1,5 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
-  "downloadIntro": "選擇你的作業系統和安裝套件，下載 poi。",
   "downloadPackage": "架構與安裝套件",
   "selectDownloadPlatform": "選擇作業系統和安裝套件後，即可查看對應的下載版本。",
   "harbourIntro": "可擴充的《艦隊 Collection》",
@@ -54,11 +53,7 @@
   "x": "X",
   "changelogPartialError": "部分更新日誌暫時無法載入，以下顯示已取得的歷史紀錄。",
   "reconstructedReleaseNotes": "根據版本間變更重建",
-  "releaseHistoryIntro": "從最早的 poi 到今天，按年回看每次更新。",
   "releaseCompare": "比較版本",
-  "releaseCompareIntro": "選擇正在使用的版本和準備升級的版本，檢視兩者之間的全部更新。",
-  "releaseYears": "釋出年份",
-  "releaseAll": "全部版本",
   "releaseUndated": "日期未記錄",
   "releaseVersions": "版本目錄",
   "releaseCount": "{count} 個正式版",
@@ -68,9 +63,7 @@
   "releaseRangeHint": "包含較新版本，不包含較早版本；自動按較早到較新版本排列。",
   "releaseSame": "兩個版本相同，沒有新增更新記錄。",
   "releaseInvalid": "請選擇歸檔中存在的兩個版本。",
-  "releaseEmpty": "這一年沒有釋出記錄。",
   "releaseBack": "返回更新日誌",
-  "releaseClear": "檢視全部版本",
   "releaseMissingDate": "此版本沒有可靠的釋出日期。",
   "releaseRangeUnavailable": "歷史日誌暫時不可用，無法確認完整的升級範圍。"
 }

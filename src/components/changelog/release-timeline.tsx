@@ -2,6 +2,7 @@ import { PageProse } from '~/components/page-prose'
 import { type ReleaseEntry } from '~/lib/release-range'
 import { m } from '~/paraglide/messages'
 import { getLocale } from '~/paraglide/runtime'
+import { ArrowUpRight } from 'lucide-react'
 
 export function ReleaseTimeline({ entries }: { entries: ReleaseEntry[] }) {
   return (
@@ -30,22 +31,22 @@ export function ReleaseTimeline({ entries }: { entries: ReleaseEntry[] }) {
               id={`release-${entry.version}`}
               className="scroll-mt-24 font-mono text-2xl font-medium tracking-tight sm:text-3xl"
             >
-              POI {entry.version}
-            </h2>
-            <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
               <a
-                className="underline underline-offset-4 hover:text-[var(--harbour-teal)]"
-                href={entry.source}
+                href={`https://github.com/poooi/poi/releases/tag/${entry.version}`}
+                className="inline-flex items-center gap-2 hover:text-[var(--harbour-teal)]"
               >
-                {entry.reconstructed
-                  ? m.reconstructedReleaseNotes()
-                  : m.releaseNoteSource()}{' '}
-                ↗
+                POI {entry.version}
+                <ArrowUpRight
+                  className="h-4 w-4 text-muted-foreground"
+                  aria-hidden="true"
+                />
               </a>
-              {entry.language === 'en-US' && getLocale() !== 'en' && (
-                <span lang="en">English</span>
-              )}
-            </p>
+            </h2>
+            {entry.language === 'en-US' && getLocale() !== 'en' && (
+              <p className="mt-3 text-xs text-muted-foreground" lang="en">
+                English
+              </p>
+            )}
           </header>
           <PageProse
             lang={entry.language}

@@ -1,6 +1,5 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
-  "downloadIntro": "Choisissez votre système et votre paquet pour télécharger poi.",
   "downloadPackage": "Architecture et paquet",
   "selectDownloadPlatform": "Choisissez un système et un paquet pour afficher le téléchargement disponible.",
   "harbourIntro": "Un navigateur et des outils",
@@ -54,11 +53,7 @@
   "x": "X",
   "changelogPartialError": "Certaines notes de version n’ont pas pu être chargées. L’historique disponible est affiché ci-dessous.",
   "reconstructedReleaseNotes": "Reconstitué à partir des changements de version",
-  "releaseHistoryIntro": "Suivez le développement de poi, version après version.",
   "releaseCompare": "Comparer les versions",
-  "releaseCompareIntro": "Choisissez votre version actuelle et la version cible, puis consultez toutes les versions intermédiaires.",
-  "releaseYears": "Années de publication",
-  "releaseAll": "Toutes les versions",
   "releaseUndated": "Date non renseignée",
   "releaseVersions": "Navigation des versions",
   "releaseCount": "{count} versions stables",
@@ -68,9 +63,7 @@
   "releaseRangeHint": "Inclut la version la plus récente et exclut la plus ancienne. Les versions sont classées automatiquement de la plus ancienne à la plus récente.",
   "releaseSame": "Il s’agit de la même version. Aucune note de version supplémentaire n’est disponible.",
   "releaseInvalid": "Choisissez deux versions présentes dans l’archive.",
-  "releaseEmpty": "Aucune version n’a été publiée cette année.",
   "releaseBack": "Retour au journal des modifications",
-  "releaseClear": "Voir toutes les versions",
   "releaseMissingDate": "Aucune date de publication fiable n’est disponible pour cette version.",
   "releaseRangeUnavailable": "L’archive des versions est indisponible. La plage de mise à niveau complète ne peut pas être déterminée."
 }

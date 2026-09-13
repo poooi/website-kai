@@ -22,9 +22,7 @@ function DownloadPage() {
   const data = Route.useLoaderData()
   return (
     <Transition className="w-full">
-      <PageHeader title={m.download()}>
-        {!data.platform.isMobile && <p>{m.downloadIntro()}</p>}
-      </PageHeader>
+      <PageHeader title={m.download()} />
       {data.platform.isMobile ? (
         <p className="mb-10 border-l-2 border-[var(--harbour-teal)] pl-5 leading-relaxed text-muted-foreground">
           {m.mobileHint()}
