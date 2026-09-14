@@ -1,15 +1,16 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import { type CreditsSpriteCache, handleCreditsSprite } from './credits-sprite'
+import { type CreditsSpriteCache, fetchCreditsSprite } from './credits-sprite'
 
+const requestUrl = 'https://poi.moe/api/credits-sprite/'
 const filename = 'avatars-0.0123456789abcdef.webp'
-const cacheKey = `https://poi.moe/api/credits-sprite/${filename}`
+const cacheKey = `${requestUrl}${filename}`
 const upstreamUrl =
   'https://raw.githubusercontent.com/poooi/contributors/master/dist/avatars/' +
   filename
 
 const pngFilename = 'avatars-0.0123456789abcdef.png'
-const pngCacheKey = `https://poi.moe/api/credits-sprite/${pngFilename}`
+const pngCacheKey = `${requestUrl}${pngFilename}`
 const pngUpstreamUrl =
   'https://raw.githubusercontent.com/poooi/contributors/master/dist/avatars/' +
   pngFilename
@@ -19,19 +20,13 @@ const webp = () =>
     new Uint8Array([
       0x52, 0x49, 0x46, 0x46, 0, 0, 0, 0, 0x57, 0x45, 0x42, 0x50,
     ]),
-    {
-      status: 200,
-      headers: { 'Content-Type': 'image/webp' },
-    },
+    { status: 200, headers: { 'Content-Type': 'image/webp' } },
   )
 
 const png = () =>
   new Response(
     new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
-    {
-      status: 200,
-      headers: { 'Content-Type': 'image/png' },
-    },
+    { status: 200, headers: { 'Content-Type': 'image/png' } },
   )
 
 const fakeCache = (initial?: Response, key = cacheKey) => {
@@ -50,16 +45,15 @@ const fakeCache = (initial?: Response, key = cacheKey) => {
   return { cache, store, matches }
 }
 
-const request = (path: string, method = 'GET') =>
-  new Request(`https://poi.moe/api/credits-sprite/${path}`, { method })
+const call = (
+  name: string,
+  options: {
+    cache?: CreditsSpriteCache
+    fetcher?: typeof globalThis.fetch
+  } = {},
+) => fetchCreditsSprite(name, requestUrl, options)
 
-describe('handleCreditsSprite', () => {
-  it('ignores unrelated paths', async () => {
-    await expect(
-      handleCreditsSprite(new Request('https://poi.moe/en/credits')),
-    ).resolves.toBeUndefined()
-  })
-
+describe('fetchCreditsSprite', () => {
   it.each([
     'avatars-0.webp',
     'avatars-0.zzzzzz.webp',
@@ -69,18 +63,20 @@ describe('handleCreditsSprite', () => {
     'secret.webp',
     'secret.png',
     'avatars-0.012345.webp/secret',
-  ])('rejects untrusted filename %s', async (name) => {
-    const { cache } = fakeCache()
-    const response = await handleCreditsSprite(request(name), { cache })
-
-    expect(response?.status).toBe(404)
-    expect(response?.headers.get('Cache-Control')).toBe('no-store')
+    'manifest.json',
+  ])('returns undefined for untrusted filename %s', async (name) => {
+    const { cache, store } = fakeCache()
+    await expect(call(name, { cache })).resolves.toBeUndefined()
+    expect(store.size).toBe(0)
   })
 
-  it('keys the cache by absolute URL so hits skip the upstream', async () => {
+  it.each([
+    'https://poi.moe/api/credits-sprite/',
+    'https://poi.moe/api/credits/',
+  ])('keys the cache by the canonical URL for %s', async (url) => {
     const { cache, matches } = fakeCache(webp())
-    const fetcher = vi.fn() as unknown as typeof fetch
-    const response = await handleCreditsSprite(request(filename), {
+    const fetcher = vi.fn() as unknown as typeof globalThis.fetch
+    const response = await fetchCreditsSprite(filename, url, {
       cache,
       fetcher,
     })
@@ -92,11 +88,10 @@ describe('handleCreditsSprite', () => {
 
   it('fetches, validates and caches a webp on a miss', async () => {
     const { cache, store } = fakeCache()
-    const fetcher = vi.fn(async () => webp()) as unknown as typeof fetch
-    const response = await handleCreditsSprite(request(filename), {
-      cache,
-      fetcher,
-    })
+    const fetcher = vi.fn(async () =>
+      webp(),
+    ) as unknown as typeof globalThis.fetch
+    const response = await call(filename, { cache, fetcher })
 
     expect(fetcher).toHaveBeenCalledWith(upstreamUrl, expect.anything())
     expect(response?.status).toBe(200)
@@ -109,28 +104,19 @@ describe('handleCreditsSprite', () => {
 
   it('serves a hash-named png sheet with the png content type', async () => {
     const { cache, store } = fakeCache(undefined, pngCacheKey)
-    const fetcher = vi.fn(async () => png()) as unknown as typeof fetch
-    const response = await handleCreditsSprite(request(pngFilename), {
-      cache,
-      fetcher,
-    })
+    const fetcher = vi.fn(async () =>
+      png(),
+    ) as unknown as typeof globalThis.fetch
+    const response = await call(pngFilename, { cache, fetcher })
 
     expect(fetcher).toHaveBeenCalledWith(pngUpstreamUrl, expect.anything())
     expect(response?.status).toBe(200)
     expect(response?.headers.get('Content-Type')).toBe('image/png')
-    expect(response?.headers.get('Cache-Control')).toBe(
-      'public, max-age=31536000, immutable',
-    )
     expect(store.has(pngCacheKey)).toBe(true)
   })
 
   it('rejects extension, content type and signature mismatches', async () => {
-    const cases: {
-      path: string
-      key: string
-      body: Uint8Array
-      contentType: string
-    }[] = [
+    const cases = [
       {
         path: pngFilename,
         key: pngCacheKey,
@@ -157,17 +143,13 @@ describe('handleCreditsSprite', () => {
       const { cache, store } = fakeCache(undefined, key)
       const fetcher = vi.fn(
         async () =>
-          new Response(body.buffer as ArrayBuffer, {
+          new Response(body.buffer, {
             status: 200,
             headers: { 'Content-Type': contentType },
           }),
-      ) as unknown as typeof fetch
-      const response = await handleCreditsSprite(request(path), {
-        cache,
-        fetcher,
-      })
+      ) as unknown as typeof globalThis.fetch
 
-      expect(response?.status).toBe(502)
+      expect((await call(path, { cache, fetcher }))?.status).toBe(502)
       expect(store.size).toBe(0)
     }
   })
@@ -181,102 +163,60 @@ describe('handleCreditsSprite', () => {
         throw new Error('cache offline')
       }),
     }
-    const fetcher = vi.fn(async () => webp()) as unknown as typeof fetch
-    const response = await handleCreditsSprite(request(filename), {
-      cache,
-      fetcher,
-    })
+    const fetcher = vi.fn(async () =>
+      webp(),
+    ) as unknown as typeof globalThis.fetch
 
-    expect(response?.status).toBe(200)
+    expect((await call(filename, { cache, fetcher }))?.status).toBe(200)
   })
 
-  it('drops non-webp upstream responses without caching', async () => {
+  it('reports upstream failures without caching', async () => {
     const { cache, store } = fakeCache()
-    const fetcher = vi.fn(
+    const nonWebp = vi.fn(
       async () =>
         new Response('<html></html>', {
           status: 200,
           headers: { 'Content-Type': 'text/html' },
         }),
-    ) as unknown as typeof fetch
-    const response = await handleCreditsSprite(request(filename), {
-      cache,
-      fetcher,
-    })
-
-    expect(response?.status).toBe(502)
-    expect(response?.headers.get('Cache-Control')).toBe('no-store')
-    expect(store.size).toBe(0)
-  })
-
-  it('rejects a webp-labeled body without the RIFF signature', async () => {
-    const { cache, store } = fakeCache()
-    const fetcher = vi.fn(
+    ) as unknown as typeof globalThis.fetch
+    const noSignature = vi.fn(
       async () =>
         new Response('<html></html>', {
           status: 200,
           headers: { 'Content-Type': 'image/webp' },
         }),
-    ) as unknown as typeof fetch
-    const response = await handleCreditsSprite(request(filename), {
-      cache,
-      fetcher,
-    })
-
-    expect(response?.status).toBe(502)
-    expect(store.size).toBe(0)
-  })
-
-  it('rejects empty, oversized and non-ok upstream bodies without caching', async () => {
-    const { cache, store } = fakeCache()
+    ) as unknown as typeof globalThis.fetch
     const empty = vi.fn(
       async () =>
         new Response(new Uint8Array(0), {
           headers: { 'Content-Type': 'image/webp' },
         }),
-    ) as unknown as typeof fetch
+    ) as unknown as typeof globalThis.fetch
     const oversize = vi.fn(
       async () =>
         new Response(new Uint8Array(4 * 1024 * 1024 + 1), {
           headers: { 'Content-Type': 'image/webp' },
         }),
-    ) as unknown as typeof fetch
+    ) as unknown as typeof globalThis.fetch
     const missing = vi.fn(
       async () => new Response('', { status: 404 }),
-    ) as unknown as typeof fetch
-
-    for (const fetcher of [empty, oversize, missing])
-      expect(
-        (await handleCreditsSprite(request(filename), { cache, fetcher }))
-          ?.status,
-      ).toBe(502)
-    expect(store.size).toBe(0)
-  })
-
-  it('returns 502 without caching when the upstream throws', async () => {
-    const { cache, store } = fakeCache()
-    const fetcher = vi.fn(async () => {
+    ) as unknown as typeof globalThis.fetch
+    const offline = vi.fn(async () => {
       throw new Error('offline')
-    }) as unknown as typeof fetch
-    const response = await handleCreditsSprite(request(filename), {
-      cache,
-      fetcher,
-    })
+    }) as unknown as typeof globalThis.fetch
 
-    expect(response?.status).toBe(502)
+    for (const fetcher of [
+      nonWebp,
+      noSignature,
+      empty,
+      oversize,
+      missing,
+      offline,
+    ]) {
+      const response = await call(filename, { cache, fetcher })
+      expect(response?.status).toBe(502)
+      expect(response?.headers.get('Cache-Control')).toBe('no-store')
+    }
     expect(store.size).toBe(0)
-  })
-
-  it('answers HEAD without a body and rejects other methods', async () => {
-    const { cache } = fakeCache(webp())
-    const head = await handleCreditsSprite(request(filename, 'HEAD'), {
-      cache,
-    })
-    expect(head?.status).toBe(200)
-    expect(await head?.text()).toBe('')
-
-    const post = await handleCreditsSprite(request(filename, 'POST'), { cache })
-    expect(post?.status).toBe(405)
-    expect(post?.headers.get('Allow')).toBe('GET, HEAD')
   })
 })

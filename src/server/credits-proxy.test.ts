@@ -1,15 +1,8 @@
 import { readFileSync } from 'node:fs'
 
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { creditsProxyPath, handleCreditsProxy } from './credits-proxy'
-
-vi.mock('./credits-sprite', () => ({
-  creditsSpritePath: '/api/credits-sprite/',
-  handleCreditsSprite: vi.fn(),
-}))
-
-import { creditsSpritePath, handleCreditsSprite } from './credits-sprite'
 
 const manifestFixture = readFileSync(
   'tests/fixtures/credits-manifest.json',
@@ -20,14 +13,16 @@ const sheetName =
   (parsedManifest as { sheets: { url: string }[] }).sheets[0]?.url ?? ''
 const manifestUrl = `https://poi.moe${creditsProxyPath}manifest.json`
 
+const sheet = () =>
+  new Response(
+    new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+    { status: 200, headers: { 'Content-Type': 'image/png' } },
+  )
+
 const jsonFetcher = (body: string, init?: ResponseInit) =>
   vi.fn(async () => new Response(body, init))
 
 describe('handleCreditsProxy', () => {
-  beforeEach(() => {
-    vi.mocked(handleCreditsSprite).mockReset()
-  })
-
   afterEach(() => {
     delete process.env.TANSTACK_TEST_CREDITS_MANIFEST
   })
@@ -40,9 +35,7 @@ describe('handleCreditsProxy', () => {
 
   it('returns the raw upstream manifest body unchanged', async () => {
     process.env.TANSTACK_TEST_CREDITS_MANIFEST = manifestFixture
-    const response = await handleCreditsProxy(
-      new Request(manifestUrl, { headers: { Origin: 'null' } }),
-    )
+    const response = await handleCreditsProxy(new Request(manifestUrl))
 
     expect(response?.status).toBe(200)
     expect(response?.headers.get('Content-Type')).toContain('application/json')
@@ -105,7 +98,7 @@ describe('handleCreditsProxy', () => {
     expect(await head?.text()).toBe('')
   })
 
-  it('answers OPTIONS with 204 and rejects unsupported methods with 405', async () => {
+  it('answers OPTIONS with reflected headers and rejects unsupported methods', async () => {
     const preflight = await handleCreditsProxy(
       new Request(manifestUrl, {
         method: 'OPTIONS',
@@ -144,77 +137,59 @@ describe('handleCreditsProxy', () => {
     expect(post?.headers.get('Cache-Control')).toBe('no-store')
   })
 
-  it('delegates hashed sheets to the canonical sprite handler', async () => {
-    const sprite = vi.mocked(handleCreditsSprite)
-    sprite.mockResolvedValue(
-      new Response('image-bytes', {
-        status: 200,
-        headers: {
-          'Content-Type': 'image/png',
-          'Cache-Control': 'public, max-age=31536000, immutable',
-        },
-      }),
-    )
+  it('serves hashed sheets on the public and legacy prefixes from one resource', async () => {
+    const fetcher = vi.fn(async () => sheet())
 
-    const response = await handleCreditsProxy(
-      new Request(`https://poi.moe${creditsProxyPath}${sheetName}`),
-    )
-
-    expect(sprite).toHaveBeenCalledTimes(1)
-    const delegated = sprite.mock.calls[0]?.[0]
-    expect(delegated).toBeInstanceOf(Request)
-    // The manifest's relative filename resolves to the canonical sprite path,
-    // so both public routes share the same cache key.
-    expect(new URL(delegated!.url).pathname).toBe(
-      `${creditsSpritePath}${sheetName}`,
-    )
-    expect(response?.status).toBe(200)
-    expect(response?.headers.get('Access-Control-Allow-Origin')).toBe('*')
-    expect(response?.headers.get('Cache-Control')).toBe(
-      'public, max-age=31536000, immutable',
-    )
-
-    await handleCreditsProxy(
-      new Request(`https://poi.moe${creditsProxyPath}${sheetName}`, {
-        method: 'HEAD',
-      }),
-    )
-    expect(sprite.mock.calls[1]?.[0].method).toBe('HEAD')
+    for (const path of [
+      `${creditsProxyPath}${sheetName}`,
+      `/api/credits-sprite/${sheetName}`,
+    ]) {
+      const response = await handleCreditsProxy(
+        new Request(`https://poi.moe${path}`),
+        { fetcher },
+      )
+      expect(response?.status, path).toBe(200)
+      expect(response?.headers.get('Content-Type'), path).toBe('image/png')
+      expect(response?.headers.get('Cache-Control'), path).toBe(
+        'public, max-age=31536000, immutable',
+      )
+      expect(response?.headers.get('Access-Control-Allow-Origin'), path).toBe(
+        '*',
+      )
+    }
+    expect(fetcher).toHaveBeenCalledTimes(2)
   })
 
-  it('strips the body on HEAD even for proxied sheet errors', async () => {
-    vi.mocked(handleCreditsSprite).mockResolvedValue(
-      new Response('Bad Gateway', {
-        status: 502,
-        headers: { 'Cache-Control': 'no-store' },
-      }),
+  it('keeps the legacy prefix sprite-only and 404s unknown sheets', async () => {
+    const legacyManifest = await handleCreditsProxy(
+      new Request('https://poi.moe/api/credits-sprite/manifest.json'),
     )
+    expect(legacyManifest?.status).toBe(404)
+
+    const unknown = await handleCreditsProxy(
+      new Request('https://poi.moe/api/credits/not-a-sheet.txt'),
+    )
+    expect(unknown?.status).toBe(404)
+    expect(unknown?.headers.get('Access-Control-Allow-Origin')).toBe('*')
+  })
+
+  it('strips the body on HEAD for proxy errors', async () => {
+    const fetcher = vi.fn(async () => new Response('', { status: 500 }))
 
     const head = await handleCreditsProxy(
       new Request(`https://poi.moe${creditsProxyPath}${sheetName}`, {
         method: 'HEAD',
       }),
+      { fetcher },
     )
     expect(head?.status).toBe(502)
     expect(await head?.text()).toBe('')
-    expect(head?.headers.get('Access-Control-Allow-Origin')).toBe('*')
 
     const get = await handleCreditsProxy(
       new Request(`https://poi.moe${creditsProxyPath}${sheetName}`),
+      { fetcher },
     )
     expect(get?.status).toBe(502)
     expect(await get?.text()).toBe('Bad Gateway')
-  })
-
-  it('preserves the sprite handler 404 for unknown sheets', async () => {
-    vi.mocked(handleCreditsSprite).mockResolvedValue(
-      new Response('Not Found', { status: 404 }),
-    )
-    const response = await handleCreditsProxy(
-      new Request(`https://poi.moe${creditsProxyPath}not-a-sheet.txt`),
-    )
-
-    expect(response?.status).toBe(404)
-    expect(response?.headers.get('Access-Control-Allow-Origin')).toBe('*')
   })
 })

@@ -184,7 +184,8 @@ GitHub or the npm registry.
 returns the contributors manifest exactly as published by the contributors repo
 (`contributors` and `supporters` arrays, with bare relative `sheets[].url`
 filenames), so resolving a sheet URL against this endpoint keeps requests on
-`poi.moe`. Hashed sheets are served from `/api/credits/<filename>` with the same
+`poi.moe`. Hashed sheets are served from `/api/credits/<filename>`, and the
+previous `/api/credits-sprite/<filename>` path keeps working, both with the same
 immutable caching as the website. Both routes are CORS-open
 (`Access-Control-Allow-Origin: *`) for file-origin renderers and support `GET`,
 `HEAD` and `OPTIONS`; the manifest reuses the website public-document cache, and
