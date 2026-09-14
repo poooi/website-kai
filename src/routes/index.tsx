@@ -21,11 +21,12 @@ export const Route = createFileRoute('/')({
 function HomePage() {
   const data = Route.useLoaderData()
   const hasDirectDownload =
-    !data.platform.isMobile && data.stableTargets.includes(data.platform.target)
+    !data.platform.isMobile &&
+    data.supportedTargets.includes(data.platform.target)
   const hasBetaDownload =
     !data.platform.isMobile &&
     data.showBeta &&
-    data.betaTargets.includes(data.platform.target)
+    data.supportedTargets.includes(data.platform.target)
   return (
     <Transition
       variant="home"

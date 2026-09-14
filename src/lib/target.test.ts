@@ -2,8 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import {
   detectRequestPlatform,
-  detectTargetFromRequest,
-  isMobileDevice,
+  getDownloadLink,
   OS,
   parseUA,
   PlatformSpec,
@@ -19,7 +18,7 @@ const headersFor = (
     ...clientHints,
   })
 
-describe('detectTargetFromRequest', () => {
+describe('detectRequestPlatform', () => {
   it.each([
     {
       name: 'Windows x64 from reduced Chromium UA plus architecture hints',
@@ -138,13 +137,15 @@ describe('detectTargetFromRequest', () => {
   ])(
     'maps $name to the recommended download',
     async ({ headers, expected }) => {
-      await expect(detectTargetFromRequest(headers)).resolves.toEqual(expected)
+      await expect(detectRequestPlatform(headers)).resolves.toMatchObject(
+        expected,
+      )
     },
   )
 
   it('keeps Linux distro detection when generic Linux Client Hints are present', async () => {
     await expect(
-      detectTargetFromRequest(
+      detectRequestPlatform(
         headersFor(
           'Mozilla/5.0 (X11; Fedora; Linux x86_64) AppleWebKit/537.36',
           {
@@ -155,7 +156,7 @@ describe('detectTargetFromRequest', () => {
           },
         ),
       ),
-    ).resolves.toEqual({
+    ).resolves.toMatchObject({
       os: OS.linux,
       spec: PlatformSpec.X64RPM,
       target: Target.linuxRpm,
@@ -164,7 +165,7 @@ describe('detectTargetFromRequest', () => {
 
   it('falls back to the parsed UA architecture when x86 Client Hints omit bitness', async () => {
     await expect(
-      detectTargetFromRequest(
+      detectRequestPlatform(
         headersFor(
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ' +
             '(KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36',
@@ -175,7 +176,7 @@ describe('detectTargetFromRequest', () => {
           },
         ),
       ),
-    ).resolves.toEqual({
+    ).resolves.toMatchObject({
       os: OS.windows,
       spec: PlatformSpec.X64Setup,
       target: Target.win64Setup,
@@ -184,21 +185,21 @@ describe('detectTargetFromRequest', () => {
 
   it('falls back to the parsed UA architecture when arm Client Hints omit bitness', async () => {
     await expect(
-      detectTargetFromRequest(
+      detectRequestPlatform(
         headersFor('Mozilla/5.0 (X11; Linux aarch64) AppleWebKit/537.36', {
           'Sec-CH-UA-Arch': '"arm"',
           'Sec-CH-UA-Mobile': '?0',
           'Sec-CH-UA-Platform': '"Linux"',
         }),
       ),
-    ).resolves.toEqual({
+    ).resolves.toMatchObject({
       os: OS.linux,
       spec: PlatformSpec.ARMPortable,
       target: Target.linuxArm,
     })
   })
 
-  describe('isMobileDevice', () => {
+  describe('mobile detection', () => {
     it('classifies wearable user agents as mobile devices', async () => {
       const headers = headersFor(
         'Mozilla/5.0 (Linux; Android 13; Google Pixel Watch Build/TWD9.230205.001) ' +
@@ -208,10 +209,57 @@ describe('detectTargetFromRequest', () => {
       await expect(parseUA(headers)).resolves.toMatchObject({
         device: { type: 'wearable' },
       })
-      await expect(isMobileDevice(headers)).resolves.toBe(true)
       await expect(detectRequestPlatform(headers)).resolves.toMatchObject({
         isMobile: true,
       })
     })
+
+    it('honors the Sec-CH-UA-Mobile client hint', async () => {
+      await expect(
+        detectRequestPlatform(
+          headersFor('Mozilla/5.0 (Windows NT 10.0; Win64; x64)', {
+            'Sec-CH-UA-Mobile': '?1',
+          }),
+        ),
+      ).resolves.toMatchObject({ isMobile: true })
+
+      await expect(
+        detectRequestPlatform(
+          headersFor(
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) Mobile/15E148',
+            { 'Sec-CH-UA-Mobile': '?0' },
+          ),
+        ),
+      ).resolves.toMatchObject({ isMobile: false })
+    })
+  })
+})
+
+describe('getDownloadLink', () => {
+  it.each([undefined, '', 'v', 'nope', '1.2', '1.2.3.4', 'v10.9'])(
+    'falls back to the releases page for invalid version %s',
+    (version) => {
+      expect(getDownloadLink(version, Target.win64Setup)).toBe(
+        'https://github.com/poooi/poi/releases',
+      )
+    },
+  )
+
+  it('strips a single leading v', () => {
+    expect(getDownloadLink('v10.9.2', Target.win64Setup)).toBe(
+      '/dist/poi-setup-10.9.2.exe',
+    )
+  })
+
+  it('strips repeated leading v characters', () => {
+    expect(getDownloadLink('vv10.9.2', Target.win64Setup)).toBe(
+      '/dist/poi-setup-10.9.2.exe',
+    )
+  })
+
+  it('keeps beta prerelease versions', () => {
+    expect(getDownloadLink('v10.10.0-beta.1', Target.macosArm)).toBe(
+      '/dist/poi-10.10.0-beta.1-arm64.dmg',
+    )
   })
 })

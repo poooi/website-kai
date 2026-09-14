@@ -15,14 +15,12 @@ import { cn } from '~/lib/utils'
 
 interface DownloadLinksProps {
   poiVersions: PoiVersions
-  stableTargets: Target[]
-  betaTargets: Target[]
+  supportedTargets: Target[]
 }
 
 export const DownloadLinks = ({
   poiVersions,
-  stableTargets,
-  betaTargets,
+  supportedTargets,
 }: DownloadLinksProps) => {
   const os = useAtomValue(osAtom)
   const spec = useAtomValue(specAtom)
@@ -42,7 +40,7 @@ export const DownloadLinks = ({
       version: poiVersions.version,
       label: m.stable(),
       hint: m.stableHint(),
-      available: stableTargets.includes(target),
+      available: supportedTargets.includes(target),
     },
     {
       channel: 'beta',
@@ -50,7 +48,7 @@ export const DownloadLinks = ({
       label: m.beta(),
       hint: m.betaHint(),
       available:
-        betaTargets.includes(target) &&
+        supportedTargets.includes(target) &&
         compare(poiVersions.version, poiVersions.betaVersion, '<'),
     },
   ].filter((release) => release.available)

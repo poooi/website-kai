@@ -36,7 +36,7 @@ const exploreContentByLocale = import.meta.glob<string>(
 const exploreHtmlByLocale = new Map<SupportedLocale, string>()
 
 // Upstream no longer supports 32-bit Windows.
-const supportedTargets = Object.values(Target).filter(
+const supportedTargets: Target[] = Object.values(Target).filter(
   (target) => target !== Target.win32 && target !== Target.win32Setup,
 )
 
@@ -70,18 +70,15 @@ const loadPoiVersionsForRequest = createIsomorphicFn()
 const buildDownloadData = (
   poiVersions: PoiVersions,
   platform: RequestPlatformResult,
-  stableTargets: Target[],
-  betaTargets: Target[],
 ) => ({
-  betaUrl: betaTargets.includes(platform.target)
+  betaUrl: supportedTargets.includes(platform.target)
     ? getDownloadLink(poiVersions.betaVersion, platform.target)
     : 'https://github.com/poooi/poi/releases',
-  stableTargets,
-  betaTargets,
+  supportedTargets,
   platform,
   poiVersions,
   showBeta: compare(poiVersions.version, poiVersions.betaVersion, '<'),
-  stableUrl: stableTargets.includes(platform.target)
+  stableUrl: supportedTargets.includes(platform.target)
     ? getDownloadLink(poiVersions.version, platform.target)
     : 'https://github.com/poooi/poi/releases',
 })
@@ -104,12 +101,7 @@ export const loadRequestAwarePageData = async () => {
     detectRequestPlatform(headers),
   ])
 
-  return buildDownloadData(
-    poiVersions,
-    platform,
-    supportedTargets,
-    supportedTargets,
-  )
+  return buildDownloadData(poiVersions, platform)
 }
 
 export const loadExploreHtml = async (locale: string = getLocale()) => {

@@ -1,4 +1,3 @@
-import trimStart from 'lodash/trimStart'
 import { UAParser } from 'ua-parser-js'
 
 export enum Target {
@@ -69,7 +68,7 @@ export const getDownloadLink = (
   version: string | undefined,
   target: Target,
 ) => {
-  const pure = trimStart(version, 'v')
+  const pure = (version ?? '').replace(/^v+/, '')
   if (!semverRegex.test(pure)) {
     return DEFAULT_URI
   }
@@ -178,10 +177,6 @@ const isMobileUA = (ua: ReturnType<typeof parseRawUA>) => {
   ].includes(ua.device.type!)
 }
 
-export const isMobileDevice = async (headers: Headers) => {
-  return isMobileUA(await parseUA(headers))
-}
-
 const detectTargetFromUA = (
   osName: string | undefined,
   architecture: string | undefined,
@@ -275,18 +270,6 @@ const detectTargetFromUA = (
     spec: PlatformSpec.X64Portable,
     target: Target.linux,
   }
-}
-
-export const detectTargetFromRequest = async (
-  headers: Headers,
-): Promise<DetectionResult> => {
-  const rawUA = parseRawUA(headers)
-  const ua = await parseUA(headers)
-
-  return detectTargetFromUA(
-    getCorrectedOSName(ua, rawUA),
-    getCorrectedArchitecture(ua, rawUA, headers),
-  )
 }
 
 export const detectRequestPlatform = async (

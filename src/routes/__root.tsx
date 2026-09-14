@@ -1,20 +1,19 @@
 import {
   HeadContent,
-  Link,
   Scripts,
   createRootRoute,
   useRouterState,
 } from '@tanstack/react-router'
 import { createServerOnlyFn } from '@tanstack/react-start'
 import { getRequestHeaders } from '@tanstack/react-start/server'
-import { forwardRef, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import '~/styles/globals.css'
 import poiLogo from '~/assets/poi.svg?url'
 import { BackToTop } from '~/components/back-to-top'
 import { Footer } from '~/components/footer'
 import { HarbourMap } from '~/components/harbour-map'
-import { Header, type HeaderLinkProps } from '~/components/header'
+import { Header } from '~/components/header'
 import { JotaiRootProvider } from '~/components/jotai-provider'
 import { SentryClient } from '~/components/sentry-client'
 import { ThemeRuntime } from '~/components/theme-runtime'
@@ -24,7 +23,6 @@ import {
   socialImageHeight,
   socialImageWidth,
 } from '~/lib/social-image-constants'
-import { isMobileDevice } from '~/lib/target'
 import {
   getThemeCookie,
   getThemeInitScript,
@@ -40,23 +38,13 @@ const siteUrl = 'https://poi.moe'
 const openGraphImageUrl = `${siteUrl}/opengraph-image`
 const twitterImageUrl = `${siteUrl}/twitter-image`
 
-const HeaderLink = forwardRef<HTMLAnchorElement, HeaderLinkProps>(
-  ({ href, children, ...props }, ref) => (
-    <Link to={href} ref={ref} activeOptions={{ exact: true }} {...props}>
-      {children}
-    </Link>
-  ),
-)
-HeaderLink.displayName = 'HeaderLink'
-
 export const Route = createRootRoute({
-  loader: async () => {
+  loader: () => {
     const headers =
       typeof document === 'undefined'
         ? getCurrentRequestHeaders()
         : new Headers()
     return {
-      isMobile: await isMobileDevice(headers),
       theme: resolveServerTheme(headers),
       themePreference: getThemeCookie(headers.get('Cookie')),
     }
@@ -197,7 +185,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             disableTransitionOnChange
           />
           <div className="site-shell flex min-h-[100svh] flex-col">
-            <Header LinkComponent={HeaderLink} />
+            <Header />
             <div className="site-content relative flex flex-1 flex-col [&>[role=main]]:mx-auto [&>[role=main]]:w-full [&>[role=main]]:max-w-[960px] [&>[role=main]]:flex-1 [&>[role=main]]:px-8 [&>[role=main]]:pt-12 [&>[role=main]]:pb-[72px] max-[700px]:[&>[role=main]]:px-[6%] max-[700px]:[&>[role=main]]:pt-8 max-[700px]:[&>[role=main]]:pb-12">
               {(isHome || hasVisitedHome) && (
                 <div
