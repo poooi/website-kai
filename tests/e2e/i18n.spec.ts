@@ -142,9 +142,7 @@ test('serves script-cased Chinese localized download pages', async ({
   await expect(page.getByRole('link', { name: '每日建置版' })).toBeVisible()
 })
 
-test('serves TanStack header navigation controls', async ({
-  page,
-}) => {
+test('serves TanStack header navigation controls', async ({ page }) => {
   await page.goto('/en')
 
   const header = page.getByRole('banner')
