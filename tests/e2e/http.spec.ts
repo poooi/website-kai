@@ -304,3 +304,43 @@ test('returns 404 for unknown localized page shapes', async ({ request }) => {
     expect(response.headers()['x-poi-codename']).toBe('Shiratsuyu')
   }
 })
+
+test('serves the public credits proxy with CORS and no locale redirect', async ({
+  request,
+}) => {
+  const manifest = await request.get('/api/credits/manifest.json')
+  expect(manifest.status()).toBe(200)
+  expect(manifest.headers()['content-type']).toContain('application/json')
+  expect(manifest.headers()['access-control-allow-origin']).toBe('*')
+  expect(manifest.headers()['cache-control']).toBe('public, max-age=300')
+  expect(manifest.headers().location).toBeUndefined()
+
+  const raw: unknown = await manifest.json()
+  const body = raw as {
+    contributors: unknown[]
+    supporters: unknown[]
+    sheets: { url: string }[]
+  }
+  expect(Array.isArray(body.contributors)).toBe(true)
+  expect(Array.isArray(body.supporters)).toBe(true)
+  const sheet = body.sheets[0]?.url ?? ''
+  expect(sheet).toMatch(/^avatars-\d+\.[0-9a-f]+\.(png|webp)$/)
+  expect(
+    new URL(sheet, 'http://127.0.0.1:3002/api/credits/manifest.json').origin,
+  ).toBe('http://127.0.0.1:3002')
+
+  const image = await request.get(`/api/credits/${sheet}`)
+  expect(image.status()).toBe(200)
+  expect(image.headers()['content-type']).toMatch(/^image\/(png|webp)$/)
+  expect(image.headers()['access-control-allow-origin']).toBe('*')
+  expect(image.headers()['cache-control']).toBe(
+    'public, max-age=31536000, immutable',
+  )
+
+  const head = await request.head('/api/credits/manifest.json')
+  expect(head.status()).toBe(200)
+  expect((await head.body()).byteLength).toBe(0)
+
+  const missing = await request.get('/api/credits/not-a-sheet.txt')
+  expect(missing.status()).toBe(404)
+})

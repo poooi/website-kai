@@ -178,6 +178,29 @@ simple two-column list on desktop and one column on mobile. The E2E runner sets
 and `tests/fixtures/plugin-releases.json` at build time instead of contacting
 GitHub or the npm registry.
 
+## Credits API
+
+`/api/credits/manifest.json` is the public credits API for the poi renderer. It
+returns the contributors manifest exactly as published by the contributors repo
+(`contributors` and `supporters` arrays, with bare relative `sheets[].url`
+filenames), so resolving a sheet URL against this endpoint keeps requests on
+`poi.moe`. Hashed sheets are served from `/api/credits/<filename>` with the same
+immutable caching as the website. Both routes are CORS-open
+(`Access-Control-Allow-Origin: *`) for file-origin renderers and support `GET`,
+`HEAD` and `OPTIONS`; the manifest reuses the website public-document cache, and
+only the short browser TTL (`Cache-Control: public, max-age=300`) is exposed —
+the cache's internal retention headers are not forwarded.
+
+```js
+const manifest = await (
+  await fetch('https://poi.moe/api/credits/manifest.json')
+).json()
+const sheet = new URL(
+  manifest.sheets[0].url,
+  'https://poi.moe/api/credits/manifest.json',
+)
+```
+
 ## Deploy
 
 `pnpm run deploy` builds and deploys the TanStack Worker using the generated
