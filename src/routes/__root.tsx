@@ -18,6 +18,7 @@ import { Header, type HeaderLinkProps } from '~/components/header'
 import { JotaiRootProvider } from '~/components/jotai-provider'
 import { SentryClient } from '~/components/sentry-client'
 import { ThemeRuntime } from '~/components/theme-runtime'
+import { criticalFontCss, criticalFontPreload } from '~/lib/critical-fonts'
 import {
   socialImageContentType,
   socialImageHeight,
@@ -160,32 +161,48 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           }}
         />
         <link
-          href="/fonts/plex-sans/IBMPlexSans-Regular.css"
-          rel="stylesheet"
+          rel="preload"
+          href={criticalFontPreload[locale]}
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
         />
-        {locale === 'ja' && (
-          <link
-            href="/fonts/plex-sans-jp/IBMPlexSansJP-Regular.css"
-            rel="stylesheet"
-          />
-        )}
-        {locale === 'zh-Hant' && (
-          <link
-            href="/fonts/plex-sans-tc/IBMPlexSansTC-Regular.css"
-            rel="stylesheet"
-          />
-        )}
-        {locale === 'zh-Hans' && (
-          <link
-            href="/fonts/plex-sans-sc/IBMPlexSansSC-Regular.css"
-            rel="stylesheet"
-          />
-        )}
-        {locale === 'ko' && (
-          <link
-            href="/fonts/plex-sans-kr/IBMPlexSansKR-Regular.css"
-            rel="stylesheet"
-          />
+        <style dangerouslySetInnerHTML={{ __html: criticalFontCss(locale) }} />
+        {/* The home page is fully covered by the critical UI subset, so its
+            render-blocking split stylesheets are skipped there and only added
+            on other routes (including client navigation), where arbitrary
+            content still falls through to the on-demand shards. */}
+        {!isHome && (
+          <>
+            <link
+              href="/fonts/plex-sans/IBMPlexSans-Regular.css"
+              rel="stylesheet"
+            />
+            {locale === 'ja' && (
+              <link
+                href="/fonts/plex-sans-jp/IBMPlexSansJP-Regular.css"
+                rel="stylesheet"
+              />
+            )}
+            {locale === 'zh-Hant' && (
+              <link
+                href="/fonts/plex-sans-tc/IBMPlexSansTC-Regular.css"
+                rel="stylesheet"
+              />
+            )}
+            {locale === 'zh-Hans' && (
+              <link
+                href="/fonts/plex-sans-sc/IBMPlexSansSC-Regular.css"
+                rel="stylesheet"
+              />
+            )}
+            {locale === 'ko' && (
+              <link
+                href="/fonts/plex-sans-kr/IBMPlexSansKR-Regular.css"
+                rel="stylesheet"
+              />
+            )}
+          </>
         )}
         <HeadContent />
       </head>

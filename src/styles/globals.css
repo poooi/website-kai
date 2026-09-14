@@ -9,19 +9,19 @@
 
 @theme inline {
   --font-sans:
-    'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
-    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    'Poi UI Latin', 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --font-ja:
-    'IBM Plex Sans JP', ui-sans-serif, system-ui, sans-serif,
+    'Poi UI JP', 'IBM Plex Sans JP', ui-sans-serif, system-ui, sans-serif,
     'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --font-zh-hant:
-    'IBM Plex Sans TC', ui-sans-serif, system-ui, sans-serif,
+    'Poi UI TC', 'IBM Plex Sans TC', ui-sans-serif, system-ui, sans-serif,
     'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --font-zh-hans:
-    'IBM Plex Sans SC', ui-sans-serif, system-ui, sans-serif,
+    'Poi UI SC', 'IBM Plex Sans SC', ui-sans-serif, system-ui, sans-serif,
     'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --font-ko:
-    'IBM Plex Sans KR', ui-sans-serif, system-ui, sans-serif,
+    'Poi UI KR', 'IBM Plex Sans KR', ui-sans-serif, system-ui, sans-serif,
     'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
   --radius-lg: var(--radius);

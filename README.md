@@ -32,6 +32,34 @@ source checks. After `pnpm run build`, run `pnpm run check:imports` and
 `pnpm run check:build` to validate runtime compatibility and bundle budgets.
 The E2E runner builds with fixed release versions before starting preview.
 
+## Web fonts
+
+The interface uses IBM Plex. `scripts/generate-critical-fonts.ts` runs at Vite
+config startup and writes per-script UI subsets — everything in the message
+catalogs (including platform labels and the language chooser's names), ASCII and
+the UI's literal symbols — into the ignored `src/assets/fonts/generated/`.
+Restart the dev server after changing `messages/*.json` so the subsets
+regenerate; a build always regenerates them. The files are subset with
+`subset-font` (HarfBuzz WASM) and imported with `?url`, so Vite content-hashes
+them.
+
+Each locale's font stack starts with the preloaded `Poi UI <script>` face
+(`font-display: block`, and only that locale's file is preloaded with
+`crossorigin`) to give the web font time to arrive before showing UI text.
+Glyphs the subset omits fall through to
+the original split IBM Plex shards, which use `font-display: swap` and load on
+demand for arbitrary release and plugin content. Those split stylesheets are
+render-blocking, so they are served only off the home page; the home page relies
+solely on the critical subset, and navigating to another route adds the split
+stylesheets there. On a slow connection the browser blocks briefly on the
+critical face and may still show a fallback before a later swap; this is not
+guaranteed flash-free on every network.
+
+IBM Plex is SIL OFL 1.1 with Reserved Font Name "Plex". The derived subsets keep
+the original copyright, trademark, license and designer name records and all
+shaping features, and the original split fonts remain the fallback for other
+glyphs. The license text is served at `/ibm-plex-OFL.txt`.
+
 ## Release history
 
 The changelog and comparison pages read only `poooi/poi-release/main/history/stable.json`.
