@@ -21,3 +21,5 @@ minimumReleaseAgeExclude:
   - miniflare@5.20260911.1-alpha
   - wrangler@4.131.2
   - zod@4.6.5
+patchedDependencies:
+  harfbuzzjs@0.10.0: patches/harfbuzzjs@0.10.0.patch
