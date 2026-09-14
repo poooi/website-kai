@@ -56,9 +56,12 @@ describe('plugin catalog', () => {
       descriptionLanguage: 'ja-JP',
       author: 'Author One',
       authorUrl: 'https://github.com/author-one',
-      icon: 'book',
       url: 'https://www.npmjs.com/package/poi-plugin-alpha',
     })
+    expect(find(japanese, 'poi-plugin-alpha').icon?.iconName).toBe('book')
+    expect(Array.isArray(find(japanese, 'poi-plugin-alpha').icon?.icon)).toBe(
+      true,
+    )
     expect(find(japanese, 'poi-plugin-alpha').html).toContain(
       '最初のプラグイン',
     )

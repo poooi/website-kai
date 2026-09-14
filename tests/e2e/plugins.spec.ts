@@ -178,3 +178,38 @@ test('navigates from the header and handles empty searches', async ({
   // Clearing search is client-side navigation: the document is not reloaded.
   expect(await page.evaluate(() => performance.timeOrigin)).toBe(timeOrigin)
 })
+
+test('renders official SVG icons without the Font Awesome icon font', async ({
+  browser,
+}) => {
+  const context = await browser.newContext({ javaScriptEnabled: false })
+  try {
+    const page = await context.newPage()
+    const iconFontRequests: string[] = []
+    page.on('request', (request) => {
+      const url = request.url()
+      if (
+        /fontawesome|fa-solid|fa-brands|fa-regular|all\.min\.css|v4-shims/.test(
+          url,
+        )
+      ) {
+        iconFontRequests.push(url)
+      }
+    })
+
+    await page.goto('http://127.0.0.1:3002/en/plugins')
+    const prophet = page
+      .getByRole('article')
+      .filter({ hasText: 'poi-plugin-prophet' })
+    const icon = prophet.locator('svg').first()
+
+    // Server-rendered inline SVG from the official React binding, no icon font.
+    await expect(icon).toHaveAttribute('aria-hidden', 'true')
+    await expect(icon).toHaveAttribute('viewBox', /^0 0 \d+ \d+$/)
+    await expect(icon).toHaveAttribute('data-icon', /.+/)
+    expect(await icon.locator('path').count()).toBeGreaterThan(0)
+    expect(iconFontRequests).toHaveLength(0)
+  } finally {
+    await context.close()
+  }
+})

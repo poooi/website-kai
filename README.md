@@ -150,9 +150,16 @@ The plugins page server-renders the official catalog from
 `poooi/poi/master/assets/data/plugin.json` through the same public-document cache
 as the release sources. Names and descriptions are localized per field with an
 English fallback, Markdown descriptions are sanitized before rendering, and each
-entry links to its real npm package and author page. Plugin icons render the
-catalog's Font Awesome class directly through Font Awesome 7's packaged CSS and
-official v4 shims, matching poi without a per-plugin icon map.
+entry links to its real npm package and author page. Plugin icons use the
+official `@fortawesome/react-fontawesome` binding: the server registers the free
+solid/regular/brands packs with `@fortawesome/fontawesome-svg-core`, resolves
+each catalog name through Font Awesome's official v4 compatibility shims
+(including `file-audio-o`, `check-square-o`, `smile-o`, `calendar` →
+`calendar-days`, `photo` → regular `image` and the `odnoklassniki` brand), and
+sends only the selected `IconDefinition` to a decorative 24px `currentColor`
+SVG. No icon font or per-plugin map is shipped, and unknown names render an
+empty slot instead of failing the catalog. The Font Awesome license is served at
+`/font-awesome-LICENSE.txt`.
 
 An hourly Worker Cron refreshes one compact snapshot of each plugin's npm
 `dist-tags.latest` version and that version's publication time into the
