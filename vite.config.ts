@@ -13,10 +13,8 @@ import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 import { paraglideOptions } from './paraglide.config.js'
 import { generateCriticalFonts } from './scripts/generate-critical-fonts'
-import { generatePluginIcons } from './scripts/generate-plugin-icons.mjs'
 
 await generateCriticalFonts()
-generatePluginIcons()
 
 const getCommitHash = async () => {
   try {

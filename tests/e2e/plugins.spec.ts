@@ -199,10 +199,11 @@ test('renders official SVG icons without the Font Awesome icon font', async ({
       .filter({ hasText: 'poi-plugin-prophet' })
     const icon = prophet.locator('svg').first()
 
-    // Server-rendered inline SVG, decorative, no icon font.
+    // Server-rendered inline SVG from the official React binding, no icon font.
     await expect(icon).toHaveAttribute('aria-hidden', 'true')
     await expect(icon).toHaveAttribute('viewBox', /^0 0 \d+ \d+$/)
-    await expect(icon.locator('path')).toHaveCount(1)
+    await expect(icon).toHaveAttribute('data-icon', /.+/)
+    expect(await icon.locator('path').count()).toBeGreaterThan(0)
     expect(iconFontRequests).toHaveLength(0)
   } finally {
     await context.close()

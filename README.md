@@ -126,15 +126,16 @@ The plugins page server-renders the official catalog from
 `poooi/poi/master/assets/data/plugin.json` through the same public-document cache
 as the release sources. Names and descriptions are localized per field with an
 English fallback, Markdown descriptions are sanitized before rendering, and each
-entry links to its real npm package and author page. Plugin icons are resolved
-server-side from Font Awesome's official metadata (`icon-families.json` plus
-`shims.yml`) into compact per-style geometry generated at build time, then
-inlined as decorative 24px SVGs with `currentColor`. Every free catalog name —
-including the v4 outline aliases (`file-audio-o`, `check-square-o`, `smile-o`),
-`calendar` → `calendar-days`, `photo` → regular `image` and the `odnoklassniki`
-brand — resolves without shipping the icon font or maintaining a per-plugin map;
-unknown names render an empty slot instead of failing the catalog. The Font
-Awesome license is served at `/font-awesome-LICENSE.txt`.
+entry links to its real npm package and author page. Plugin icons use the
+official `@fortawesome/react-fontawesome` binding: the server registers the free
+solid/regular/brands packs with `@fortawesome/fontawesome-svg-core`, resolves
+each catalog name through Font Awesome's official v4 compatibility shims
+(including `file-audio-o`, `check-square-o`, `smile-o`, `calendar` →
+`calendar-days`, `photo` → regular `image` and the `odnoklassniki` brand), and
+sends only the selected `IconDefinition` to a decorative 24px `currentColor`
+SVG. No icon font or per-plugin map is shipped, and unknown names render an
+empty slot instead of failing the catalog. The Font Awesome license is served at
+`/font-awesome-LICENSE.txt`.
 
 An hourly Worker Cron refreshes one compact snapshot of each plugin's npm
 `dist-tags.latest` version and that version's publication time into the
