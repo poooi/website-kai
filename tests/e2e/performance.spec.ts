@@ -1,4 +1,20 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type BrowserContext } from '@playwright/test'
+
+type CdpSession = Awaited<ReturnType<BrowserContext['newCDPSession']>>
+
+const platformFonts = async (cdp: CdpSession, selector: string) => {
+  const { root } = await cdp.send('DOM.getDocument')
+  const { nodeId } = await cdp.send('DOM.querySelector', {
+    nodeId: root.nodeId,
+    selector,
+  })
+  const { fonts } = await cdp.send('CSS.getPlatformFontsForNode', { nodeId })
+  return fonts.map((font) => ({
+    familyName: font.familyName,
+    isCustomFont: font.isCustomFont,
+    glyphCount: font.glyphCount,
+  }))
+}
 
 test('does not hide the SSR content again when hydration arrives late', async ({
   page,
@@ -140,13 +156,15 @@ for (const preference of [
   })
 }
 
-test('keeps the mobile layout stable when web fonts arrive late', async ({
+test('applies the web font after a late arrival instead of keeping the fallback', async ({
   browser,
 }) => {
   const page = await browser.newPage({
     viewport: { width: 412, height: 823 },
     isMobile: true,
     deviceScaleFactor: 1.75,
+    locale: 'en-US',
+    reducedMotion: 'reduce',
     userAgent:
       'Mozilla/5.0 (Linux; Android 11) AppleWebKit/537.36 Chrome/131.0.0.0 Mobile Safari/537.36',
   })
@@ -167,6 +185,11 @@ test('keeps the mobile layout stable when web fonts arrive late', async ({
       await fontGate
       await route.continue()
     })
+    const cdp = await page.context().newCDPSession(page)
+    await cdp.send('DOM.enable')
+    await cdp.send('CSS.enable')
+    await cdp.send('CSS.setLocalFontsEnabled', { enabled: false })
+
     await page.goto('/en', { waitUntil: 'domcontentloaded' })
     await expect(page.locator('.harbour-home')).toBeVisible()
     await expect
@@ -176,14 +199,25 @@ test('keeps the mobile layout stable when web fonts arrive late', async ({
           .evaluate((image: HTMLImageElement) => image.currentSrc),
       )
       .toMatch(/\/assets\/poi-[^/]+\.svg$/)
-    // Let the optional font's short blocking period and page entrance finish.
-    await page.waitForTimeout(1000)
-    const chart = page.locator('.harbour-chart')
-    const before = await chart.boundingBox()
+
+    // Hold the gate past the critical face's block period so the fallback is
+    // actually rendered rather than the swap happening inside the block.
+    await page.waitForTimeout(3400)
+    const before = await platformFonts(cdp, '.harbour-home h1')
+    expect(before.length).toBeGreaterThan(0)
+    expect(before.every((font) => !font.isCustomFont)).toBe(true)
+
     releaseFonts()
     await page.evaluate(() => document.fonts.ready)
-    await page.waitForTimeout(250)
-    expect(await chart.boundingBox()).toEqual(before)
+
+    // The late font is applied instead of the fallback persisting.
+    const after = await platformFonts(cdp, '.harbour-home h1')
+    expect(
+      after.some(
+        (font) =>
+          font.isCustomFont && font.familyName.includes('IBM Plex Sans'),
+      ),
+    ).toBe(true)
   } finally {
     await page.close()
   }

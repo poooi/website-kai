@@ -5,7 +5,10 @@ allowBuilds:
   '@ibm/plex-sans-sc': true
   '@ibm/plex-sans-tc': true
   '@sentry/cli': true
+  cn-font-split: false
   esbuild: true
+  koffi: false
+  protobufjs: false
   sharp: true
   unrs-resolver: true
   workerd: true

@@ -23,7 +23,10 @@
     "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": ["./src/*"],
+      "cn-font-split/dist/wasm/index.mjs": [
+        "./node_modules/cn-font-split/dist/wasm/index.d.ts"
+      ]
     }
   },
   "include": [

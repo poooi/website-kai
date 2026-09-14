@@ -117,7 +117,7 @@ test('serves copied IBM Plex font assets', async ({ request }) => {
   expect(response.headers()['cache-control']).toBe('public,max-age=604800')
   const css = await response.text()
   expect(css).toContain('IBM Plex Sans')
-  expect(css).toContain('font-display: optional')
+  expect(css).toContain('font-display: swap')
 
   const fontPath = /url\(["']?(.+?\.woff2)["']?\)/.exec(css)?.[1]
   expect(fontPath).toBeTruthy()

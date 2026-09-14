@@ -12,6 +12,9 @@ import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 import { paraglideOptions } from './paraglide.config.js'
+import { generateCriticalFonts } from './scripts/generate-critical-fonts'
+
+await generateCriticalFonts()
 
 const getCommitHash = async () => {
   try {
@@ -118,11 +121,12 @@ export default defineConfig({
             src: `node_modules/@ibm/${fontPackage}/fonts/split/woff2/**/*.css`,
             dest: `fonts/${fontPackage}`,
             rename: { stripBase: true as const },
-            // Avoid a late font swap changing wrapping and moving the map.
+            // Arbitrary content glyphs load on demand and then swap in; the
+            // critical UI subset is what keeps the first paint in Plex.
             transform: (content: string) =>
               content.replaceAll(
                 '@font-face {',
-                '@font-face {\n  font-display: optional;',
+                '@font-face {\n  font-display: swap;',
               ),
           },
         ]),

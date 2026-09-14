@@ -43,3 +43,6 @@ src/paraglide/
 .env.sentry-build-plugin
 
 public/fonts/
+
+# generated critical UI font subsets
+/src/assets/fonts/generated/
