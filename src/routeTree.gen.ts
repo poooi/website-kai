@@ -20,8 +20,11 @@ import { Route as StatusRouteImport } from './routes/status'
 import { Route as TwitterImageRouteImport } from './routes/twitter-image'
 import { Route as ApiMonitoringRouteImport } from './routes/api.monitoring'
 import { Route as ChangelogCompareRouteImport } from './routes/changelog_.compare'
+import { Route as DistIndexRouteImport } from './routes/dist.index'
 import { Route as DistFilenameRouteImport } from './routes/dist.$filename'
+import { Route as FcdIndexRouteImport } from './routes/fcd.index'
 import { Route as FcdFilenameRouteImport } from './routes/fcd.$filename'
+import { Route as UpdateIndexRouteImport } from './routes/update.index'
 import { Route as UpdateFilenameRouteImport } from './routes/update.$filename'
 import { Route as ApiChangelogChannelRouteImport } from './routes/api.changelog.$channel'
 import { Route as ApiCreditsSpriteFilenameRouteImport } from './routes/api.credits-sprite.$filename'
@@ -83,14 +86,29 @@ const ChangelogCompareRoute = ChangelogCompareRouteImport.update({
   path: '/changelog/compare',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DistIndexRoute = DistIndexRouteImport.update({
+  id: '/dist/',
+  path: '/dist/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DistFilenameRoute = DistFilenameRouteImport.update({
   id: '/dist/$filename',
   path: '/dist/$filename',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FcdIndexRoute = FcdIndexRouteImport.update({
+  id: '/fcd/',
+  path: '/fcd/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FcdFilenameRoute = FcdFilenameRouteImport.update({
   id: '/fcd/$filename',
   path: '/fcd/$filename',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UpdateIndexRoute = UpdateIndexRouteImport.update({
+  id: '/update/',
+  path: '/update/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const UpdateFilenameRoute = UpdateFilenameRouteImport.update({
@@ -136,6 +154,9 @@ export interface FileRoutesByFullPath {
   '/dist/$filename': typeof DistFilenameRoute
   '/fcd/$filename': typeof FcdFilenameRoute
   '/update/$filename': typeof UpdateFilenameRoute
+  '/dist/': typeof DistIndexRoute
+  '/fcd/': typeof FcdIndexRoute
+  '/update/': typeof UpdateIndexRoute
   '/api/changelog/$channel': typeof ApiChangelogChannelRoute
   '/api/credits-sprite/$filename': typeof ApiCreditsSpriteFilenameRoute
   '/api/credits/$filename': typeof ApiCreditsFilenameRoute
@@ -156,6 +177,9 @@ export interface FileRoutesByTo {
   '/dist/$filename': typeof DistFilenameRoute
   '/fcd/$filename': typeof FcdFilenameRoute
   '/update/$filename': typeof UpdateFilenameRoute
+  '/dist': typeof DistIndexRoute
+  '/fcd': typeof FcdIndexRoute
+  '/update': typeof UpdateIndexRoute
   '/api/changelog/$channel': typeof ApiChangelogChannelRoute
   '/api/credits-sprite/$filename': typeof ApiCreditsSpriteFilenameRoute
   '/api/credits/$filename': typeof ApiCreditsFilenameRoute
@@ -177,6 +201,9 @@ export interface FileRoutesById {
   '/dist/$filename': typeof DistFilenameRoute
   '/fcd/$filename': typeof FcdFilenameRoute
   '/update/$filename': typeof UpdateFilenameRoute
+  '/dist/': typeof DistIndexRoute
+  '/fcd/': typeof FcdIndexRoute
+  '/update/': typeof UpdateIndexRoute
   '/api/changelog/$channel': typeof ApiChangelogChannelRoute
   '/api/credits-sprite/$filename': typeof ApiCreditsSpriteFilenameRoute
   '/api/credits/$filename': typeof ApiCreditsFilenameRoute
@@ -199,6 +226,9 @@ export interface FileRouteTypes {
     | '/dist/$filename'
     | '/fcd/$filename'
     | '/update/$filename'
+    | '/dist/'
+    | '/fcd/'
+    | '/update/'
     | '/api/changelog/$channel'
     | '/api/credits-sprite/$filename'
     | '/api/credits/$filename'
@@ -219,6 +249,9 @@ export interface FileRouteTypes {
     | '/dist/$filename'
     | '/fcd/$filename'
     | '/update/$filename'
+    | '/dist'
+    | '/fcd'
+    | '/update'
     | '/api/changelog/$channel'
     | '/api/credits-sprite/$filename'
     | '/api/credits/$filename'
@@ -239,6 +272,9 @@ export interface FileRouteTypes {
     | '/dist/$filename'
     | '/fcd/$filename'
     | '/update/$filename'
+    | '/dist/'
+    | '/fcd/'
+    | '/update/'
     | '/api/changelog/$channel'
     | '/api/credits-sprite/$filename'
     | '/api/credits/$filename'
@@ -260,6 +296,9 @@ export interface RootRouteChildren {
   DistFilenameRoute: typeof DistFilenameRoute
   FcdFilenameRoute: typeof FcdFilenameRoute
   UpdateFilenameRoute: typeof UpdateFilenameRoute
+  DistIndexRoute: typeof DistIndexRoute
+  FcdIndexRoute: typeof FcdIndexRoute
+  UpdateIndexRoute: typeof UpdateIndexRoute
   ApiChangelogChannelRoute: typeof ApiChangelogChannelRoute
   ApiCreditsSpriteFilenameRoute: typeof ApiCreditsSpriteFilenameRoute
   ApiCreditsFilenameRoute: typeof ApiCreditsFilenameRoute
@@ -345,6 +384,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChangelogCompareRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dist/': {
+      id: '/dist/'
+      path: '/dist'
+      fullPath: '/dist/'
+      preLoaderRoute: typeof DistIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dist/$filename': {
       id: '/dist/$filename'
       path: '/dist/$filename'
@@ -352,11 +398,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DistFilenameRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/fcd/': {
+      id: '/fcd/'
+      path: '/fcd'
+      fullPath: '/fcd/'
+      preLoaderRoute: typeof FcdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/fcd/$filename': {
       id: '/fcd/$filename'
       path: '/fcd/$filename'
       fullPath: '/fcd/$filename'
       preLoaderRoute: typeof FcdFilenameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/update/': {
+      id: '/update/'
+      path: '/update'
+      fullPath: '/update/'
+      preLoaderRoute: typeof UpdateIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/update/$filename': {
@@ -412,6 +472,9 @@ const rootRouteChildren: RootRouteChildren = {
   DistFilenameRoute: DistFilenameRoute,
   FcdFilenameRoute: FcdFilenameRoute,
   UpdateFilenameRoute: UpdateFilenameRoute,
+  DistIndexRoute: DistIndexRoute,
+  FcdIndexRoute: FcdIndexRoute,
+  UpdateIndexRoute: UpdateIndexRoute,
   ApiChangelogChannelRoute: ApiChangelogChannelRoute,
   ApiCreditsSpriteFilenameRoute: ApiCreditsSpriteFilenameRoute,
   ApiCreditsFilenameRoute: ApiCreditsFilenameRoute,

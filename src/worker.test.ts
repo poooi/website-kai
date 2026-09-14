@@ -9,10 +9,6 @@ const mocks = vi.hoisted(() => ({
       ) => Response | Promise<Response>
     >(),
   startFetch: vi.fn<(request: Request) => Promise<Response>>(),
-  createSocialImageResponse:
-    vi.fn<
-      (fetchAsset: (pathname: string) => Promise<Response>) => Promise<Response>
-    >(),
   withSentry: vi.fn<(_options: unknown, handler: unknown) => unknown>(
     (_options, handler) => handler,
   ),
@@ -31,10 +27,6 @@ vi.mock('@tanstack/react-start/server-entry', () => ({
 
 vi.mock('~/paraglide/server', () => ({
   paraglideMiddleware: mocks.paraglideMiddleware,
-}))
-
-vi.mock('~/lib/social-image', () => ({
-  createSocialImageResponse: mocks.createSocialImageResponse,
 }))
 
 vi.mock('~/lib/plugin-releases.server', () => ({
@@ -110,18 +102,6 @@ beforeEach(() => {
       },
     })
   })
-  mocks.createSocialImageResponse.mockReset()
-  mocks.createSocialImageResponse.mockImplementation(async (fetchAsset) => {
-    await Promise.all(
-      ['/social/IBMPlexSans-SemiBold.woff', '/social/poi.svg'].map(fetchAsset),
-    )
-    return new Response(new Uint8Array([0x89, 0x50, 0x4e, 0x47]), {
-      headers: {
-        'Cache-Control': 'public,max-age=3600',
-        'Content-Type': 'image/png',
-      },
-    })
-  })
   mocks.refreshPluginReleases.mockReset()
   mocks.refreshPluginReleases.mockResolvedValue({})
 })
@@ -140,7 +120,7 @@ describe('handleWorkerRequest', () => {
     expect(mocks.paraglideMiddleware).not.toHaveBeenCalled()
   })
   it.each(['/dist', '/dist/', '/fcd', '/fcd/', '/update', '/update/'])(
-    'short-circuits reserved proxy root %s before locale routing',
+    'passes reserved proxy root %s to TanStack without locale redirects',
     async (path) => {
       const response = await handleWorkerRequest(
         makeRequest(path, {
@@ -151,8 +131,9 @@ describe('handleWorkerRequest', () => {
         makeEnv(),
       )
 
-      expect(response.status).toBe(404)
-      expect(mocks.startFetch).not.toHaveBeenCalled()
+      expect(response.status).toBe(200)
+      await expect(response.text()).resolves.toBe(`start:${path}`)
+      expect(mocks.startFetch).toHaveBeenCalledOnce()
       expect(mocks.paraglideMiddleware).not.toHaveBeenCalled()
     },
   )
@@ -248,59 +229,27 @@ describe('handleWorkerRequest', () => {
     },
   )
 
-  it('serves social image HEAD requests before TanStack', async () => {
+  it('passes social image routes to TanStack', async () => {
     const response = await handleWorkerRequest(
-      makeRequest('/opengraph-image', { method: 'HEAD' }),
+      makeRequest('/opengraph-image?from=unit#social'),
       makeEnv(vi.fn()),
     )
 
-    expect(response.status).toBe(200)
-    expect(response.headers.get('Cache-Control')).toBe('public,max-age=3600')
-    expect(response.headers.get('Content-Type')).toBe('image/png')
-    await expect(response.arrayBuffer()).resolves.toHaveProperty(
-      'byteLength',
-      0,
-    )
-    expect(mocks.startFetch).not.toHaveBeenCalled()
+    await expect(response.text()).resolves.toBe('start:/opengraph-image')
+    expect(mocks.startFetch).toHaveBeenCalledOnce()
   })
 
-  it.each(['/opengraph-image', '/opengraph-image/', '/twitter-image'])(
-    'generates social image route %s before TanStack',
-    async (path) => {
-      const assetFetch = vi.fn(async (request: Request) => {
-        const { hash, pathname, search } = new URL(request.url)
-        expect(request.method).toBe('GET')
-        expect(search).toBe('')
-        expect(hash).toBe('')
-        expect(request.headers.get('If-None-Match')).toBeNull()
-        expect(request.headers.get('If-Modified-Since')).toBeNull()
-        if (pathname === '/social/poi.svg') {
-          return new Response('<svg xmlns="http://www.w3.org/2000/svg"/>', {
-            headers: {
-              'Content-Type': 'image/svg+xml',
-            },
-          })
-        }
-        return new Response(new ArrayBuffer(8))
-      })
-      const response = await handleWorkerRequest(
-        makeRequest(`${path}?from=unit#social`, {
-          headers: {
-            'If-Modified-Since': 'Tue, 30 Jun 2026 00:00:00 GMT',
-            'If-None-Match': '*',
-          },
-        }),
-        makeEnv(assetFetch),
-      )
+  it('keeps proxy filename routes away from the asset binding', async () => {
+    const assetFetch = vi.fn(async () => new Response('asset'))
+    const response = await handleWorkerRequest(
+      makeRequest('/dist/file.exe'),
+      makeEnv(assetFetch),
+    )
 
-      expect(response.status).toBe(200)
-      expect(response.headers.get('Cache-Control')).toBe('public,max-age=3600')
-      expect(response.headers.get('Content-Type')).toBe('image/png')
-      expect(assetFetch).toHaveBeenCalledTimes(2)
-      expect(mocks.createSocialImageResponse).toHaveBeenCalledOnce()
-      expect(mocks.startFetch).not.toHaveBeenCalled()
-    },
-  )
+    expect(assetFetch).not.toHaveBeenCalled()
+    expect(mocks.startFetch).toHaveBeenCalledOnce()
+    await expect(response.text()).resolves.toBe('start:/dist/file.exe')
+  })
 
   it('passes monitoring requests and their headers to TanStack', async () => {
     await handleWorkerRequest(
