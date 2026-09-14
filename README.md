@@ -72,6 +72,30 @@ comment next to the face, and the license text is served at
 `/ibm-plex-OFL.txt`. All shaping features are retained and the original split
 fonts remain the fallback for glyphs the subset omits.
 
+## Route preloading
+
+Navigation uses TanStack Router's intent-only preloading. A link preloads its
+route loader 120ms after hover or focus; touch starts the preload immediately.
+No unrelated routes are speculatively preloaded on idle, viewport visibility or
+render, so opening a page
+does not batch-load unrelated routes. Preloaded loader data stays fresh for 5
+minutes and unused preloads are garbage-collected after 10 minutes, so a
+hover-then-click reuses the hovered loader instead of refetching.
+
+Version-bearing pages (`/`, `/download`) use a 60-second stale time for both
+navigation and preload: a hovered release result is reused on click while stale
+download information expires quickly. Slow-changing content (`/explore`,
+`/plugins`, `/changelog`, `/credits`) uses 5 minutes. These client-side
+freshness windows are independent of server-side upstream caching, which is
+configured separately.
+
+Ordinary site-internal navigation (header, footer credits, plugins
+clear-search) uses the Router's `Link` and takes part in intent preloading.
+Links that intentionally reload the whole document — the changelog, plugins and
+comparison retry links — use `<Link reloadDocument preload={false}>`. Same-page
+`#` anchors, external URLs and file downloads stay native anchors, and native
+GET forms keep their no-JavaScript semantics.
+
 ## Release history
 
 The changelog and comparison pages read only `poooi/poi-release/main/history/stable.json`.

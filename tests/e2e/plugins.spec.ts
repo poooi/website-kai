@@ -171,6 +171,10 @@ test('navigates from the header and handles empty searches', async ({
   await expect(page.getByRole('status')).toContainText(
     '0 of 26 official plugins',
   )
+  const timeOrigin = await page.evaluate(() => performance.timeOrigin)
   await page.getByRole('link', { name: 'Clear search' }).click()
+  await expect(page).toHaveURL(/\/en\/plugins$/)
   await expect(page.getByRole('main').getByRole('article')).toHaveCount(26)
+  // Clearing search is client-side navigation: the document is not reloaded.
+  expect(await page.evaluate(() => performance.timeOrigin)).toBe(timeOrigin)
 })

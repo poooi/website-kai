@@ -9,7 +9,7 @@ import { PageProse } from '~/components/page-prose'
 import { fetchChangelogPage } from '~/lib/release-history.server'
 import { ReleaseNavigation } from '~/components/changelog/release-navigation'
 import { m } from '~/paraglide/messages'
-import { getLocale, locales, localizeHref } from '~/paraglide/runtime'
+import { getLocale, locales } from '~/paraglide/runtime'
 
 const loadChangelog = createServerFn({ method: 'GET' })
   .validator(z.enum(locales))
@@ -39,9 +39,14 @@ function ChangelogPage() {
       {!available && (
         <PageProse role="alert" className="mb-8 text-sm">
           <p>{m.releaseLoadError()}</p>
-          <a href={localizeHref('/changelog')} className="text-link">
+          <Link
+            reloadDocument
+            preload={false}
+            to="/changelog"
+            className="text-link"
+          >
             {m.reload()}
-          </a>
+          </Link>
         </PageProse>
       )}
       {!!history.length && (

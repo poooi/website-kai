@@ -5,11 +5,14 @@ import { PageHeader } from '~/components/page-header'
 import { PageProse } from '~/components/page-prose'
 import { loadExploreHtml } from '~/lib/page-data'
 import { m } from '~/paraglide/messages'
+import { getLocale } from '~/paraglide/runtime'
 
 export const Route = createFileRoute('/explore')({
-  loader: async () => ({
-    contentHtml: await loadExploreHtml(),
+  loaderDeps: () => ({ locale: getLocale() }),
+  loader: async ({ deps }) => ({
+    contentHtml: await loadExploreHtml(deps.locale),
   }),
+  staleTime: 5 * 60_000,
   head: () => ({
     meta: [
       {
