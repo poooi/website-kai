@@ -52,6 +52,9 @@ export async function handleCreditsProxy(
         status: 204,
         headers: {
           'Access-Control-Allow-Methods': allowedMethods,
+          'Access-Control-Allow-Headers':
+            request.headers.get('Access-Control-Request-Headers') ?? '',
+          Vary: 'Access-Control-Request-Headers',
           Allow: allowedMethods,
         },
       }),

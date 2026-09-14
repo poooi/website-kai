@@ -107,13 +107,34 @@ describe('handleCreditsProxy', () => {
 
   it('answers OPTIONS with 204 and rejects unsupported methods with 405', async () => {
     const preflight = await handleCreditsProxy(
-      new Request(manifestUrl, { method: 'OPTIONS' }),
+      new Request(manifestUrl, {
+        method: 'OPTIONS',
+        headers: {
+          Origin: 'null',
+          'Access-Control-Request-Method': 'GET',
+          'Access-Control-Request-Headers': 'content-type,x-poi-client',
+        },
+      }),
     )
     expect(preflight?.status).toBe(204)
+    expect(preflight?.headers.get('Access-Control-Allow-Origin')).toBe('*')
     expect(preflight?.headers.get('Allow')).toBe('GET, HEAD, OPTIONS')
     expect(preflight?.headers.get('Access-Control-Allow-Methods')).toBe(
       'GET, HEAD, OPTIONS',
     )
+    expect(preflight?.headers.get('Access-Control-Allow-Headers')).toBe(
+      'content-type,x-poi-client',
+    )
+    expect(preflight?.headers.get('Vary')).toBe(
+      'Access-Control-Request-Headers',
+    )
+
+    const barePreflight = await handleCreditsProxy(
+      new Request(manifestUrl, { method: 'OPTIONS' }),
+    )
+    expect(barePreflight?.status).toBe(204)
+    expect(barePreflight?.headers.get('Access-Control-Allow-Origin')).toBe('*')
+    expect(barePreflight?.headers.get('Access-Control-Allow-Headers')).toBe('')
 
     const post = await handleCreditsProxy(
       new Request(manifestUrl, { method: 'POST' }),
