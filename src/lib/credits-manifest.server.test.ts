@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import { fetchCreditsManifest } from './credits-manifest.server'
+import {
+  fetchCreditsManifest,
+  loadCreditsManifest,
+} from './credits-manifest.server'
 
 const validPayload = {
   schemaVersion: 1,
@@ -48,6 +51,11 @@ const jsonFetcher = (body: unknown, status = 200) =>
   ) as unknown as typeof fetch
 
 describe('fetchCreditsManifest', () => {
+  it('shares the raw manifest text with API consumers', async () => {
+    const text = await loadCreditsManifest(jsonFetcher(validPayload))
+    expect(JSON.parse(text)).toEqual(validPayload)
+  })
+
   it('normalizes names, ids and sprite lookups', async () => {
     const { manifest, available } = await fetchCreditsManifest({
       fetcher: jsonFetcher(validPayload),

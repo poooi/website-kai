@@ -139,6 +139,24 @@ export function normalizeCreditsManifest(
   }
 }
 
+/** Raw manifest text exactly as published upstream, shared by the website UI
+ * loader and the public credits API so the original body is preserved. */
+export const loadCreditsManifest = async (
+  fetcher: FetchLike = fetch,
+): Promise<string> => {
+  const fixture = process.env.TANSTACK_TEST_CREDITS_MANIFEST
+  if (fixture && fetcher === fetch) {
+    creditsManifestSchema.parse(JSON.parse(fixture))
+    return fixture
+  }
+  const response = await fetchCachedRelease(creditsManifestUrl, {
+    fetcher,
+    validate: (text) => creditsManifestSchema.parse(JSON.parse(text)),
+  })
+  if (!response.ok) throw new UpstreamResponseError(response.status)
+  return response.text()
+}
+
 export async function fetchCreditsManifest({
   fetcher = fetch,
 }: { fetcher?: FetchLike } = {}): Promise<{
@@ -146,22 +164,11 @@ export async function fetchCreditsManifest({
   available: boolean
 }> {
   try {
-    let payload: unknown
-    const fixture = process.env.TANSTACK_TEST_CREDITS_MANIFEST
-    if (fixture && fetcher === fetch) {
-      payload = JSON.parse(fixture)
-    } else {
-      const response = await fetchCachedRelease(creditsManifestUrl, {
-        fetcher,
-        validate: (text) => {
-          creditsManifestSchema.parse(JSON.parse(text))
-        },
-      })
-      if (!response.ok) throw new UpstreamResponseError(response.status)
-      payload = await response.json()
-    }
+    const text = await loadCreditsManifest(fetcher)
     return {
-      manifest: normalizeCreditsManifest(creditsManifestSchema.parse(payload)),
+      manifest: normalizeCreditsManifest(
+        creditsManifestSchema.parse(JSON.parse(text)),
+      ),
       available: true,
     }
   } catch {

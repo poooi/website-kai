@@ -21,18 +21,11 @@ export interface CreditsSpriteOptions {
   timeoutMs?: number
 }
 
-const errorResponse = (
-  status: number,
-  message: string,
-  headers?: Record<string, string>,
-) =>
-  new Response(message, {
-    status,
-    headers: { 'Cache-Control': 'no-store', ...headers },
+const badGateway = () =>
+  new Response('Bad Gateway', {
+    status: 502,
+    headers: { 'Cache-Control': 'no-store' },
   })
-
-const notFound = () => errorResponse(404, 'Not Found')
-const badGateway = () => errorResponse(502, 'Bad Gateway')
 
 const openCache = async (
   supplied?: CreditsSpriteCache,
@@ -111,11 +104,6 @@ const readBounded = async (
   return body
 }
 
-const respond = (response: Response, method: string) =>
-  method === 'HEAD'
-    ? new Response(null, { status: response.status, headers: response.headers })
-    : response
-
 /** A sheet is only cacheable when the bytes really match the format implied by
  * its hashed extension, so a mislabeled or empty 200 never becomes a
  * long-lived broken image. */
@@ -143,35 +131,33 @@ const sheetFormats = {
 
 type SheetExtension = keyof typeof sheetFormats
 
-export async function handleCreditsSprite(
-  request: Request,
+/** Fetches a hashed sheet resource (no HTTP method routing: the credits API
+ * owns that). Returns undefined for an invalid filename and a no-store 502 for
+ * upstream, content-type, signature or size failures. */
+export async function fetchCreditsSprite(
+  filename: string,
+  requestUrl: string,
   options: CreditsSpriteOptions = {},
 ): Promise<Response | undefined> {
-  const { pathname } = new URL(request.url)
-  if (!pathname.startsWith(creditsSpritePath)) return undefined
-
-  if (request.method !== 'GET' && request.method !== 'HEAD')
-    return errorResponse(405, 'Method Not Allowed', { Allow: 'GET, HEAD' })
-
-  let filename: string
+  let decoded: string
   try {
-    filename = decodeURIComponent(pathname.slice(creditsSpritePath.length))
+    decoded = decodeURIComponent(filename)
   } catch {
-    return notFound()
+    return undefined
   }
-  if (!sheetFilePattern.test(filename)) return notFound()
-  const extension = filename.slice(filename.lastIndexOf('.') + 1)
+  if (!sheetFilePattern.test(decoded)) return undefined
+  const extension = decoded.slice(decoded.lastIndexOf('.') + 1)
   const format = sheetFormats[extension as SheetExtension]
-  if (!format) return notFound()
+  if (!format) return undefined
 
   // Cloudflare's Cache API only accepts absolute URLs as keys.
   const cacheKey = new URL(
-    `${creditsSpritePath}${filename}`,
-    request.url,
+    `${creditsSpritePath}${decoded}`,
+    requestUrl,
   ).toString()
   const cache = await openCache(options.cache)
   const cached = await matchCache(cache, cacheKey)
-  if (cached) return respond(cached, request.method)
+  if (cached) return cached
 
   const controller = new AbortController()
   const timeout = setTimeout(
@@ -188,7 +174,7 @@ export async function handleCreditsSprite(
             headers: { 'Content-Type': format.contentType },
           },
         )
-      : await (options.fetcher ?? fetch)(`${upstreamBase}${filename}`, {
+      : await (options.fetcher ?? fetch)(`${upstreamBase}${decoded}`, {
           signal: controller.signal,
         })
     if (!upstream.ok) return badGateway()
@@ -210,7 +196,7 @@ export async function handleCreditsSprite(
       },
     })
     await putCache(cache, cacheKey, response.clone())
-    return respond(response, request.method)
+    return response
   } catch {
     return badGateway()
   } finally {

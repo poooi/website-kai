@@ -304,3 +304,82 @@ test('returns 404 for unknown localized page shapes', async ({ request }) => {
     expect(response.headers()['x-poi-codename']).toBe('Shiratsuyu')
   }
 })
+
+test('serves the public credits proxy with CORS and no locale redirect', async ({
+  request,
+}) => {
+  const manifest = await request.get('/api/credits/manifest.json')
+  expect(manifest.status()).toBe(200)
+  expect(manifest.headers()['content-type']).toContain('application/json')
+  expect(manifest.headers()['access-control-allow-origin']).toBe('*')
+  expect(manifest.headers()['cache-control']).toBe('public, max-age=300')
+  expect(manifest.headers().location).toBeUndefined()
+
+  const raw: unknown = await manifest.json()
+  const body = raw as {
+    contributors: unknown[]
+    supporters: unknown[]
+    sheets: { url: string }[]
+  }
+  expect(Array.isArray(body.contributors)).toBe(true)
+  expect(Array.isArray(body.supporters)).toBe(true)
+  const sheet = body.sheets[0]?.url ?? ''
+  expect(sheet).toMatch(/^avatars-\d+\.[0-9a-f]+\.(png|webp)$/)
+  expect(
+    new URL(sheet, 'http://127.0.0.1:3002/api/credits/manifest.json').origin,
+  ).toBe('http://127.0.0.1:3002')
+
+  const image = await request.get(`/api/credits/${sheet}`)
+  expect(image.status()).toBe(200)
+  expect(image.headers()['content-type']).toMatch(/^image\/(png|webp)$/)
+  expect(image.headers()['access-control-allow-origin']).toBe('*')
+  expect(image.headers()['cache-control']).toBe(
+    'public, max-age=31536000, immutable',
+  )
+
+  // The legacy sprite prefix serves the same shared resource.
+  const legacy = await request.get(`/api/credits-sprite/${sheet}`)
+  expect(legacy.status()).toBe(200)
+  expect(legacy.headers()['content-type']).toMatch(/^image\/(png|webp)$/)
+  expect(legacy.headers()['access-control-allow-origin']).toBe('*')
+  expect(legacy.headers()['cache-control']).toBe(
+    'public, max-age=31536000, immutable',
+  )
+
+  const head = await request.head('/api/credits/manifest.json')
+  expect(head.status()).toBe(200)
+  expect((await head.body()).byteLength).toBe(0)
+
+  // Framework HEAD: both sprite prefixes succeed; missing 404s and the PNG
+  // fixture served under a .webp name is a deterministic 502.
+  for (const path of [
+    `/api/credits/${sheet}`,
+    `/api/credits-sprite/${sheet}`,
+  ]) {
+    const spriteHead = await request.head(path)
+    expect(spriteHead.status(), path).toBe(200)
+    expect((await spriteHead.body()).byteLength, path).toBe(0)
+  }
+  const missingHead = await request.head('/api/credits/not-a-sheet.txt')
+  expect(missingHead.status()).toBe(404)
+  expect((await missingHead.body()).byteLength).toBe(0)
+  const mismatchHead = await request.head('/api/credits/avatars-0.abcdef.webp')
+  expect(mismatchHead.status()).toBe(502)
+  expect((await mismatchHead.body()).byteLength).toBe(0)
+
+  // Non-GET/HEAD methods get 405 with Allow on every route shape.
+  for (const path of [
+    '/api/credits/manifest.json',
+    `/api/credits/${sheet}`,
+    `/api/credits-sprite/${sheet}`,
+  ]) {
+    const post = await request.post(path)
+    expect(post.status(), path).toBe(405)
+    expect(post.headers().allow, path).toBe('GET, HEAD, OPTIONS')
+  }
+
+  const missing = await request.get('/api/credits/not-a-sheet.txt')
+  expect(missing.status()).toBe(404)
+  const legacyManifest = await request.get('/api/credits-sprite/manifest.json')
+  expect(legacyManifest.status()).toBe(404)
+})

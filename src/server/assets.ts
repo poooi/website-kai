@@ -27,7 +27,9 @@ const withAssetHeaders = (response: Response, request: Request) => {
 }
 
 export const handleAsset = async (request: Request, env: AssetEnv) => {
-  if (!env.ASSETS || !isFileRequest(new URL(request.url).pathname)) {
+  const { pathname } = new URL(request.url)
+  // API routes own every method, so the asset binding must not answer them.
+  if (!env.ASSETS || pathname.startsWith('/api/') || !isFileRequest(pathname)) {
     return undefined
   }
 

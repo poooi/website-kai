@@ -229,6 +229,25 @@ describe('handleWorkerRequest', () => {
     expect(mocks.startFetch).toHaveBeenCalledOnce()
   })
 
+  it.each([
+    ['/api/credits/manifest.json', 'OPTIONS'],
+    ['/api/credits/avatars-0.0123456789abcdef.png', 'POST'],
+    ['/api/credits-sprite/avatars-0.0123456789abcdef.png', 'OPTIONS'],
+  ] as const)(
+    'keeps %s %s away from the asset binding',
+    async (path, method) => {
+      const assetFetch = vi.fn(async () => new Response('', { status: 405 }))
+      const response = await handleWorkerRequest(
+        makeRequest(path, { method }),
+        makeEnv(assetFetch),
+      )
+
+      expect(assetFetch).not.toHaveBeenCalled()
+      expect(mocks.startFetch).toHaveBeenCalledOnce()
+      await expect(response.text()).resolves.toBe(`start:${path}`)
+    },
+  )
+
   it('serves social image HEAD requests before TanStack', async () => {
     const response = await handleWorkerRequest(
       makeRequest('/opengraph-image', { method: 'HEAD' }),

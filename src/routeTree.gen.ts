@@ -24,6 +24,9 @@ import { Route as DistFilenameRouteImport } from './routes/dist.$filename'
 import { Route as FcdFilenameRouteImport } from './routes/fcd.$filename'
 import { Route as UpdateFilenameRouteImport } from './routes/update.$filename'
 import { Route as ApiChangelogChannelRouteImport } from './routes/api.changelog.$channel'
+import { Route as ApiCreditsSpriteFilenameRouteImport } from './routes/api.credits-sprite.$filename'
+import { Route as ApiCreditsFilenameRouteImport } from './routes/api.credits.$filename'
+import { Route as ApiCreditsManifestDotjsonRouteImport } from './routes/api.credits.manifest[.]json'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -100,6 +103,23 @@ const ApiChangelogChannelRoute = ApiChangelogChannelRouteImport.update({
   path: '/api/changelog/$channel',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCreditsSpriteFilenameRoute =
+  ApiCreditsSpriteFilenameRouteImport.update({
+    id: '/api/credits-sprite/$filename',
+    path: '/api/credits-sprite/$filename',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiCreditsFilenameRoute = ApiCreditsFilenameRouteImport.update({
+  id: '/api/credits/$filename',
+  path: '/api/credits/$filename',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCreditsManifestDotjsonRoute =
+  ApiCreditsManifestDotjsonRouteImport.update({
+    id: '/api/credits/manifest.json',
+    path: '/api/credits/manifest.json',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -117,6 +137,9 @@ export interface FileRoutesByFullPath {
   '/fcd/$filename': typeof FcdFilenameRoute
   '/update/$filename': typeof UpdateFilenameRoute
   '/api/changelog/$channel': typeof ApiChangelogChannelRoute
+  '/api/credits-sprite/$filename': typeof ApiCreditsSpriteFilenameRoute
+  '/api/credits/$filename': typeof ApiCreditsFilenameRoute
+  '/api/credits/manifest.json': typeof ApiCreditsManifestDotjsonRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -134,6 +157,9 @@ export interface FileRoutesByTo {
   '/fcd/$filename': typeof FcdFilenameRoute
   '/update/$filename': typeof UpdateFilenameRoute
   '/api/changelog/$channel': typeof ApiChangelogChannelRoute
+  '/api/credits-sprite/$filename': typeof ApiCreditsSpriteFilenameRoute
+  '/api/credits/$filename': typeof ApiCreditsFilenameRoute
+  '/api/credits/manifest.json': typeof ApiCreditsManifestDotjsonRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -152,6 +178,9 @@ export interface FileRoutesById {
   '/fcd/$filename': typeof FcdFilenameRoute
   '/update/$filename': typeof UpdateFilenameRoute
   '/api/changelog/$channel': typeof ApiChangelogChannelRoute
+  '/api/credits-sprite/$filename': typeof ApiCreditsSpriteFilenameRoute
+  '/api/credits/$filename': typeof ApiCreditsFilenameRoute
+  '/api/credits/manifest.json': typeof ApiCreditsManifestDotjsonRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -171,6 +200,9 @@ export interface FileRouteTypes {
     | '/fcd/$filename'
     | '/update/$filename'
     | '/api/changelog/$channel'
+    | '/api/credits-sprite/$filename'
+    | '/api/credits/$filename'
+    | '/api/credits/manifest.json'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -188,6 +220,9 @@ export interface FileRouteTypes {
     | '/fcd/$filename'
     | '/update/$filename'
     | '/api/changelog/$channel'
+    | '/api/credits-sprite/$filename'
+    | '/api/credits/$filename'
+    | '/api/credits/manifest.json'
   id:
     | '__root__'
     | '/'
@@ -205,6 +240,9 @@ export interface FileRouteTypes {
     | '/fcd/$filename'
     | '/update/$filename'
     | '/api/changelog/$channel'
+    | '/api/credits-sprite/$filename'
+    | '/api/credits/$filename'
+    | '/api/credits/manifest.json'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -223,6 +261,9 @@ export interface RootRouteChildren {
   FcdFilenameRoute: typeof FcdFilenameRoute
   UpdateFilenameRoute: typeof UpdateFilenameRoute
   ApiChangelogChannelRoute: typeof ApiChangelogChannelRoute
+  ApiCreditsSpriteFilenameRoute: typeof ApiCreditsSpriteFilenameRoute
+  ApiCreditsFilenameRoute: typeof ApiCreditsFilenameRoute
+  ApiCreditsManifestDotjsonRoute: typeof ApiCreditsManifestDotjsonRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -332,6 +373,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChangelogChannelRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/credits-sprite/$filename': {
+      id: '/api/credits-sprite/$filename'
+      path: '/api/credits-sprite/$filename'
+      fullPath: '/api/credits-sprite/$filename'
+      preLoaderRoute: typeof ApiCreditsSpriteFilenameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/credits/$filename': {
+      id: '/api/credits/$filename'
+      path: '/api/credits/$filename'
+      fullPath: '/api/credits/$filename'
+      preLoaderRoute: typeof ApiCreditsFilenameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/credits/manifest.json': {
+      id: '/api/credits/manifest.json'
+      path: '/api/credits/manifest.json'
+      fullPath: '/api/credits/manifest.json'
+      preLoaderRoute: typeof ApiCreditsManifestDotjsonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -351,6 +413,9 @@ const rootRouteChildren: RootRouteChildren = {
   FcdFilenameRoute: FcdFilenameRoute,
   UpdateFilenameRoute: UpdateFilenameRoute,
   ApiChangelogChannelRoute: ApiChangelogChannelRoute,
+  ApiCreditsSpriteFilenameRoute: ApiCreditsSpriteFilenameRoute,
+  ApiCreditsFilenameRoute: ApiCreditsFilenameRoute,
+  ApiCreditsManifestDotjsonRoute: ApiCreditsManifestDotjsonRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
