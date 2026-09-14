@@ -35,30 +35,42 @@ The E2E runner builds with fixed release versions before starting preview.
 ## Web fonts
 
 The interface uses IBM Plex. `scripts/generate-critical-fonts.ts` runs at Vite
-config startup and writes per-script UI subsets — everything in the message
-catalogs (including platform labels and the language chooser's names), ASCII and
-the UI's literal symbols — into the ignored `src/assets/fonts/generated/`.
-Restart the dev server after changing `messages/*.json` so the subsets
-regenerate; a build always regenerates them. The files are subset with
-`subset-font` (HarfBuzz WASM) and imported with `?url`, so Vite content-hashes
-them.
+config startup and writes one UI subset and one attribution text per script —
+everything in the message catalogs (including platform labels and the language
+chooser's names), ASCII and the UI's literal symbols — into the ignored
+`src/assets/fonts/generated/`. Restart the dev server after changing
+`messages/*.json` so the subsets regenerate; a build always regenerates them.
+The subsets are produced by the `cn-font-split` WASM engine, pinned to
+`wasm32-wasip1@7.6.8` so every build uses the same toolchain; run
+`pnpm run fonts:wasm` to install it, or let the generator do it when the version
+marker is missing. The WOFF2 files are imported with `?url`, so Vite
+content-hashes them. Keeping every font feature and the whole UI glyph set makes
+these larger than a minimal subset — about 208 KiB for Japanese, 98 KiB
+Simplified Chinese, 75 KiB Traditional Chinese, 37 KiB Korean and 70 KiB Latin —
+but each locale preloads exactly one file. Pinning the engine does not make its
+output byte-reproducible: Simplified and Traditional Chinese outputs can vary
+between runs, including extra character mappings outside the requested UI set.
+The requested UI coverage, outlines and advance widths have been verified;
+content-hashed URLs keep each generated file distinct.
 
 Each locale's font stack starts with the preloaded `Poi UI <script>` face
-(`font-display: block`, and only that locale's file is preloaded with
-`crossorigin`) to give the web font time to arrive before showing UI text.
-Glyphs the subset omits fall through to
-the original split IBM Plex shards, which use `font-display: swap` and load on
-demand for arbitrary release and plugin content. Those split stylesheets are
-render-blocking, so they are served only off the home page; the home page relies
-solely on the critical subset, and navigating to another route adds the split
-stylesheets there. On a slow connection the browser blocks briefly on the
-critical face and may still show a fallback before a later swap; this is not
-guaranteed flash-free on every network.
+(`font-display: block`, no `local()`, and only that locale's file is preloaded
+with `crossorigin`) to give the web font time to arrive before showing UI text.
+Glyphs the subset omits fall through to the original split IBM Plex shards,
+which use `font-display: swap` and load on demand for arbitrary release and
+plugin content. Those split stylesheets are render-blocking, so they are served
+only off the home page; the home page relies solely on the critical subset, and
+navigating to another route adds the split stylesheets there. On a slow
+connection the browser blocks briefly on the critical face and may still show a
+fallback before a later swap; this is not guaranteed flash-free on every
+network.
 
-IBM Plex is SIL OFL 1.1 with Reserved Font Name "Plex". The derived subsets keep
-the original copyright, trademark, license and designer name records and all
-shaping features, and the original split fonts remain the fallback for other
-glyphs. The license text is served at `/ibm-plex-OFL.txt`.
+IBM Plex is SIL OFL 1.1 with Reserved Font Name "Plex". The engine reports the
+original embedded metadata, so the generated attribution text (copyright,
+trademark, designers, licence and project links) is inlined as a `/*! */`
+comment next to the face, and the license text is served at
+`/ibm-plex-OFL.txt`. All shaping features are retained and the original split
+fonts remain the fallback for glyphs the subset omits.
 
 ## Release history
 
