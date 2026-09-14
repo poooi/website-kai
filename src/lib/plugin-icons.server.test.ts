@@ -39,7 +39,7 @@ describe('resolvePluginIcon', () => {
   })
 
   it('returns undefined for unknown or empty names', async () => {
-    expect(await resolvePluginIcon()).toBeUndefined()
+    expect(await resolvePluginIcon('')).toBeUndefined()
     expect(await resolvePluginIcon('not-a-real-icon')).toBeUndefined()
     expect(await resolvePluginIcon('fa/')).toBeUndefined()
   })
