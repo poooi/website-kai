@@ -1,20 +1,13 @@
 'use client'
 
-import {
-  forwardRef,
-  useEffect,
-  useRef,
-  useState,
-  type ComponentType,
-  type ComponentPropsWithoutRef,
-} from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { Link, useRouterState } from '@tanstack/react-router'
 import { ChevronDown } from 'lucide-react'
 
 import { LanguageChooser } from '~/components/language-chooser'
 import { ThemeChooser } from '~/components/theme-chooser'
-import { useI18nPathname } from '~/hooks/use-i18n-pathname'
-import { localizeHref } from '~/paraglide/runtime'
 import { m } from '~/paraglide/messages'
+import { deLocalizeHref } from '~/paraglide/runtime'
 
 const navigationEntries = [
   { path: '/explore', label: m.explore },
@@ -24,32 +17,11 @@ const navigationEntries = [
   { path: '/credits', label: m.credits },
 ] as const
 
-export type HeaderPath = '/' | (typeof navigationEntries)[number]['path']
-
-export interface HeaderLinkProps extends Omit<
-  ComponentPropsWithoutRef<'a'>,
-  'href'
-> {
-  href: HeaderPath
-}
-
-const AnchorLink = forwardRef<HTMLAnchorElement, HeaderLinkProps>(
-  ({ children, href, ...props }, ref) => {
-    return (
-      <a ref={ref} href={localizeHref(href)} {...props}>
-        {children}
-      </a>
-    )
-  },
-)
-AnchorLink.displayName = 'AnchorLink'
-
-interface HeaderProps {
-  LinkComponent?: ComponentType<HeaderLinkProps>
-}
-
-export const Header = ({ LinkComponent = AnchorLink }: HeaderProps) => {
-  const pathname = useI18nPathname()
+export const Header = () => {
+  const localizedPathname = useRouterState({
+    select: (state) => state.location.pathname,
+  })
+  const pathname = deLocalizeHref(localizedPathname)
   const headerRef = useRef<HTMLElement>(null)
   const mobileNavRef = useRef<HTMLDetailsElement>(null)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
@@ -83,24 +55,26 @@ export const Header = ({ LinkComponent = AnchorLink }: HeaderProps) => {
       className="sticky top-0 z-40 bg-background"
     >
       <div className="mx-[2.7%] grid min-h-[72px] grid-cols-[auto_1fr_auto] items-center gap-x-8 border-b px-[2.2%] font-semibold max-[1099px]:grid-cols-[auto_1fr] max-[1099px]:gap-y-1 max-[1099px]:pt-3 max-[700px]:mx-[6%] max-[700px]:px-0">
-        <LinkComponent
-          href="/"
+        <Link
+          to="/"
+          activeOptions={{ exact: true }}
           aria-label={m.returnToHomepage()}
           aria-current={pathname === '/' ? 'page' : undefined}
           className="inline-flex w-fit items-center py-2 transition-colors hover:text-navigation"
         >
           <span className="text-2xl font-bold tracking-tight">poi</span>
-        </LinkComponent>
+        </Link>
         <nav className="hidden items-stretch gap-6 self-stretch min-[1100px]:flex">
           {navigationEntries.map(({ path, label }) => (
-            <LinkComponent
+            <Link
               key={path}
-              href={path}
+              to={path}
+              activeOptions={{ exact: true }}
               aria-current={pathname === path ? 'page' : undefined}
               className="inline-flex items-center justify-center border-b-2 border-transparent px-1 py-4 text-sm text-muted-foreground transition-colors hover:text-foreground aria-[current=page]:border-navigation aria-[current=page]:text-navigation"
             >
               {label()}
-            </LinkComponent>
+            </Link>
           ))}
         </nav>
         <details
@@ -129,14 +103,15 @@ export const Header = ({ LinkComponent = AnchorLink }: HeaderProps) => {
                   key={path}
                   className="border-b border-border/60 last:border-b-0"
                 >
-                  <LinkComponent
-                    href={path}
+                  <Link
+                    to={path}
+                    activeOptions={{ exact: true }}
                     aria-current={pathname === path ? 'page' : undefined}
                     onClick={closeMobileNav}
                     className="flex items-center border-l-2 border-transparent py-3 pl-3 text-sm text-muted-foreground transition-colors hover:text-foreground aria-[current=page]:border-navigation aria-[current=page]:text-navigation"
                   >
                     {label()}
-                  </LinkComponent>
+                  </Link>
                 </li>
               ))}
             </ul>

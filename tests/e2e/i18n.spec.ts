@@ -142,7 +142,7 @@ test('serves script-cased Chinese localized download pages', async ({
   await expect(page.getByRole('link', { name: '每日建置版' })).toBeVisible()
 })
 
-test('serves framework-neutral header navigation controls', async ({
+test('serves TanStack header navigation controls', async ({
   page,
 }) => {
   await page.goto('/en')
@@ -325,25 +325,105 @@ test('keeps layout coherent across routes with prose typography', async ({
   ).toHaveClass(/max-w-prose/)
 })
 
-test('keeps header pathname current after client history changes', async ({
+test('tracks localized header current state across Link navigation and history', async ({
   page,
 }) => {
   await page.goto('/en')
   const header = page.getByRole('banner')
-  await expect(
-    header.getByRole('link', { name: 'Return to home page' }),
-  ).toHaveAttribute('aria-current', 'page')
-
-  await page.evaluate(() => {
-    window.history.pushState({}, '', '/en/download')
+  const homeLink = header.getByRole('link', { name: 'Return to home page' })
+  const downloadLink = header.getByRole('link', {
+    name: 'Download',
+    exact: true,
   })
 
+  // SSR already renders aria-current, so it cannot signal hydration. Open the
+  // client theme menu to confirm React attached handlers before measuring an
+  // in-app navigation that must not reload the document.
+  await page.getByRole('button', { name: 'Theme', exact: true }).click()
   await expect(
-    header.getByRole('link', { name: 'Download', exact: true }),
-  ).toHaveAttribute('aria-current', 'page')
+    page.getByRole('menuitemradio', { name: 'Chibaheit' }),
+  ).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(
+    page.getByRole('menuitemradio', { name: 'Chibaheit' }),
+  ).toBeHidden()
+
+  await expect(homeLink).toHaveAttribute('aria-current', 'page')
+  await expect(downloadLink).not.toHaveAttribute('aria-current', 'page')
+
+  const timeOrigin = await page.evaluate(() => performance.timeOrigin)
+
+  await downloadLink.click()
+  await expect(page).toHaveURL('http://127.0.0.1:3002/en/download')
+  await expect(downloadLink).toHaveAttribute('href', '/en/download')
+  await expect(downloadLink).toHaveAttribute('aria-current', 'page')
+  await expect(homeLink).not.toHaveAttribute('aria-current', 'page')
+
+  await page.goBack()
+  await expect(page).toHaveURL('http://127.0.0.1:3002/en')
+  await expect(homeLink).toHaveAttribute('aria-current', 'page')
+  await expect(downloadLink).not.toHaveAttribute('aria-current', 'page')
+
+  await page.goForward()
+  await expect(page).toHaveURL('http://127.0.0.1:3002/en/download')
+  await expect(downloadLink).toHaveAttribute('aria-current', 'page')
+
+  expect(await page.evaluate(() => performance.timeOrigin)).toBe(timeOrigin)
+
   await page.getByRole('button', { name: 'English' }).click()
   await page.getByRole('menuitemradio', { name: 'français' }).click()
   await expect(page).toHaveURL('http://127.0.0.1:3002/fr/download')
+})
+
+test('highlights the header link for the exact path ignoring query and hash', async ({
+  page,
+}) => {
+  const header = page.getByRole('banner')
+  const downloadLink = header.getByRole('link', {
+    name: 'Download',
+    exact: true,
+  })
+  const exploreLink = header.getByRole('link', { name: 'Explore' })
+  const homeLink = header.getByRole('link', { name: 'Return to home page' })
+
+  await page.goto('/en/download?x=1&y=2#download')
+  await expect(downloadLink).toHaveAttribute('aria-current', 'page')
+  await expect(exploreLink).not.toHaveAttribute('aria-current', 'page')
+  await expect(homeLink).not.toHaveAttribute('aria-current', 'page')
+
+  await page.goto('/en/explore#section')
+  await expect(exploreLink).toHaveAttribute('aria-current', 'page')
+  await expect(downloadLink).not.toHaveAttribute('aria-current', 'page')
+})
+
+test('renders localized header hrefs without JavaScript', async ({
+  browser,
+}) => {
+  const context = await browser.newContext({
+    baseURL: 'http://127.0.0.1:3002',
+    javaScriptEnabled: false,
+  })
+  const page = await context.newPage()
+  try {
+    await page.goto('/en')
+    const header = page.getByRole('banner')
+    await expect(
+      header.getByRole('link', { name: 'Return to home page' }),
+    ).toHaveAttribute('href', '/en')
+    await expect(header.getByRole('link', { name: 'Explore' })).toHaveAttribute(
+      'href',
+      '/en/explore',
+    )
+    await expect(
+      header.getByRole('link', { name: 'Download', exact: true }),
+    ).toHaveAttribute('href', '/en/download')
+    await expect(header.getByRole('link', { name: 'Credits' })).toHaveAttribute(
+      'href',
+      '/en/credits',
+    )
+  } finally {
+    await context.close()
+  }
 })
 
 test('loads localized download pages with hash fragments', async ({

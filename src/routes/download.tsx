@@ -34,17 +34,16 @@ function DownloadPage() {
           <PlatformSelect
             initialOS={data.platform.os}
             initialSpec={
-              data.stableTargets.includes(data.platform.target)
+              data.supportedTargets.includes(data.platform.target)
                 ? data.platform.spec
                 : undefined
             }
-            availableTargets={[...data.stableTargets, ...data.betaTargets]}
+            availableTargets={data.supportedTargets}
           />
           <div className="min-w-0">
             <DownloadLinks
               poiVersions={data.poiVersions}
-              stableTargets={data.stableTargets}
-              betaTargets={data.betaTargets}
+              supportedTargets={data.supportedTargets}
             />
           </div>
         </div>
