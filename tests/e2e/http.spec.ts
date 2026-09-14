@@ -337,10 +337,49 @@ test('serves the public credits proxy with CORS and no locale redirect', async (
     'public, max-age=31536000, immutable',
   )
 
+  // The legacy sprite prefix serves the same shared resource.
+  const legacy = await request.get(`/api/credits-sprite/${sheet}`)
+  expect(legacy.status()).toBe(200)
+  expect(legacy.headers()['content-type']).toMatch(/^image\/(png|webp)$/)
+  expect(legacy.headers()['access-control-allow-origin']).toBe('*')
+  expect(legacy.headers()['cache-control']).toBe(
+    'public, max-age=31536000, immutable',
+  )
+
   const head = await request.head('/api/credits/manifest.json')
   expect(head.status()).toBe(200)
   expect((await head.body()).byteLength).toBe(0)
 
+  // Framework HEAD: both sprite prefixes succeed; missing 404s and the PNG
+  // fixture served under a .webp name is a deterministic 502.
+  for (const path of [
+    `/api/credits/${sheet}`,
+    `/api/credits-sprite/${sheet}`,
+  ]) {
+    const spriteHead = await request.head(path)
+    expect(spriteHead.status(), path).toBe(200)
+    expect((await spriteHead.body()).byteLength, path).toBe(0)
+  }
+  const missingHead = await request.head('/api/credits/not-a-sheet.txt')
+  expect(missingHead.status()).toBe(404)
+  expect((await missingHead.body()).byteLength).toBe(0)
+  const mismatchHead = await request.head('/api/credits/avatars-0.abcdef.webp')
+  expect(mismatchHead.status()).toBe(502)
+  expect((await mismatchHead.body()).byteLength).toBe(0)
+
+  // Non-GET/HEAD methods get 405 with Allow on every route shape.
+  for (const path of [
+    '/api/credits/manifest.json',
+    `/api/credits/${sheet}`,
+    `/api/credits-sprite/${sheet}`,
+  ]) {
+    const post = await request.post(path)
+    expect(post.status(), path).toBe(405)
+    expect(post.headers().allow, path).toBe('GET, HEAD, OPTIONS')
+  }
+
   const missing = await request.get('/api/credits/not-a-sheet.txt')
   expect(missing.status()).toBe(404)
+  const legacyManifest = await request.get('/api/credits-sprite/manifest.json')
+  expect(legacyManifest.status()).toBe(404)
 })

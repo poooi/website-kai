@@ -33,15 +33,6 @@ export const handleWorkerRequest = async (request: Request, env: AssetEnv) => {
     return new Response('', { status: 404 })
   }
 
-  if (
-    pathname.startsWith('/api/credits/') ||
-    pathname.startsWith('/api/credits-sprite/')
-  ) {
-    const { handleCreditsProxy } = await import('~/server/credits-proxy')
-    const credits = await handleCreditsProxy(request)
-    if (credits) return credits
-  }
-
   const workerResponse =
     handleLocaleRedirects(request) ??
     (await handleSocialImage(request, env)) ??
