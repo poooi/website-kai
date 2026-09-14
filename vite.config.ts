@@ -69,6 +69,10 @@ const ibmFontPackages = [
 ]
 
 export default defineConfig({
+  build: {
+    // Minify the Worker too; Vite leaves SSR output unminified by default.
+    minify: true,
+  },
   server: {
     host: '127.0.0.1',
     port: 3002,
