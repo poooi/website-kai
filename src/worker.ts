@@ -1,12 +1,8 @@
 import { withSentry } from '@sentry/cloudflare'
 import startHandler from '@tanstack/react-start/server-entry'
 
-import { handleAsset, handleSocialImage, type AssetEnv } from '~/server/assets'
-import {
-  handleLocaleRedirects,
-  isPageRequest,
-  isProxyRootPath,
-} from '~/server/request-routing'
+import { handleAsset, type AssetEnv } from '~/server/assets'
+import { handleLocaleRedirects, isPageRequest } from '~/server/request-routing'
 import { withGlobalHeaders } from '~/server/response-headers'
 import { refreshPluginReleases } from '~/lib/plugin-releases.server'
 import { sentryDsn, sentryRelease } from '~/lib/sentry'
@@ -27,16 +23,8 @@ const handleStartRequest = (request: Request) => {
 }
 
 export const handleWorkerRequest = async (request: Request, env: AssetEnv) => {
-  const { pathname } = new URL(request.url)
-
-  if (isProxyRootPath(pathname)) {
-    return new Response('', { status: 404 })
-  }
-
   const workerResponse =
-    handleLocaleRedirects(request) ??
-    (await handleSocialImage(request, env)) ??
-    (await handleAsset(request, env))
+    handleLocaleRedirects(request) ?? (await handleAsset(request, env))
   if (workerResponse) {
     return workerResponse
   }

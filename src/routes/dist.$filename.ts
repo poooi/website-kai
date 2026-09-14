@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { handleDist } from '~/lib/route-handlers'
+import { handleDist } from '~/server/dist'
 
 export const Route = createFileRoute('/dist/$filename')({
   server: {

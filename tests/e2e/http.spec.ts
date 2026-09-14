@@ -183,6 +183,26 @@ test('serves generated social image routes', async ({ request }) => {
   }
 })
 
+test('serves social image HEAD requests with headers and no body', async ({
+  request,
+}) => {
+  for (const path of [
+    '/opengraph-image',
+    '/opengraph-image/',
+    '/twitter-image',
+    '/twitter-image/',
+  ]) {
+    const response = await request.head(path)
+
+    expect(response.status()).toBe(200)
+    expect(response.headers()['content-type']).toBe('image/png')
+    expect(response.headers()['cache-control']).toBe('public,max-age=3600')
+    expect(response.headers()['accept-ch']).toBeUndefined()
+    expect(response.headers().vary).not.toContain('Sec-CH-UA-Platform')
+    expect((await response.body()).byteLength).toBe(0)
+  }
+})
+
 test('reserves monitoring route without locale/page headers', async ({
   request,
 }) => {
@@ -275,16 +295,20 @@ test('keeps proxy collection roots reserved before locale redirects', async ({
     '/update',
     '/update/',
   ]) {
-    const response = await request.get(path, {
-      headers: {
-        Cookie: 'NEXT_LOCALE=en',
-      },
-      maxRedirects: 0,
-    })
+    for (const method of ['GET', 'HEAD', 'POST']) {
+      const response = await request.fetch(path, {
+        method,
+        headers: {
+          Cookie: 'NEXT_LOCALE=en',
+        },
+        maxRedirects: 0,
+      })
 
-    expect(response.status()).toBe(404)
-    expect(response.headers().location).toBeUndefined()
-    expect(response.headers()['x-poi-codename']).toBe('Shiratsuyu')
+      expect(response.status()).toBe(404)
+      expect(response.headers().location).toBeUndefined()
+      expect(response.headers()['x-poi-codename']).toBe('Shiratsuyu')
+      expect((await response.body()).byteLength).toBe(0)
+    }
   }
 })
 

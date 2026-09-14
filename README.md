@@ -21,11 +21,16 @@ work on a clean checkout without regenerating it.
 UI conventions and component usage are defined in [the website VI guide](docs/visual-identity.md).
 
 - `src/routes/`: page loaders, pages, and public HTTP endpoints.
-- `src/worker.ts`: Cloudflare entry point and request dispatch.
-- `src/server/`: locale routing, asset serving, and response header policies.
+- `src/worker.ts`: Cloudflare entry point, locale/asset handling, global headers, and scheduled tasks.
+- `src/server/`: server endpoint services, shared upstream fetching, and request/response policies.
 - `src/lib/`: shared application logic and page data loading.
 - `src/**/*.test.ts`: unit tests; `tests/e2e/`: browser and HTTP tests.
 - `scripts/`: i18n generation, runtime/build checks, and the E2E runner.
+
+Declare each public endpoint in a TanStack Start file route with `server.handlers`.
+Keep shared server work in `src/server/`; avoid dispatching endpoint paths in the
+Worker. Social image routes load their source assets through the Cloudflare
+`ASSETS` binding and handle HEAD without rendering the image.
 
 Run `pnpm run lint`, `pnpm run typecheck`, and `pnpm run test:unit` for
 source checks. After `pnpm run build`, run `pnpm run check:imports` and

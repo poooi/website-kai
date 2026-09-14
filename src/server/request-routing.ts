@@ -36,7 +36,7 @@ export const isProxyRootPath = (pathname: string) => {
   return proxyRoots.has(trimTrailingSlashes(pathname))
 }
 
-const isProxyRoutePath = (pathname: string) => {
+export const isProxyRoutePath = (pathname: string) => {
   return (
     isProxyRootPath(pathname) ||
     proxyPrefixes.some((prefix) => pathname.startsWith(prefix))

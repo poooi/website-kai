@@ -1,9 +1,4 @@
-import { withSocialImageHeaders } from '~/lib/social-image-constants'
-import {
-  isFileRequest,
-  isSocialImagePath,
-  isDocumentRequestMethod,
-} from './request-routing'
+import { isFileRequest, isProxyRoutePath } from './request-routing'
 
 export interface AssetEnv {
   ASSETS?: { fetch(request: Request): Promise<Response> }
@@ -28,8 +23,14 @@ const withAssetHeaders = (response: Response, request: Request) => {
 
 export const handleAsset = async (request: Request, env: AssetEnv) => {
   const { pathname } = new URL(request.url)
-  // API routes own every method, so the asset binding must not answer them.
-  if (!env.ASSETS || pathname.startsWith('/api/') || !isFileRequest(pathname)) {
+  // API and proxy routes own every method, so the asset binding must not
+  // answer them.
+  if (
+    !env.ASSETS ||
+    pathname.startsWith('/api/') ||
+    isProxyRoutePath(pathname) ||
+    !isFileRequest(pathname)
+  ) {
     return undefined
   }
 
@@ -39,31 +40,4 @@ export const handleAsset = async (request: Request, env: AssetEnv) => {
   }
 
   return withAssetHeaders(response, request)
-}
-
-const fetchAssetPath = (request: Request, env: AssetEnv, pathname: string) => {
-  const url = new URL(pathname, request.url)
-  return env.ASSETS!.fetch(new Request(url, { method: 'GET' }))
-}
-
-export const handleSocialImage = async (request: Request, env: AssetEnv) => {
-  const { pathname } = new URL(request.url)
-  if (
-    !env.ASSETS ||
-    !isSocialImagePath(pathname) ||
-    !isDocumentRequestMethod(request.method)
-  ) {
-    return undefined
-  }
-
-  if (request.method === 'HEAD') {
-    return new Response(null, {
-      headers: withSocialImageHeaders(),
-    })
-  }
-
-  const { createSocialImageResponse } = await import('~/lib/social-image')
-  return createSocialImageResponse((assetPath) =>
-    fetchAssetPath(request, env, assetPath),
-  )
 }

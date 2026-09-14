@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { handleChangelog } from '~/lib/route-handlers'
+import { handleChangelog } from '~/server/changelog'
 
 export const Route = createFileRoute('/api/changelog/$channel')({
   server: {
