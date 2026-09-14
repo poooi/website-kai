@@ -9,13 +9,14 @@
     "cf-typegen:check": "wrangler types --config wrangler.toml --env-interface CloudflareEnv cloudflare-env.d.ts --check",
     "build": "vite build",
     "fonts:wasm": "cn-font-split i wasm32-wasip1@7.6.8",
+    "plugin-icons:generate": "node scripts/generate-plugin-icons.mjs",
     "dev": "vite dev --host 127.0.0.1 --port 3002",
     "preview": "vite build && vite preview --host 127.0.0.1 --port 3002",
-    "lint": "pnpm run paraglide:generate && eslint src tests/e2e vite.config.ts vitest.config.ts playwright.config.ts --ext .js,.cjs,.ts,.tsx",
+    "lint": "pnpm run paraglide:generate && pnpm run plugin-icons:generate && eslint src tests/e2e vite.config.ts vitest.config.ts playwright.config.ts --ext .js,.cjs,.ts,.tsx",
     "check:imports": "pnpm run paraglide:generate && node scripts/check-runtime-imports.mjs",
     "check:build": "node scripts/check-build-output.mjs",
-    "typecheck": "pnpm run paraglide:generate && pnpm run cf-typegen:check && tsc --noEmit",
-    "test:unit": "vitest run",
+    "typecheck": "pnpm run paraglide:generate && pnpm run plugin-icons:generate && pnpm run cf-typegen:check && tsc --noEmit",
+    "test:unit": "pnpm run plugin-icons:generate && vitest run",
     "test:e2e": "node scripts/test-e2e.mjs",
     "deploy": "vite build && wrangler deploy --config dist/server/wrangler.json",
     "upload": "vite build && wrangler versions upload --config dist/server/wrangler.json"
@@ -85,7 +86,8 @@
     "vite": "^8.0.16",
     "vite-plugin-static-copy": "^4.1.1",
     "vitest": "^5.0.0",
-    "wrangler": "^4.103.0"
+    "wrangler": "^4.103.0",
+    "yaml": "^2.9.1"
   },
   "packageManager": "pnpm@12.4.1"
 }

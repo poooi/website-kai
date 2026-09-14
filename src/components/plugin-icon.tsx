@@ -1,11 +1,19 @@
-import '@fortawesome/fontawesome-free/css/all.min.css'
-import '@fortawesome/fontawesome-free/css/v4-shims.min.css'
+import type { PluginIcon as PluginIconGeometry } from '~/lib/plugin-icons'
 
-export function PluginIcon({ name }: { name: string }) {
+export function PluginIcon({ icon }: { icon?: PluginIconGeometry }) {
+  if (!icon) {
+    return <span className="mt-1 h-6 w-6 shrink-0" aria-hidden="true" />
+  }
+
   return (
-    <i
-      className={`fa fa-${name.replace(/^fa\//, '')} mt-1 text-2xl leading-none text-navigation [--fa-width:1.5rem]`}
+    <svg
+      viewBox={icon.viewBox}
+      className="mt-1 h-6 w-6 shrink-0 fill-current text-navigation"
       aria-hidden="true"
-    />
+      focusable="false"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d={icon.path} />
+    </svg>
   )
 }

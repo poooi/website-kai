@@ -46,3 +46,6 @@ public/fonts/
 
 # generated critical UI font subsets
 /src/assets/fonts/generated/
+
+# generated Font Awesome plugin icon geometry
+/src/lib/plugin-icons-generated/

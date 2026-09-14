@@ -5,6 +5,7 @@ import rehype from 'remark-rehype'
 
 import { catalogSchema, pluginCatalogUrl } from './plugin-catalog'
 import { type FetchLike, UpstreamResponseError } from './fetch-poi-versions'
+import { resolvePluginIcon } from './plugin-icons.server'
 import {
   formatPluginReleaseDate,
   type PluginReleaseSnapshot,
@@ -63,7 +64,7 @@ export async function fetchPlugins(
           html: (await processor.process(description)).toString(),
           author: plugin.author,
           authorUrl: plugin.link,
-          icon: plugin.icon,
+          icon: await resolvePluginIcon(plugin.icon),
           url: `https://www.npmjs.com/package/${id}`,
           release: release
             ? {

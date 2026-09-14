@@ -174,3 +174,37 @@ test('navigates from the header and handles empty searches', async ({
   await page.getByRole('link', { name: 'Clear search' }).click()
   await expect(page.getByRole('main').getByRole('article')).toHaveCount(26)
 })
+
+test('renders official SVG icons without the Font Awesome icon font', async ({
+  browser,
+}) => {
+  const context = await browser.newContext({ javaScriptEnabled: false })
+  try {
+    const page = await context.newPage()
+    const iconFontRequests: string[] = []
+    page.on('request', (request) => {
+      const url = request.url()
+      if (
+        /fontawesome|fa-solid|fa-brands|fa-regular|all\.min\.css|v4-shims/.test(
+          url,
+        )
+      ) {
+        iconFontRequests.push(url)
+      }
+    })
+
+    await page.goto('http://127.0.0.1:3002/en/plugins')
+    const prophet = page
+      .getByRole('article')
+      .filter({ hasText: 'poi-plugin-prophet' })
+    const icon = prophet.locator('svg').first()
+
+    // Server-rendered inline SVG, decorative, no icon font.
+    await expect(icon).toHaveAttribute('aria-hidden', 'true')
+    await expect(icon).toHaveAttribute('viewBox', /^0 0 \d+ \d+$/)
+    await expect(icon.locator('path')).toHaveCount(1)
+    expect(iconFontRequests).toHaveLength(0)
+  } finally {
+    await context.close()
+  }
+})

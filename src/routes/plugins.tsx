@@ -116,7 +116,7 @@ function PluginsPage() {
                   aria-labelledby={plugin.id}
                   className="grid grid-cols-[1.5rem_minmax(0,1fr)] content-start gap-x-4 border-t py-8 sm:gap-x-5"
                 >
-                  <PluginIcon name={plugin.icon} />
+                  <PluginIcon icon={plugin.icon} />
                   <div className="min-w-0">
                     <h2
                       id={plugin.id}
