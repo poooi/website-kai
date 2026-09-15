@@ -1,6 +1,6 @@
 'use client'
 
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValueRawSync, useSetAtom } from 'jotai'
 import { useEffect, useLayoutEffect, useRef } from 'react'
 
 import { resolvedThemeAtom, themeAtom } from '~/components/theme-atoms'
@@ -84,7 +84,9 @@ export const useThemeRuntime = ({
   disableTransitionOnChange = false,
   enableSystem = true,
 }: ThemeRuntimeOptions = {}) => {
-  const [theme, setTheme] = useAtom(themeAtom)
+  // Theme initialization runs before passive atom subscriptions mount.
+  const theme = useAtomValueRawSync(themeAtom)
+  const setTheme = useSetAtom(themeAtom)
   const setResolvedTheme = useSetAtom(resolvedThemeAtom)
   const skipThemeEffect = useRef(true)
 
@@ -137,8 +139,8 @@ export const ThemeRuntime = (options: ThemeRuntimeOptions) => {
 
 export const useTheme = () => {
   return {
-    resolvedTheme: useAtomValue(resolvedThemeAtom),
+    resolvedTheme: useAtomValueRawSync(resolvedThemeAtom),
     setTheme: useSetAtom(themeAtom),
-    theme: useAtomValue(themeAtom),
+    theme: useAtomValueRawSync(themeAtom),
   }
 }

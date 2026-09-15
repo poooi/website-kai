@@ -12,3 +12,14 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
   workerd: true
+minimumReleaseAgeExclude:
+  - '@cloudflare/vite-plugin@1.54.9'
+  - '@cloudflare/workers-types@5.20260914.1'
+  - '@tanstack/react-start-rsc@0.1.53'
+  - '@tanstack/react-start@1.168.54'
+  - '@tanstack/start-plugin-core@1.171.44'
+  - miniflare@5.20260911.1-alpha
+  - wrangler@4.131.2
+  - zod@4.6.5
+patchedDependencies:
+  harfbuzzjs@0.10.0: patches/harfbuzzjs@0.10.0.patch

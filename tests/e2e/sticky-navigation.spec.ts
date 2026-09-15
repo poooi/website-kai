@@ -92,12 +92,25 @@ test('keeps the sticky header usable at 320px in French', async ({ page }) => {
 test('keeps deep-linked release headings below the sticky header', async ({
   page,
 }) => {
+  // Keep entry motion running while the browser and router position the hash.
+  await page.route(/\/assets\/[^/]+\.css$/, async (route) => {
+    const response = await route.fetch()
+    await route.fulfill({
+      response,
+      body: `${await response.text()}\n.page-enter { animation-duration: 2s !important; }`,
+    })
+  })
   await page.goto('/en/changelog#release-v6.1.3')
   const heading = page.getByRole('heading', {
     name: 'POI v6.1.3',
     exact: true,
   })
   await expect(heading).toBeVisible()
+  await page.getByRole('main').evaluate(async (element) => {
+    await Promise.all(
+      element.getAnimations().map((animation) => animation.finished),
+    )
+  })
   await expect
     .poll(async () => {
       const headerBox = await page.getByRole('banner').boundingBox()
