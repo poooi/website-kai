@@ -289,7 +289,7 @@ importers:
         version: 2.25.4(typescript@6.0.3)(vite@8.3.0(@types/node@24.13.4)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.1))
       '@inlang/plugin-m-function-matcher':
         specifier: ^2.2.9
-        version: 2.2.15
+        version: 2.2.16
       '@inlang/plugin-message-format':
         specifier: ^4.4.0
         version: 4.4.4
@@ -1026,8 +1026,8 @@ packages:
       vite:
         optional: true
 
-  '@inlang/plugin-m-function-matcher@2.2.15':
-    resolution: {integrity: sha512-j6u81l1JS5zU5LuQK4IRSdmdtFMO33W8nrslBAXKEZd4C2aDmnxGgSczhSvHHB0mSHS3XgaQa7EfAfKz/whhVw==}
+  '@inlang/plugin-m-function-matcher@2.2.16':
+    resolution: {integrity: sha512-OnlpBFcLLapK0DeHOhuP+u0Ut0Ls/wcvcAKEdhtjOk/WrpmAiRvSuvCCctsfW8qR+GI71oqGkt4zZ7uOhcLmvg==}
 
   '@inlang/plugin-message-format@4.4.4':
     resolution: {integrity: sha512-50tkyH/qMFudcIOZSCRdi+BeCVuJQo3BWbvfRTVKr8pEslBiRaZDTKBC1NkCI3ivmkyqzK8k+ktBci3NtDu3Lg==}
@@ -5136,9 +5136,9 @@ snapshots:
       typescript: 6.0.3
       vite: 8.3.0(@types/node@24.13.4)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.1)
 
-  '@inlang/plugin-m-function-matcher@2.2.15':
+  '@inlang/plugin-m-function-matcher@2.2.16':
     dependencies:
-      '@inlang/sdk': 3.0.5
+      '@inlang/sdk': 3.0.6
 
   '@inlang/plugin-message-format@4.4.4':
     dependencies:
